@@ -9,11 +9,10 @@
 
 ### **🎯 Vision & Strategy**
 - **[PROJECT_VISION.md](PROJECT_VISION.md)** - Core mission, value propositions, and strategic alignment
-- **[recipejen_design_brief.md](recipejen_design_brief.md)** - Complete UX specifications and user experience requirements
+- **[PRODUCT_DESIGN_BRIEF.md](PRODUCT_DESIGN_BRIEF.md)** - Complete UX specifications and user experience requirements
 
 ### **🚀 Development Planning**
-- **[development/DEVELOPMENT_TODO.md](development/DEVELOPMENT_TODO.md)** - **PRIMARY ROADMAP** - Complete development plan with sprints and phases
-- **[development/IMMEDIATE_PRIORITIES.md](development/IMMEDIATE_PRIORITIES.md)** - Detailed technical specifications for immediate sprints
+- **[development/functional_architecture/DEVELOPMENT_TODO_LIST.md](development/functional_architecture/DEVELOPMENT_TODO_LIST.md)** - **PRIMARY ROADMAP** - Complete development plan with sprints and phases
 
 ### **🎨 Design & User Experience**
 - **[design/DESIGN_SYSTEM.md](design/DESIGN_SYSTEM.md)** - Comprehensive design system with components and patterns
@@ -96,8 +95,8 @@ People with dietary restrictions, medical conditions, or busy lifestyles experie
 
 ### **Document Hierarchy**
 1. **Start with PROJECT_VISION.md** - Understand the mission and strategic goals
-2. **Review recipejen_design_brief.md** - Understand UX requirements and user flows
-3. **Follow DEVELOPMENT_TODO.md** - Primary development roadmap with sprint planning
+2. **Review PRODUCT_DESIGN_BRIEF.md** - Understand UX requirements and user flows
+3. **Follow development/functional_architecture/DEVELOPMENT_TODO_LIST.md** - Primary development roadmap with sprint planning
 4. **Reference DESIGN_SYSTEM.md** - Implementation patterns and components
 5. **Use setup guides** - Technical configuration and deployment
 
@@ -150,8 +149,9 @@ People with dietary restrictions, medical conditions, or busy lifestyles experie
 
 ### **Document Owners**
 - **PROJECT_VISION.md**: Product strategy and mission alignment
-- **DEVELOPMENT_TODO.md**: Development team roadmap and sprint planning
-- **Design documents**: UX/UI team specifications and patterns
+- **development/functional_architecture/DEVELOPMENT_TODO_LIST.md**: Development team roadmap and sprint planning
+- **PRODUCT_DESIGN_BRIEF.md**: UX specifications and user flows
+- **DESIGN_SYSTEM.md**: UX/UI team specifications and patterns
 - **Setup guides**: DevOps and technical configuration
 
 ---
@@ -208,9 +208,8 @@ All planning documents are now aligned with our core mission and properly cross-
 | Document | Purpose | Status | Last Updated |
 |----------|---------|--------|--------------|
 | **PROJECT_VISION.md** | Strategic vision and mission alignment | ✅ Aligned | Current |
-| **DEVELOPMENT_TODO.md** | Primary development roadmap | ✅ Aligned | Current |
-| **IMMEDIATE_PRIORITIES.md** | Technical sprint specifications | ✅ Aligned | Current |
-| **recipejen_design_brief.md** | UX specifications and user flows | ✅ Aligned | Current |
+| **development/functional_architecture/DEVELOPMENT_TODO_LIST.md** | Primary development roadmap | ✅ Aligned | Current |
+| **PRODUCT_DESIGN_BRIEF.md** | UX specifications and user flows | ✅ Aligned | Current |
 | **DESIGN_SYSTEM.md** | Implementation patterns and components | ✅ Aligned | Current |
 | **Setup Guides** | Technical configuration | ✅ Aligned | Current |
 
@@ -240,13 +239,13 @@ All planning documents are now aligned with our core mission and properly cross-
 
 ### **For Product Strategy**
 1. **Start**: PROJECT_VISION.md - Understand mission and goals
-2. **Reference**: recipejen_design_brief.md - UX requirements
-3. **Plan**: DEVELOPMENT_TODO.md - Implementation roadmap
+2. **Reference**: PRODUCT_DESIGN_BRIEF.md - UX requirements
+3. **Plan**: development/functional_architecture/DEVELOPMENT_TODO_LIST.md - Implementation roadmap
 
 ### **For Development Work**
 1. **Context**: PROJECT_VISION.md - Mission alignment check
-2. **Requirements**: recipejen_design_brief.md - User experience specs
-3. **Roadmap**: DEVELOPMENT_TODO.md - Sprint planning and priorities
+2. **Requirements**: PRODUCT_DESIGN_BRIEF.md - User experience specs
+3. **Roadmap**: development/functional_architecture/DEVELOPMENT_TODO_LIST.md - Sprint planning and priorities
 4. **Implementation**: IMMEDIATE_PRIORITIES.md - Technical specifications
 5. **Design**: DESIGN_SYSTEM.md - Component patterns and styling
 

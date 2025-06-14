@@ -3,10 +3,13 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/Button'
+import { CalorieGoalInput } from './CalorieGoalInput'
+import { MacroTargetSliders } from './MacroTargetSliders'
+import { EnhancedSearchQuery, MacroTargets } from '@/types/dietary-preferences'
 
 interface SearchBarProps {
   placeholder?: string
-  onSearch?: (query: string) => void
+  onSearch?: (query: EnhancedSearchQuery) => void
   onFocus?: () => void
   onBlur?: () => void
   suggestions?: string[]
@@ -68,6 +71,9 @@ export function SearchBar({
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [activeCategory, setActiveCategory] = useState<CategoryKey | null>(null)
+  const [showAdvanced, setShowAdvanced] = useState(false)
+  const [calorieGoal, setCalorieGoal] = useState<number | undefined>()
+  const [macroTargets, setMacroTargets] = useState<MacroTargets | undefined>()
   const inputRef = useRef<HTMLInputElement>(null)
   const suggestionsRef = useRef<HTMLDivElement>(null)
 
@@ -110,7 +116,14 @@ export function SearchBar({
     
     setIsLoading(true)
     try {
-      await onSearch?.(query.trim())
+      const searchQuery: EnhancedSearchQuery = {
+        ingredients: [query.trim()],
+        calorieGoal,
+        macroTargets,
+        dietaryRestrictions: [], // TODO: Connect to diet preferences
+        avoidFoods: [] // TODO: Connect to diet preferences
+      }
+      await onSearch?.(searchQuery)
     } finally {
       setIsLoading(false)
     }
@@ -200,9 +213,48 @@ export function SearchBar({
           )}
           aria-label="Search recipes"
         >
-          {isLoading ? 'Searching...' : 'Search Recipes'}
+          {isLoading ? 'Searching...' : 'Find Safe Recipes'}
         </Button>
       </div>
+
+      {/* Advanced Search Toggle */}
+      <div className="mt-3 flex justify-center">
+        <button
+          onClick={() => setShowAdvanced(!showAdvanced)}
+          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors"
+        >
+          <span>Advanced Search (Calories & Macros)</span>
+          <svg 
+            className={cn("w-4 h-4 transition-transform", showAdvanced && "rotate-180")} 
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+      </div>
+
+      {/* Advanced Search Inputs */}
+      {showAdvanced && (
+        <div className={cn(
+          "mt-4 p-4 bg-white/95 backdrop-blur-md border border-white/30 rounded-2xl shadow-lg",
+          "animate-in fade-in slide-in-from-top-3 duration-300 ease-out"
+        )}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <CalorieGoalInput
+              value={calorieGoal}
+              onChange={setCalorieGoal}
+              className="w-full"
+            />
+            <MacroTargetSliders
+              value={macroTargets}
+              onChange={setMacroTargets}
+              className="w-full"
+            />
+          </div>
+        </div>
+      )}
 
       {/* Enhanced ingredient suggestions with categories */}
       {showSuggestions && (isFocused || query) && (
