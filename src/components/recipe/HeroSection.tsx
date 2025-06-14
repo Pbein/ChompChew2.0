@@ -4,9 +4,10 @@ import React, { useState } from 'react'
 import { cn } from '@/lib/utils'
 import { SearchBar } from './SearchBar'
 import { Button } from '@/components/ui/Button'
+import { EnhancedSearchQuery } from '@/types/dietary-preferences'
 
 interface HeroSectionProps {
-  onSearch?: (query: string) => void
+  onSearch?: (query: EnhancedSearchQuery) => void
   onDietQuickSet?: () => void
   className?: string
 }
@@ -47,13 +48,14 @@ export function HeroSection({
     onDietQuickSet?.()
   }
 
-  const handleSearch = async (query: string) => {
-    // Add selected diets to search context if any
-    const searchWithDiets = selectedDiets.length > 0 
-      ? `${query} (${selectedDiets.join(', ')})`
-      : query
+  const handleSearch = async (query: EnhancedSearchQuery) => {
+    // Add selected diets to the dietary restrictions if any
+    const enhancedQuery = {
+      ...query,
+      dietaryRestrictions: [...query.dietaryRestrictions, ...selectedDiets]
+    }
     
-    await onSearch?.(searchWithDiets)
+    await onSearch?.(enhancedQuery)
   }
 
   return (

@@ -271,7 +271,7 @@ export function isTriggerFood(
         if (lowerFoodName.includes(food.name.toLowerCase())) {
           return {
             isTrigger: true,
-            condition,
+            condition: condition.toString(),
             severity
           }
         }

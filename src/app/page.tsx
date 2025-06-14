@@ -3,18 +3,36 @@
 import { useRouter } from 'next/navigation'
 import { Header } from '@/components/layout/Header'
 import { HeroSection } from '@/components/recipe/HeroSection'
+import { EnhancedSearchQuery } from '@/types/dietary-preferences'
 
 export default function HomePage() {
   const router = useRouter()
 
-  const handleSearch = async (query: string) => {
+  const handleSearch = async (query: EnhancedSearchQuery) => {
     // TODO: Implement search functionality
     // This will redirect to search results or trigger recipe generation
-    console.log('Search query:', query)
+    console.log('Enhanced search query:', query)
     
-    // For now, we'll redirect to the generate page with the query
+    // For now, we'll redirect to the generate page with the serialized query
     // In a real implementation, this would call the search API
-    router.push(`/generate?q=${encodeURIComponent(query)}`)
+    const searchParams = new URLSearchParams()
+    if (query.ingredients.length > 0) {
+      searchParams.set('ingredients', query.ingredients.join(','))
+    }
+    if (query.calorieGoal) {
+      searchParams.set('calories', query.calorieGoal.toString())
+    }
+    if (query.macroTargets) {
+      searchParams.set('macros', JSON.stringify(query.macroTargets))
+    }
+    if (query.dietaryRestrictions.length > 0) {
+      searchParams.set('dietary', query.dietaryRestrictions.join(','))
+    }
+    if (query.avoidFoods.length > 0) {
+      searchParams.set('avoid', query.avoidFoods.join(','))
+    }
+    
+    router.push(`/generate?${searchParams.toString()}`)
   }
 
   const handleDietQuickSet = () => {
