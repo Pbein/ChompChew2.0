@@ -1,26 +1,264 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Light theme colors */
+  --background: #fefefe;
+  --foreground: #1a1a1a;
+  
+  /* Brand colors - Food-inspired palette */
+  --primary: #ff6b35;        /* Vibrant orange - energy, appetite */
+  --primary-foreground: #ffffff;
+  --secondary: #4a7c59;      /* Fresh green - healthy, natural */
+  --secondary-foreground: #ffffff;
+  --accent: #f4a261;         /* Warm yellow - comfort, warmth */
+  --accent-foreground: #1a1a1a;
+  
+  /* Status colors */
+  --success: #10b981;        /* Green - success, fresh */
+  --warning: #f59e0b;        /* Amber - caution */
+  --error: #ef4444;          /* Red - error, spicy */
+  --info: #3b82f6;           /* Blue - information */
+  
+  /* Neutral colors */
+  --muted: #f8fafc;          /* Very light gray */
+  --muted-foreground: #64748b;
+  --border: #e2e8f0;         /* Light gray borders */
+  --input: #ffffff;
+  --ring: #ff6b35;           /* Focus ring color */
+  
+  /* Card backgrounds */
+  --card: #ffffff;
+  --card-foreground: #1a1a1a;
+  --popover: #ffffff;
+  --popover-foreground: #1a1a1a;
+  
+  /* Food category colors */
+  --vegetarian: #22c55e;     /* Green */
+  --vegan: #16a34a;          /* Darker green */
+  --gluten-free: #8b5cf6;    /* Purple */
+  --dairy-free: #06b6d4;     /* Cyan */
+  --keto: #f97316;           /* Orange */
+  --paleo: #84cc16;          /* Lime */
+  
+  /* Difficulty colors */
+  --easy: #22c55e;           /* Green */
+  --medium: #f59e0b;         /* Amber */
+  --hard: #ef4444;           /* Red */
 }
 
 @theme inline {
+  /* Color system */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  
+  /* Status colors */
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error: var(--error);
+  --color-info: var(--info);
+  
+  /* Food category colors */
+  --color-vegetarian: var(--vegetarian);
+  --color-vegan: var(--vegan);
+  --color-gluten-free: var(--gluten-free);
+  --color-dairy-free: var(--dairy-free);
+  --color-keto: var(--keto);
+  --color-paleo: var(--paleo);
+  
+  /* Difficulty colors */
+  --color-easy: var(--easy);
+  --color-medium: var(--medium);
+  --color-hard: var(--hard);
+  
+  /* Typography */
+  --font-sans: var(--font-geist-sans), "Inter", system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), "Fira Code", monospace;
+  --font-display: "Playfair Display", Georgia, serif;
+  
+  /* Spacing scale */
+  --spacing-xs: 0.25rem;    /* 4px */
+  --spacing-sm: 0.5rem;     /* 8px */
+  --spacing-md: 1rem;       /* 16px */
+  --spacing-lg: 1.5rem;     /* 24px */
+  --spacing-xl: 2rem;       /* 32px */
+  --spacing-2xl: 3rem;      /* 48px */
+  --spacing-3xl: 4rem;      /* 64px */
+  
+  /* Border radius */
+  --radius-sm: 0.25rem;     /* 4px */
+  --radius-md: 0.5rem;      /* 8px */
+  --radius-lg: 0.75rem;     /* 12px */
+  --radius-xl: 1rem;        /* 16px */
+  --radius-2xl: 1.5rem;     /* 24px */
+  --radius-full: 9999px;    /* Full rounded */
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
+    /* Dark theme colors */
     --background: #0a0a0a;
-    --foreground: #ededed;
+    --foreground: #fafafa;
+    
+    /* Adjust brand colors for dark mode */
+    --primary: #ff7849;        /* Slightly lighter orange */
+    --secondary: #5a8a6b;      /* Slightly lighter green */
+    --accent: #f4a261;         /* Keep warm yellow */
+    
+    /* Dark neutral colors */
+    --muted: #1a1a1a;
+    --muted-foreground: #a1a1aa;
+    --border: #27272a;
+    --input: #1a1a1a;
+    
+    /* Dark card backgrounds */
+    --card: #0a0a0a;
+    --card-foreground: #fafafa;
+    --popover: #0a0a0a;
+    --popover-foreground: #fafafa;
   }
 }
 
+/* Base styles */
+* {
+  @apply border-border;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  @apply bg-background text-foreground font-sans antialiased;
+}
+
+/* Typography classes */
+.text-display {
+  font-family: var(--font-display);
+}
+
+/* Food category badges */
+.badge-vegetarian {
+  @apply bg-vegetarian/10 text-vegetarian border-vegetarian/20;
+}
+
+.badge-vegan {
+  @apply bg-vegan/10 text-vegan border-vegan/20;
+}
+
+.badge-gluten-free {
+  @apply bg-gluten-free/10 text-gluten-free border-gluten-free/20;
+}
+
+.badge-dairy-free {
+  @apply bg-dairy-free/10 text-dairy-free border-dairy-free/20;
+}
+
+.badge-keto {
+  @apply bg-keto/10 text-keto border-keto/20;
+}
+
+.badge-paleo {
+  @apply bg-paleo/10 text-paleo border-paleo/20;
+}
+
+/* Difficulty badges */
+.badge-easy {
+  @apply bg-easy/10 text-easy border-easy/20;
+}
+
+.badge-medium {
+  @apply bg-medium/10 text-medium border-medium/20;
+}
+
+.badge-hard {
+  @apply bg-hard/10 text-hard border-hard/20;
+}
+
+/* Recipe card hover effects */
+.recipe-card {
+  @apply bg-card border border-border rounded-lg transition-all duration-200 hover:shadow-md hover:scale-[1.02];
+}
+
+/* Button variants */
+.btn-primary {
+  @apply bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-2 focus:ring-primary focus:ring-offset-2;
+}
+
+.btn-secondary {
+  @apply bg-secondary text-secondary-foreground hover:bg-secondary/90 focus:ring-2 focus:ring-secondary focus:ring-offset-2;
+}
+
+.btn-accent {
+  @apply bg-accent text-accent-foreground hover:bg-accent/90 focus:ring-2 focus:ring-accent focus:ring-offset-2;
+}
+
+/* Form inputs */
+.input-field {
+  @apply bg-input border border-border rounded-md px-3 py-2 text-sm ring-offset-background focus:ring-2 focus:ring-ring focus:border-transparent;
+}
+
+/* Loading animations */
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Scrollbar styling */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: var(--border);
+  border-radius: 3px;
+}
+
+/* Custom utilities for food app */
+.gradient-appetizing {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+}
+
+.gradient-fresh {
+  background: linear-gradient(135deg, var(--secondary) 0%, var(--success) 100%);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }

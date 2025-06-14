@@ -13,7 +13,7 @@
 ### Project Foundation
 - [x] Initialize database schema in Supabase
 - [x] Set up NextAuth.js configuration
-- [ ] Configure Tailwind CSS and design system
+- [x] Configure Tailwind CSS and design system
 - [ ] Set up ESLint and Prettier configuration
 - [x] Create basic folder structure in src/
 - [x] Set up TypeScript types and interfaces
