@@ -1,94 +1,59 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   /* Light theme colors */
-  --background: #fefefe;
-  --foreground: #1a1a1a;
+  --background: 0 0% 99%;
+  --foreground: 0 0% 10%;
   
   /* Brand colors - Food-inspired palette */
-  --primary: #ff6b35;        /* Vibrant orange - energy, appetite */
-  --primary-foreground: #ffffff;
-  --secondary: #4a7c59;      /* Fresh green - healthy, natural */
-  --secondary-foreground: #ffffff;
-  --accent: #f4a261;         /* Warm yellow - comfort, warmth */
-  --accent-foreground: #1a1a1a;
+  --primary: 14 100% 60%;        /* Vibrant orange - energy, appetite */
+  --primary-foreground: 0 0% 100%;
+  --secondary: 140 30% 40%;      /* Fresh green - healthy, natural */
+  --secondary-foreground: 0 0% 100%;
+  --accent: 36 83% 67%;         /* Warm yellow - comfort, warmth */
+  --accent-foreground: 0 0% 10%;
   
   /* Hero gradient - warm to cool transition */
-  --hero-gradient-start: #ff6b35;
-  --hero-gradient-end: #4a7c59;
+  --hero-gradient-start: 14 100% 60%;
+  --hero-gradient-end: 140 30% 40%;
   
   /* Status colors */
-  --success: #10b981;        /* Green - success, fresh */
-  --warning: #f59e0b;        /* Amber - caution */
-  --error: #ef4444;          /* Red - error, spicy */
-  --info: #3b82f6;           /* Blue - information */
+  --success: 142 76% 36%;        /* Green - success, fresh */
+  --warning: 38 92% 50%;        /* Amber - caution */
+  --error: 0 84% 60%;          /* Red - error, spicy */
+  --info: 221 83% 53%;           /* Blue - information */
   
   /* Neutral colors */
-  --muted: #f8fafc;          /* Very light gray */
-  --muted-foreground: #64748b;
-  --border: #e2e8f0;         /* Light gray borders */
-  --input: #ffffff;
-  --ring: #ff6b35;           /* Focus ring color */
+  --muted: 210 40% 98%;          /* Very light gray */
+  --muted-foreground: 215 16% 47%;
+  --border: 214 32% 91%;         /* Light gray borders */
+  --input: 0 0% 100%;
+  --ring: 14 100% 60%;           /* Focus ring color */
   
   /* Card backgrounds */
-  --card: #ffffff;
-  --card-foreground: #1a1a1a;
-  --popover: #ffffff;
-  --popover-foreground: #1a1a1a;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 10%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 10%;
   
   /* Food category colors */
-  --vegetarian: #22c55e;     /* Green */
-  --vegan: #16a34a;          /* Darker green */
-  --gluten-free: #8b5cf6;    /* Purple */
-  --dairy-free: #06b6d4;     /* Cyan */
-  --keto: #f97316;           /* Orange */
-  --paleo: #84cc16;          /* Lime */
+  --vegetarian: 142 71% 45%;     /* Green */
+  --vegan: 142 76% 36%;          /* Darker green */
+  --gluten-free: 258 90% 66%;    /* Purple */
+  --dairy-free: 188 95% 43%;     /* Cyan */
+  --keto: 24 95% 53%;           /* Orange */
+  --paleo: 84 81% 44%;          /* Lime */
   
   /* Difficulty colors */
-  --easy: #22c55e;           /* Green */
-  --medium: #f59e0b;         /* Amber */
-  --hard: #ef4444;           /* Red */
+  --easy: 142 71% 45%;           /* Green */
+  --medium: 38 92% 50%;         /* Amber */
+  --hard: 0 84% 60%;           /* Red */
 }
 
-@theme inline {
-  /* Color system */
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  
-  /* Status colors */
-  --color-success: var(--success);
-  --color-warning: var(--warning);
-  --color-error: var(--error);
-  --color-info: var(--info);
-  
-  /* Food category colors */
-  --color-vegetarian: var(--vegetarian);
-  --color-vegan: var(--vegan);
-  --color-gluten-free: var(--gluten-free);
-  --color-dairy-free: var(--dairy-free);
-  --color-keto: var(--keto);
-  --color-paleo: var(--paleo);
-  
-  /* Difficulty colors */
-  --color-easy: var(--easy);
-  --color-medium: var(--medium);
-  --color-hard: var(--hard);
-  
+/* Additional CSS variables for custom utilities */
+:root {
   /* Typography */
   --font-sans: var(--font-geist-sans), "Inter", system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), "Fira Code", monospace;
@@ -121,25 +86,25 @@
 @media (prefers-color-scheme: dark) {
   :root {
     /* Dark theme colors */
-    --background: #0a0a0a;
-    --foreground: #fafafa;
+    --background: 0 0% 4%;
+    --foreground: 0 0% 98%;
     
     /* Adjust brand colors for dark mode */
-    --primary: #ff7849;        /* Slightly lighter orange */
-    --secondary: #5a8a6b;      /* Slightly lighter green */
-    --accent: #f4a261;         /* Keep warm yellow */
+    --primary: 14 100% 65%;        /* Slightly lighter orange */
+    --secondary: 140 35% 45%;      /* Slightly lighter green */
+    --accent: 36 83% 67%;         /* Keep warm yellow */
     
     /* Dark neutral colors */
-    --muted: #1a1a1a;
-    --muted-foreground: #a1a1aa;
-    --border: #27272a;
-    --input: #1a1a1a;
+    --muted: 0 0% 10%;
+    --muted-foreground: 0 0% 63%;
+    --border: 0 0% 15%;
+    --input: 0 0% 10%;
     
     /* Dark card backgrounds */
-    --card: #0a0a0a;
-    --card-foreground: #fafafa;
-    --popover: #0a0a0a;
-    --popover-foreground: #fafafa;
+    --card: 0 0% 4%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 4%;
+    --popover-foreground: 0 0% 98%;
   }
 }
 
