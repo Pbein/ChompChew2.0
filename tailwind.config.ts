@@ -105,6 +105,12 @@ const config: Config = {
         'fade-in': 'fadeIn 0.5s ease-in-out',
         'slide-up': 'slideUp 0.3s ease-out',
         'scale-in': 'scaleIn 0.2s ease-out',
+        'slide-up-modal': 'slideUpModal 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+        'scale-in-modal': 'scaleInModal 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+        'swipe-left': 'swipeLeft 0.3s ease-out forwards',
+        'swipe-right': 'swipeRight 0.3s ease-out forwards',
+        'heart-beat': 'heartBeat 0.6s ease-in-out',
+        'timer-pulse': 'timerPulse 1s infinite',
       },
       keyframes: {
         fadeIn: {
@@ -119,10 +125,37 @@ const config: Config = {
           '0%': { transform: 'scale(0.95)', opacity: '0' },
           '100%': { transform: 'scale(1)', opacity: '1' },
         },
+        slideUpModal: {
+          '0%': { transform: 'translateY(100%)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+        scaleInModal: {
+          '0%': { transform: 'scale(0.8)', opacity: '0' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
+        },
+        swipeLeft: {
+          '0%': { transform: 'translateX(0) rotate(0deg)', opacity: '1' },
+          '100%': { transform: 'translateX(-100vw) rotate(-30deg)', opacity: '0' },
+        },
+        swipeRight: {
+          '0%': { transform: 'translateX(0) rotate(0deg)', opacity: '1' },
+          '100%': { transform: 'translateX(100vw) rotate(30deg)', opacity: '0' },
+        },
+        heartBeat: {
+          '0%': { transform: 'scale(1)' },
+          '25%': { transform: 'scale(1.3)' },
+          '50%': { transform: 'scale(1.1)' },
+          '100%': { transform: 'scale(1)' },
+        },
+        timerPulse: {
+          '0%, 100%': { transform: 'scale(1)', opacity: '1' },
+          '50%': { transform: 'scale(1.05)', opacity: '0.8' },
+        },
       },
       backgroundImage: {
         'gradient-appetizing': 'linear-gradient(135deg, var(--primary), var(--accent))',
         'gradient-fresh': 'linear-gradient(135deg, var(--secondary), var(--success))',
+        'gradient-hero': 'linear-gradient(135deg, var(--hero-gradient-start), var(--hero-gradient-end))',
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
@@ -137,6 +170,17 @@ const config: Config = {
       aspectRatio: {
         'recipe': '4 / 3',
         'video': '16 / 9',
+        'hero': '16 / 9',
+      },
+      backdropBlur: {
+        'focus': '8px',
+      },
+      minHeight: {
+        'hero': '70vh',
+        'touch': '44px',
+      },
+      minWidth: {
+        'touch': '44px',
       },
     },
   },

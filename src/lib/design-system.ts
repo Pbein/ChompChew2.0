@@ -175,7 +175,7 @@ export const ds = {
 export const componentClasses = {
   // Button variants
   button: {
-    base: 'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+    base: 'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 touch-target',
     
     variants: {
       primary: 'btn-primary',
@@ -184,13 +184,16 @@ export const componentClasses = {
       outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
       ghost: 'hover:bg-accent hover:text-accent-foreground',
       link: 'text-primary underline-offset-4 hover:underline',
+      cta: 'btn-primary text-lg px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all',
     },
     
     sizes: {
       sm: 'h-9 rounded-md px-3',
       md: 'h-10 px-4 py-2',
       lg: 'h-11 rounded-md px-8',
+      xl: 'h-14 px-10 text-lg',
       icon: 'h-10 w-10',
+      'icon-lg': 'h-12 w-12',
     }
   },
   
@@ -261,6 +264,108 @@ export const componentClasses = {
     fadeIn: 'animate-in fade-in duration-500',
     slideIn: 'animate-in slide-in-from-bottom-4 duration-500',
     pulse: 'animate-pulse-slow',
+    slideUpModal: 'animate-slide-up-modal',
+    scaleInModal: 'animate-scale-in-modal',
+    swipeLeft: 'animate-swipe-left',
+    swipeRight: 'animate-swipe-right',
+    heartBeat: 'animate-heart-beat',
+    timerPulse: 'animate-timer-pulse',
+  },
+
+  // Hero section
+  hero: {
+    section: 'hero-section gradient-hero',
+    title: 'font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white text-center mb-6',
+    subtitle: 'text-lg md:text-xl text-white/90 text-center mb-8 max-w-2xl mx-auto',
+    searchContainer: 'w-full max-w-2xl mx-auto',
+  },
+
+  // Search components
+  search: {
+    bar: 'search-bar w-full',
+    input: 'w-full bg-transparent border-none outline-none text-lg placeholder:text-muted-foreground',
+    button: 'btn-primary px-6 py-3 rounded-lg ml-4 whitespace-nowrap',
+    expanded: 'search-bar-expanded',
+    suggestions: 'absolute top-full left-0 right-0 bg-white border border-border rounded-lg shadow-lg mt-2 max-h-60 overflow-y-auto z-50',
+    suggestionItem: 'px-4 py-3 hover:bg-muted cursor-pointer border-b border-border last:border-b-0',
+  },
+
+  // Modal components
+  modal: {
+    overlay: 'fixed inset-0 modal-overlay z-50 flex items-center justify-center p-4',
+    container: 'modal-container w-full max-w-2xl max-h-[90vh] overflow-y-auto',
+    mobileContainer: 'modal-container modal-slide-up w-full max-w-2xl',
+    desktopContainer: 'modal-container modal-scale-in w-full max-w-2xl',
+    header: 'flex items-center justify-between p-6 border-b border-border',
+    title: 'text-xl font-semibold',
+    closeButton: 'p-2 hover:bg-muted rounded-lg transition-colors',
+    content: 'p-6',
+    footer: 'flex items-center justify-end gap-3 p-6 border-t border-border',
+  },
+
+  // Card deck components
+  cardDeck: {
+    container: 'card-deck relative w-full max-w-sm mx-auto',
+    card: 'recipe-card-deck w-full',
+    stack: 'recipe-card-stack',
+    actions: 'flex items-center justify-center gap-4 mt-6',
+    actionButton: 'w-16 h-16 rounded-full flex items-center justify-center transition-all hover:scale-110',
+    skipButton: 'bg-muted text-muted-foreground hover:bg-muted/80',
+    saveButton: 'bg-primary text-primary-foreground hover:bg-primary/90',
+    detailsButton: 'bg-secondary text-secondary-foreground hover:bg-secondary/90',
+  },
+
+  // Recipe card components
+  recipeCard: {
+    base: 'recipe-card overflow-hidden',
+    image: 'w-full aspect-recipe object-cover',
+    content: 'p-6',
+    title: 'font-semibold text-xl mb-2 line-clamp-2',
+    description: 'text-muted-foreground text-sm mb-4 line-clamp-3',
+    metadata: 'flex items-center gap-4 text-sm text-muted-foreground mb-3',
+    metadataItem: 'flex items-center gap-1',
+    badges: 'flex flex-wrap gap-2 mb-3',
+    actions: 'flex items-center justify-between',
+  },
+
+  // Diet and allergen components
+  diet: {
+    templateCard: 'diet-template-card',
+    templateSelected: 'selected',
+    chipRemovable: 'chip-removable bg-primary/10 text-primary border border-primary/20',
+    chipRemoveButton: 'chip-remove-btn',
+    allergenToggle: 'allergen-toggle',
+    allergenActive: 'active',
+  },
+
+  // Cooking mode components
+  cooking: {
+    step: 'cooking-step',
+    stepActive: 'active',
+    stepCompleted: 'completed',
+    timer: 'timer-display',
+    timerAlert: 'timer-alert',
+    progressBar: 'progress-bar h-2',
+    progressFill: 'progress-fill',
+  },
+
+  // Loading states
+  loading: {
+    spinner: 'spinner w-6 h-6',
+    spinnerLarge: 'spinner w-8 h-8',
+    skeleton: 'skeleton',
+    skeletonText: 'skeleton-text',
+    skeletonTitle: 'skeleton-title',
+    skeletonImage: 'skeleton-image',
+  },
+
+  // Utility classes
+  utilities: {
+    touchTarget: 'touch-target',
+    backdropBlur: 'backdrop-blur-focus',
+    printHide: 'no-print',
+    printOptimize: 'print-optimize',
+    heartSave: 'heart-save',
   }
 }
 

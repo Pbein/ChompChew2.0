@@ -13,6 +13,10 @@
   --accent: #f4a261;         /* Warm yellow - comfort, warmth */
   --accent-foreground: #1a1a1a;
   
+  /* Hero gradient - warm to cool transition */
+  --hero-gradient-start: #ff6b35;
+  --hero-gradient-end: #4a7c59;
+  
   /* Status colors */
   --success: #10b981;        /* Green - success, fresh */
   --warning: #f59e0b;        /* Amber - caution */
@@ -256,9 +260,278 @@ body {
   background: linear-gradient(135deg, var(--secondary) 0%, var(--success) 100%);
 }
 
+.gradient-hero {
+  background: linear-gradient(135deg, var(--hero-gradient-start) 0%, var(--hero-gradient-end) 100%);
+}
+
 .text-gradient {
   background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+/* Hero section specific styles */
+.hero-section {
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Search bar enhancements */
+.search-bar {
+  @apply bg-white border border-border rounded-xl shadow-lg px-6 py-4 transition-all duration-300;
+}
+
+.search-bar:focus-within {
+  @apply scale-105 shadow-xl ring-2 ring-primary ring-offset-2;
+}
+
+.search-bar-expanded {
+  @apply scale-105 shadow-xl;
+}
+
+/* Modal styles */
+.modal-overlay {
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+}
+
+.modal-container {
+  @apply bg-card border border-border rounded-2xl shadow-2xl;
+}
+
+.modal-slide-up {
+  animation: slideUpModal 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-scale-in {
+  animation: scaleInModal 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes slideUpModal {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes scaleInModal {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Card deck styles */
+.card-deck {
+  perspective: 1000px;
+  position: relative;
+}
+
+.recipe-card-deck {
+  @apply recipe-card transform-gpu transition-all duration-300;
+  transform-style: preserve-3d;
+}
+
+.recipe-card-deck:hover {
+  @apply shadow-recipe-hover scale-105;
+}
+
+.recipe-card-stack {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.recipe-card-stack:nth-child(2) {
+  transform: translateY(8px) scale(0.98);
+  z-index: -1;
+}
+
+.recipe-card-stack:nth-child(3) {
+  transform: translateY(16px) scale(0.96);
+  z-index: -2;
+}
+
+/* Swipe animations */
+.swipe-left {
+  animation: swipeLeft 0.3s ease-out forwards;
+}
+
+.swipe-right {
+  animation: swipeRight 0.3s ease-out forwards;
+}
+
+@keyframes swipeLeft {
+  0% {
+    transform: translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-100vw) rotate(-30deg);
+    opacity: 0;
+  }
+}
+
+@keyframes swipeRight {
+  0% {
+    transform: translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100vw) rotate(30deg);
+    opacity: 0;
+  }
+}
+
+/* Heart animation for save action */
+.heart-save {
+  animation: heartBeat 0.6s ease-in-out;
+}
+
+@keyframes heartBeat {
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.3);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Loading spinner */
+.spinner {
+  @apply animate-spin rounded-full border-2 border-muted border-t-primary;
+}
+
+/* Progress indicators */
+.progress-bar {
+  @apply bg-muted rounded-full overflow-hidden;
+}
+
+.progress-fill {
+  @apply bg-primary h-full transition-all duration-300 ease-out;
+}
+
+/* Skeleton loading */
+.skeleton {
+  @apply bg-muted animate-pulse rounded;
+}
+
+.skeleton-text {
+  @apply skeleton h-4 mb-2;
+}
+
+.skeleton-title {
+  @apply skeleton h-6 mb-4;
+}
+
+.skeleton-image {
+  @apply skeleton aspect-recipe w-full;
+}
+
+/* Touch-optimized elements */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Background blur effect */
+.backdrop-blur-focus {
+  backdrop-filter: blur(8px);
+}
+
+/* Chip/badge removable styles */
+.chip-removable {
+  @apply inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium transition-all;
+}
+
+.chip-remove-btn {
+  @apply w-4 h-4 rounded-full bg-current opacity-60 hover:opacity-100 transition-opacity cursor-pointer;
+}
+
+/* Diet template cards */
+.diet-template-card {
+  @apply p-4 border border-border rounded-lg cursor-pointer transition-all hover:shadow-md hover:scale-105;
+}
+
+.diet-template-card.selected {
+  @apply border-primary bg-primary/5 shadow-md;
+}
+
+/* Allergen toggle buttons */
+.allergen-toggle {
+  @apply px-4 py-2 border border-border rounded-lg cursor-pointer transition-all;
+}
+
+.allergen-toggle.active {
+  @apply bg-error text-white border-error;
+}
+
+.allergen-toggle:hover:not(.active) {
+  @apply bg-muted;
+}
+
+/* Step highlighting for cooking mode */
+.cooking-step {
+  @apply p-4 border border-border rounded-lg transition-all;
+}
+
+.cooking-step.active {
+  @apply border-primary bg-primary/5 shadow-md;
+}
+
+.cooking-step.completed {
+  @apply border-success bg-success/5 opacity-60;
+}
+
+/* Timer integration styles */
+.timer-display {
+  @apply bg-accent text-accent-foreground px-4 py-2 rounded-full font-mono font-bold;
+}
+
+.timer-alert {
+  animation: timerPulse 1s infinite;
+}
+
+@keyframes timerPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+}
+
+/* Print optimization */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .print-optimize {
+    @apply text-black bg-white;
+  }
+  
+  .recipe-card {
+    @apply shadow-none border border-gray-300;
+  }
 }

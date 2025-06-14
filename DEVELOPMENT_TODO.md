@@ -4,7 +4,7 @@
 
 ### Environment Setup
 - [x] Set up Supabase project and obtain API keys
-- [ ] Configure OpenAI API access and obtain API key
+- [x] Configure OpenAI API access and obtain API key
 - [x] Set up Upstash Redis instance
 - [ ] Configure Resend for email services
 - [ ] Set up Vercel deployment pipeline

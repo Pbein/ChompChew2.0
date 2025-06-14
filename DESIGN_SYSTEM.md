@@ -1,6 +1,6 @@
 # 🎨 ChompChew Design System
 
-Welcome to the ChompChew Design System - a comprehensive visual language designed specifically for our AI-powered recipe discovery platform.
+Welcome to the ChompChew Design System - a comprehensive visual language designed specifically for our AI-powered recipe discovery platform. This system implements the complete functional specifications from our design brief, including hero sections, card decks, modals, and interactive cooking experiences.
 
 ## 🌈 Color Palette
 
@@ -71,12 +71,74 @@ xl:   20px (1.25rem)
 
 ## 🏗️ Components
 
+### Hero Section
+
+The hero section spans 70vh with a warm-to-cool gradient background and centered content layout:
+
+```jsx
+<section className={componentClasses.hero.section}>
+  <div className="container mx-auto px-4 text-center">
+    <h1 className={componentClasses.hero.title}>
+      Discover recipes made for you
+    </h1>
+    <p className={componentClasses.hero.subtitle}>
+      AI-powered recipe discovery tailored to your dietary needs and preferences
+    </p>
+    <div className={componentClasses.hero.searchContainer}>
+      <SearchBar />
+    </div>
+  </div>
+</section>
+```
+
+### Search Components
+
+#### Hero Search Bar
+```jsx
+<div className={componentClasses.search.bar}>
+  <input 
+    className={componentClasses.search.input}
+    placeholder="What ingredients do you have?"
+  />
+  <button className={componentClasses.search.button}>
+    Search Recipes
+  </button>
+</div>
+```
+
+#### Search with Suggestions
+```jsx
+<div className="relative">
+  <div className={componentClasses.search.bar}>
+    <input className={componentClasses.search.input} />
+  </div>
+  <div className={componentClasses.search.suggestions}>
+    <div className={componentClasses.search.suggestionItem}>
+      Chicken breast
+    </div>
+    <div className={componentClasses.search.suggestionItem}>
+      Broccoli
+    </div>
+  </div>
+</div>
+```
+
 ### Buttons
 
 #### Primary Button
 ```jsx
 <button className="btn-primary px-4 py-2 rounded-md">
   Generate Recipe
+</button>
+```
+
+#### CTA Button (Large)
+```jsx
+<button className={cn(
+  componentClasses.button.base,
+  componentClasses.button.variants.cta
+)}>
+  Start Cooking Now
 </button>
 ```
 
@@ -87,29 +149,127 @@ xl:   20px (1.25rem)
 </button>
 ```
 
-#### Accent Button
+#### Touch-Optimized Action Button
 ```jsx
-<button className="btn-accent px-4 py-2 rounded-md">
-  Start Cooking
+<button className={cn(
+  componentClasses.cardDeck.actionButton,
+  componentClasses.cardDeck.saveButton
+)}>
+  ❤️
 </button>
+```
+
+### Modals
+
+#### Diet Configuration Modal
+```jsx
+<div className={componentClasses.modal.overlay}>
+  <div className={componentClasses.modal.desktopContainer}>
+    <div className={componentClasses.modal.header}>
+      <h2 className={componentClasses.modal.title}>Customize Your Diet</h2>
+      <button className={componentClasses.modal.closeButton}>×</button>
+    </div>
+    <div className={componentClasses.modal.content}>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h3 className="font-semibold mb-4">Include</h3>
+          <div className="space-y-3">
+            <div className={componentClasses.diet.templateCard}>
+              Mediterranean Diet
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3 className="font-semibold mb-4">Avoid</h3>
+          <div className="grid grid-cols-2 gap-2">
+            <button className={cn(
+              componentClasses.diet.allergenToggle,
+              componentClasses.diet.allergenActive
+            )}>
+              Nuts
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+```
+
+### Card Deck Interface
+
+#### Recipe Card Deck (Swipeable)
+```jsx
+<div className={componentClasses.cardDeck.container}>
+  <div className={componentClasses.cardDeck.card}>
+    <img src="recipe.jpg" alt="Recipe" className={componentClasses.recipeCard.image} />
+    <div className={componentClasses.recipeCard.content}>
+      <h3 className={componentClasses.recipeCard.title}>Delicious Pasta</h3>
+      <div className={componentClasses.recipeCard.metadata}>
+        <span className={componentClasses.recipeCard.metadataItem}>
+          🕒 30 min
+        </span>
+        <span className={componentClasses.recipeCard.metadataItem}>
+          👨‍🍳 Easy
+        </span>
+      </div>
+      <div className={componentClasses.recipeCard.badges}>
+        <span className="badge-vegetarian">Vegetarian</span>
+      </div>
+      <p className={componentClasses.recipeCard.description}>
+        A mouth-watering pasta dish with fresh ingredients...
+      </p>
+    </div>
+  </div>
+  
+  <div className={componentClasses.cardDeck.actions}>
+    <button className={cn(
+      componentClasses.cardDeck.actionButton,
+      componentClasses.cardDeck.skipButton
+    )}>
+      ⏭️
+    </button>
+    <button className={cn(
+      componentClasses.cardDeck.actionButton,
+      componentClasses.cardDeck.saveButton,
+      componentClasses.utilities.heartSave
+    )}>
+      ❤️
+    </button>
+    <button className={cn(
+      componentClasses.cardDeck.actionButton,
+      componentClasses.cardDeck.detailsButton
+    )}>
+      👁️
+    </button>
+  </div>
+</div>
 ```
 
 ### Cards
 
-#### Recipe Card
+#### Standard Recipe Card
 ```jsx
-<div className="recipe-card p-6">
-  <img src="recipe.jpg" alt="Recipe" className="w-full aspect-recipe object-cover rounded-lg mb-4" />
-  <h3 className="font-semibold text-lg mb-2">Delicious Recipe</h3>
-  <p className="text-muted-foreground text-sm">A mouth-watering dish...</p>
-</div>
-```
-
-#### Elevated Card
-```jsx
-<div className="card-base card-elevated p-6">
-  <h3 className="font-semibold mb-4">Featured Content</h3>
-  <p>Important information goes here...</p>
+<div className={componentClasses.recipeCard.base}>
+  <img src="recipe.jpg" alt="Recipe" className={componentClasses.recipeCard.image} />
+  <div className={componentClasses.recipeCard.content}>
+    <h3 className={componentClasses.recipeCard.title}>Delicious Recipe</h3>
+    <div className={componentClasses.recipeCard.metadata}>
+      <span className={componentClasses.recipeCard.metadataItem}>
+        🕒 25 min
+      </span>
+      <span className={componentClasses.recipeCard.metadataItem}>
+        👨‍🍳 Medium
+      </span>
+    </div>
+    <div className={componentClasses.recipeCard.badges}>
+      <span className="badge-vegetarian">Vegetarian</span>
+      <span className="badge-gluten-free">Gluten-Free</span>
+    </div>
+    <p className={componentClasses.recipeCard.description}>
+      A mouth-watering dish with fresh ingredients...
+    </p>
+  </div>
 </div>
 ```
 
@@ -193,33 +353,128 @@ xl:   20px (1.25rem)
 </div>
 ```
 
+### Cooking Mode Components
+
+#### Interactive Cooking Steps
+```jsx
+<div className="space-y-4">
+  <div className={cn(
+    componentClasses.cooking.step,
+    componentClasses.cooking.stepCompleted
+  )}>
+    <div className="flex items-center gap-3">
+      <span className="w-8 h-8 bg-success text-white rounded-full flex items-center justify-center text-sm font-bold">
+        ✓
+      </span>
+      <p>Heat oil in a large pan over medium heat.</p>
+    </div>
+  </div>
+  
+  <div className={cn(
+    componentClasses.cooking.step,
+    componentClasses.cooking.stepActive
+  )}>
+    <div className="flex items-center gap-3">
+      <span className="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">
+        2
+      </span>
+      <p>Add garlic and cook for 1 minute until fragrant.</p>
+      <div className={cn(
+        componentClasses.cooking.timer,
+        componentClasses.cooking.timerAlert
+      )}>
+        0:45
+      </div>
+    </div>
+  </div>
+</div>
+```
+
+#### Progress Indicator
+```jsx
+<div className={componentClasses.cooking.progressBar}>
+  <div 
+    className={componentClasses.cooking.progressFill}
+    style={{ width: '60%' }}
+  />
+</div>
+```
+
+### Loading States
+
+#### Skeleton Loading
+```jsx
+<div className="space-y-4">
+  <div className={componentClasses.loading.skeletonImage} />
+  <div className={componentClasses.loading.skeletonTitle} />
+  <div className={componentClasses.loading.skeletonText} />
+  <div className={componentClasses.loading.skeletonText} />
+</div>
+```
+
+#### Loading Spinner
+```jsx
+<div className="flex items-center gap-3">
+  <div className={componentClasses.loading.spinner} />
+  <span>Finding recipes...</span>
+</div>
+```
+
 ## ✨ Animations
 
-### Fade In
+### Modal Animations
 ```jsx
-<div className="animate-fade-in">
-  Content that fades in smoothly
+// Mobile modal (slides up from bottom)
+<div className={componentClasses.modal.mobileContainer}>
+  Modal content
+</div>
+
+// Desktop modal (scales in from center)
+<div className={componentClasses.modal.desktopContainer}>
+  Modal content
 </div>
 ```
 
-### Slide Up
+### Card Swipe Animations
 ```jsx
-<div className="animate-slide-up">
-  Content that slides up from bottom
+// Swipe left (reject)
+<div className={componentClasses.animation.swipeLeft}>
+  Recipe card
+</div>
+
+// Swipe right (save)
+<div className={componentClasses.animation.swipeRight}>
+  Recipe card
 </div>
 ```
 
-### Scale In
+### Heart Save Animation
 ```jsx
-<div className="animate-scale-in">
-  Content that scales in
+<button 
+  className={componentClasses.utilities.heartSave}
+  onClick={() => saveRecipe()}
+>
+  ❤️ Save Recipe
+</button>
+```
+
+### Search Bar Focus Animation
+```jsx
+<div className={cn(
+  componentClasses.search.bar,
+  isFocused && componentClasses.search.expanded
+)}>
+  <input className={componentClasses.search.input} />
 </div>
 ```
 
-### Slow Pulse (for loading states)
+### Timer Pulse Animation
 ```jsx
-<div className="animate-pulse-slow">
-  Loading placeholder
+<div className={cn(
+  componentClasses.cooking.timer,
+  isUrgent && componentClasses.cooking.timerAlert
+)}>
+  0:30
 </div>
 ```
 
@@ -267,40 +522,124 @@ Our design system automatically supports dark mode through CSS variables:
 </div>
 ```
 
-## 🎯 Best Practices
+## 🎯 Design Brief Implementation
 
-### 1. Consistent Spacing
-Use our spacing scale consistently:
-- `space-xs` (4px) for tight spacing
-- `space-sm` (8px) for small gaps
-- `space-md` (16px) for default spacing
-- `space-lg` (24px) for section spacing
-- `space-xl` (32px) for large gaps
+### Performance Requirements
+- **Skeleton loading** appears under 200ms to maintain layout continuity
+- **Physics-based animations** using spring animations for natural feel
+- **Touch-optimized elements** with minimum 44px touch targets
+- **Progressive loading** with WebP/AVIF image optimization
 
-### 2. Color Usage
-- Use primary orange for main actions and CTAs
-- Use secondary green for success states and healthy content
-- Use accent yellow for highlights and warmth
-- Use dietary colors consistently for recipe categorization
+### Interaction Patterns
 
-### 3. Typography Hierarchy
-- Use display font for main headings and branding
-- Use sans-serif for body text and UI elements
-- Use monospace for code and technical content
-
-### 4. Interactive States
-Always provide hover and focus states:
+#### Search Focus Behavior
 ```jsx
-<button className="bg-primary hover:bg-primary/90 focus:ring-2 focus:ring-primary">
-  Interactive button
+const [isFocused, setIsFocused] = useState(false)
+
+<div className={cn(
+  componentClasses.search.bar,
+  isFocused && componentClasses.search.expanded,
+  isFocused && componentClasses.utilities.backdropBlur
+)}>
+  <input 
+    onFocus={() => setIsFocused(true)}
+    onBlur={() => setIsFocused(false)}
+  />
+</div>
+```
+
+#### Card Deck Swipe Gestures
+```jsx
+const handleSwipe = (direction) => {
+  if (direction === 'left') {
+    cardRef.current.className += ` ${componentClasses.animation.swipeLeft}`
+  } else {
+    cardRef.current.className += ` ${componentClasses.animation.swipeRight}`
+  }
+}
+```
+
+#### Modal Responsive Behavior
+```jsx
+const isMobile = useMediaQuery('(max-width: 768px)')
+
+<div className={
+  isMobile 
+    ? componentClasses.modal.mobileContainer 
+    : componentClasses.modal.desktopContainer
+}>
+  Modal content
+</div>
+```
+
+### Accessibility Standards (WCAG 2.2 AA)
+
+#### Touch Targets
+All interactive elements use the `touch-target` class ensuring minimum 44px size:
+```jsx
+<button className={cn(
+  componentClasses.button.base,
+  componentClasses.utilities.touchTarget
+)}>
+  Accessible Button
 </button>
 ```
 
-### 5. Accessibility
-- Maintain proper color contrast ratios
-- Use semantic HTML elements
-- Provide focus indicators
-- Include alt text for images
+#### Focus Management
+```jsx
+<div className="focus:ring-2 focus:ring-primary focus:ring-offset-2">
+  Focusable element
+</div>
+```
+
+#### Screen Reader Support
+```jsx
+<button aria-label="Save recipe to favorites">
+  ❤️
+</button>
+```
+
+### Print Optimization
+```jsx
+<div className={componentClasses.utilities.printOptimize}>
+  <div className={componentClasses.utilities.printHide}>
+    <button>Share Recipe</button>
+  </div>
+  <div className="recipe-content">
+    Recipe details that will print nicely
+  </div>
+</div>
+```
+
+## 🎯 Best Practices
+
+### 1. Touch-First Design
+- All interactive elements meet 44px minimum touch target
+- Generous padding on search bars and buttons
+- Swipe gestures with clear visual affordances
+
+### 2. Performance Optimization
+- Skeleton loading states maintain spatial context
+- CSS transforms for smooth animations
+- Backdrop blur effects for focus states
+- Progressive image loading
+
+### 3. Responsive Behavior
+- Mobile-first approach with progressive enhancement
+- Different modal animations for mobile vs desktop
+- Adaptive card layouts for different screen sizes
+
+### 4. Animation Philosophy
+- Physics-based transitions using cubic-bezier curves
+- Micro-interactions provide immediate feedback
+- Loading states that maintain context
+- Spring animations for natural feel
+
+### 5. Accessibility First
+- High contrast ratios for all text
+- Keyboard navigation for all interactions
+- Screen reader labels for complex components
+- Focus management for modal interactions
 
 ## 🛠️ Design System Usage
 
