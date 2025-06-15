@@ -123,7 +123,7 @@ const sampleRecipes: RecipeCardData[] = [
   {
     id: '550e8400-e29b-41d4-a716-446655440009',
     title: 'Black Bean Tacos',
-    image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=400&h=300&fit=crop',
     prepTime: 18,
     difficulty: 'easy',
     servings: 4,

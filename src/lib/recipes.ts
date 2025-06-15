@@ -267,7 +267,7 @@ const fallbackDetailRecipes: Record<string, DBRecipe> = {
     id: '550e8400-e29b-41d4-a716-446655440009',
     title: 'Black Bean Tacos',
     description: 'Flavorful vegetarian tacos with seasoned black beans and fresh toppings.',
-    image_url: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop',
+    image_url: 'https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=400&h=300&fit=crop',
     prep_time: 10,
     cook_time: 8,
     total_time: 18,
