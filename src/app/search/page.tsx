@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 'use client'
 
 import React from 'react'
@@ -71,7 +72,7 @@ export default function SearchPage() {
                   Dietary Restrictions
                 </h3>
                 <p className="text-gray-600 text-sm">
-                  Include restrictions: "keto", "dairy-free", "low sodium", "paleo"
+                  Include restrictions: &quot;keto&quot;, &quot;dairy-free&quot;, &quot;low sodium&quot;, &quot;paleo&quot;
                 </p>
               </div>
 
@@ -97,7 +98,7 @@ export default function SearchPage() {
                   Meal Types
                 </h3>
                 <p className="text-gray-600 text-sm">
-                  Specify meals: "breakfast", "lunch", "dinner", "snack", "dessert"
+                  Specify meals: &quot;breakfast&quot;, &quot;lunch&quot;, &quot;dinner&quot;, &quot;snack&quot;, &quot;dessert&quot;
                 </p>
               </div>
 
@@ -110,7 +111,7 @@ export default function SearchPage() {
                   Cooking Methods
                 </h3>
                 <p className="text-gray-600 text-sm">
-                  Add methods: "grilled", "baked", "one-pot", "no-cook", "slow cooker"
+                  Add methods: &quot;grilled&quot;, &quot;baked&quot;, &quot;one-pot&quot;, &quot;no-cook&quot;, &quot;slow cooker&quot;
                 </p>
               </div>
 
@@ -123,7 +124,7 @@ export default function SearchPage() {
                   Time & Difficulty
                 </h3>
                 <p className="text-gray-600 text-sm">
-                  Include constraints: "quick", "30 minutes", "easy", "beginner"
+                  Include constraints: 'quick', '30 minutes', 'easy', 'beginner'
                 </p>
               </div>
             </div>

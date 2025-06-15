@@ -193,39 +193,51 @@ export function RecipeSection({ className }: RecipeSectionProps) {
     getUser()
   }, [])
 
+  // Extract searchQuery serialization to avoid complex expression in dependency array
+  const searchQueryString = JSON.stringify(searchQuery)
+
   useEffect(() => {
     const load = async () => {
       setLoading(true)
       
-      // For guest users (unauthenticated), show all recipes without filtering
-      // For authenticated users, apply their profile filters only if they have active search
-      const hasActiveSearch = searchQuery.ingredients.length > 0 || 
-                             searchQuery.mealType.length > 0 || 
-                             searchQuery.cuisine.length > 0 ||
-                             searchQuery.dishes.length > 0
-      
-      const filters = (user && hasActiveSearch) ? searchQuery : {}
-      
-      console.log('RecipeSection loading:', { 
-        user: !!user, 
-        hasActiveSearch, 
-        searchQuery, 
-        filters 
-      })
-      
-      const data = await fetchRecipes(24, filters)
-      
-      // If no recipes from database, use sample recipes for demo
-      if (data.length === 0 && Object.keys(filters).length === 0) {
+      try {
+        // For guest users (unauthenticated), show all recipes without filtering
+        // For authenticated users, apply their profile filters only if they have active search
+        const hasActiveSearch = searchQuery.ingredients.length > 0 || 
+                               searchQuery.mealType.length > 0 || 
+                               searchQuery.cuisine.length > 0 ||
+                               searchQuery.dishes.length > 0
+        
+        const filters = (user && hasActiveSearch) ? searchQuery : {}
+        
+        console.log('RecipeSection loading:', { 
+          user: !!user, 
+          hasActiveSearch, 
+          searchQuery, 
+          filters 
+        })
+        
+        const data = await fetchRecipes(24, filters)
+        
+        // If no recipes from database, use sample recipes for demo
+        if (data && data.length === 0 && Object.keys(filters).length === 0) {
+          setRecipes(sampleRecipes)
+        } else if (data) {
+          setRecipes(data)
+        } else {
+          // Fallback to sample recipes if data is null/undefined
+          setRecipes(sampleRecipes)
+        }
+      } catch (error) {
+        console.error('Error loading recipes:', error)
+        // On error, always fall back to sample recipes
         setRecipes(sampleRecipes)
-      } else {
-        setRecipes(data)
+      } finally {
+        setLoading(false)
       }
-      
-      setLoading(false)
     }
     load()
-  }, [user, JSON.stringify(searchQuery)])
+  }, [user, searchQuery, searchQueryString])
 
   const baseRecipes = recipes.length ? recipes : sampleRecipes
 
@@ -239,17 +251,17 @@ export function RecipeSection({ className }: RecipeSectionProps) {
           case 'healthy':
             return recipe.calories && recipe.calories < 400
           case 'vegetarian':
-            return recipe.dietaryCompliance.some(tag => tag.toLowerCase().includes('vegan') || tag.toLowerCase().includes('vegetarian'))
+            return recipe.dietaryCompliance?.some(tag => tag.toLowerCase().includes('vegan') || tag.toLowerCase().includes('vegetarian')) || false
           case 'gluten-free':
-            return recipe.dietaryCompliance.some(tag => tag.toLowerCase().includes('gluten-free'))
+            return recipe.dietaryCompliance?.some(tag => tag.toLowerCase().includes('gluten-free')) || false
           case 'high-protein':
-            return recipe.dietaryCompliance.some(tag => tag.toLowerCase().includes('protein'))
+            return recipe.dietaryCompliance?.some(tag => tag.toLowerCase().includes('protein')) || false
           case 'low-carb':
-            return recipe.dietaryCompliance.some(tag => tag.toLowerCase().includes('low carb'))
+            return recipe.dietaryCompliance?.some(tag => tag.toLowerCase().includes('low carb')) || false
           case 'comfort':
-            return recipe.dietaryCompliance.some(tag => tag.toLowerCase().includes('comfort'))
+            return recipe.dietaryCompliance?.some(tag => tag.toLowerCase().includes('comfort')) || false
           case 'desserts':
-            return recipe.dietaryCompliance.some(tag => tag.toLowerCase().includes('dessert'))
+            return recipe.dietaryCompliance?.some(tag => tag.toLowerCase().includes('dessert')) || false
           default:
             return true
         }

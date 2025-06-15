@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import Image from 'next/image'
 import { cn } from '@/lib/utils'
 
 // Placeholder Recipe interface - will be replaced with actual type
@@ -47,10 +48,11 @@ export function RecipeCard({
       {/* Recipe Image */}
       <div className="relative w-full h-48 bg-gray-200 rounded-t-2xl overflow-hidden">
         {recipe.image ? (
-          <img
+          <Image
             src={recipe.image}
             alt={recipe.title}
-            className="w-full h-full object-cover"
+            fill
+            className="object-cover"
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">

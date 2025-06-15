@@ -76,7 +76,7 @@ export default function GenerateRecipePage() {
     })
 
     return () => subscription.unsubscribe()
-  }, [supabase.auth])
+  }, [supabase])
 
   const handleGenerateRecipe = async (e: React.FormEvent) => {
     e.preventDefault()

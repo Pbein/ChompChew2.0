@@ -3,7 +3,7 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/Button'
-import { EnhancedSearchQuery } from '@/types/dietary-preferences'
+import { EnhancedSearchQuery } from '@/features/core/types/dietary-preferences'
 
 interface SearchIntent {
   type: 'recipe' | 'ingredient' | 'hybrid' | 'unknown'

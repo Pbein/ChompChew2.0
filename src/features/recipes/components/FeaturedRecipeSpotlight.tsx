@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/Button'
 
@@ -43,10 +44,11 @@ export function FeaturedRecipeSpotlight({
         {/* Recipe Image */}
         <div className="relative w-full md:w-48 h-32 md:h-32 bg-gradient-to-br from-white/20 via-white/10 to-white/5 rounded-xl overflow-hidden flex-shrink-0">
           {recipe.image ? (
-            <img 
+            <Image 
               src={recipe.image} 
               alt={recipe.title}
-              className="w-full h-full object-cover"
+              fill
+              className="object-cover"
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center">

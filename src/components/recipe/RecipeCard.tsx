@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import { useSavedRecipesStore } from '@/store/savedRecipesStore'
 
@@ -66,11 +67,12 @@ export function RecipeCard({
         imageHeights[size]
       )}>
         {recipe.image ? (
-          <img
+          <Image
             data-testid="recipe-image"
             src={recipe.image}
             alt={recipe.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-300"
           />
         ) : (
           <div 

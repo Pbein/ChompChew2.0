@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { render, screen } from '../setup/test-utils'
+import { render, screen, waitFor } from '../setup/test-utils'
 import { Header } from '@/components/layout/Header'
 
 describe('Header Component', () => {
@@ -14,24 +14,28 @@ describe('Header Component', () => {
     render(<Header />)
     
     // Check for mission-aligned navigation
-    expect(screen.getByText('Find Recipes')).toBeInTheDocument()
-    expect(screen.getByText('My Dietary Needs')).toBeInTheDocument()
+    expect(screen.getByText('Dietary Needs')).toBeInTheDocument()
     expect(screen.getByText('Saved Recipes')).toBeInTheDocument()
+    expect(screen.getByText('Generate Recipe')).toBeInTheDocument()
   })
 
-  it('should render user action buttons', () => {
+    it('should render user action buttons', async () => {
     render(<Header />)
+
+    // Wait for loading to complete and buttons to appear
+    await waitFor(() => {
+      expect(screen.getByText('Sign In')).toBeInTheDocument()
+    })
     
-    expect(screen.getByText('Profile')).toBeInTheDocument()
     expect(screen.getByText('Get Started')).toBeInTheDocument()
   })
 
-  it('should have safety quick access button', () => {
+  it('should have mobile menu toggle button', () => {
     render(<Header />)
     
-    const safetyButton = screen.getByTitle('Quick Safety Check')
-    expect(safetyButton).toBeInTheDocument()
-    expect(safetyButton).toHaveTextContent('⚠️')
+    const mobileMenuButton = screen.getByLabelText('Toggle mobile menu')
+    expect(mobileMenuButton).toBeInTheDocument()
+    expect(mobileMenuButton).toHaveAttribute('aria-expanded', 'false')
   })
 
   it('should have mobile menu functionality', () => {
@@ -48,13 +52,13 @@ describe('Header Component', () => {
     expect(nav).toBeInTheDocument()
     
     // Check that navigation links are properly structured
-    const findRecipesLink = screen.getByRole('link', { name: /find recipes/i })
-    expect(findRecipesLink).toHaveAttribute('href', '/search')
-    
-    const dietaryNeedsLink = screen.getByRole('link', { name: /my dietary needs/i })
+    const dietaryNeedsLink = screen.getByRole('link', { name: /dietary needs/i })
     expect(dietaryNeedsLink).toHaveAttribute('href', '/dietary-needs')
     
     const savedRecipesLink = screen.getByRole('link', { name: /saved recipes/i })
     expect(savedRecipesLink).toHaveAttribute('href', '/saved-recipes')
+    
+    const generateRecipeLink = screen.getByRole('link', { name: /generate recipe/i })
+    expect(generateRecipeLink).toHaveAttribute('href', '/generate-recipe')
   })
 }) 

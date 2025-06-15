@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/Button'
 import { CalorieGoalInput } from './CalorieGoalInput'
 import { MacroTargetSliders } from './MacroTargetSliders'
-import { EnhancedSearchQuery, MacroTargets } from '@/types/dietary-preferences'
+import { EnhancedSearchQuery, MacroTargets } from '@/features/core/types/dietary-preferences'
 
 interface SearchBarProps {
   placeholder?: string

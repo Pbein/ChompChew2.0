@@ -183,13 +183,19 @@ describe('Recipe Fetching', () => {
       vi.mocked(supabase.from).mockReturnValue(mockQuery as any)
 
       const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+      const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
 
       const result = await fetchRecipes()
 
-      expect(result).toEqual([])
-      expect(consoleSpy).toHaveBeenCalledWith('fetchRecipes error', mockError)
+      // Should return fallback recipes instead of empty array
+      expect(result.length).toBeGreaterThan(0)
+      expect(result[0]).toHaveProperty('id')
+      expect(result[0]).toHaveProperty('title')
+      expect(consoleSpy).toHaveBeenCalledWith('fetchRecipes database error:', mockError)
+      expect(logSpy).toHaveBeenCalledWith('Falling back to sample recipes')
 
       consoleSpy.mockRestore()
+      logSpy.mockRestore()
     })
   })
 
@@ -235,7 +241,8 @@ describe('Recipe Fetching', () => {
       const result = await fetchRecipe('nonexistent-id')
 
       expect(result).toBeNull()
-      expect(consoleSpy).toHaveBeenCalledWith('fetchRecipe error', mockError)
+      expect(consoleSpy).toHaveBeenCalledWith('fetchRecipe database error:', mockError)
+      expect(consoleSpy).toHaveBeenCalledWith('No fallback recipe found for ID: nonexistent-id')
 
       consoleSpy.mockRestore()
     })

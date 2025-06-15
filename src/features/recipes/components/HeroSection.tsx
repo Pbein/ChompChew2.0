@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { cn } from '@/lib/utils'
 import { SearchBar } from './SearchBar'
 import { Button } from '@/components/ui/Button'
-import { EnhancedSearchQuery } from '@/types/dietary-preferences'
+import { EnhancedSearchQuery } from '@/features/core/types/dietary-preferences'
 
 interface HeroSectionProps {
   onSearch?: (query: EnhancedSearchQuery) => void

@@ -13,9 +13,9 @@ export type {
   TokenCategory, 
   ParsedToken, 
   SearchChip as SearchChipType 
-} from '@/stores/searchStore'
+} from '@/features/core/stores/searchStore'
 
 export { 
   useSearchStore, 
   CATEGORY_CONFIG 
-} from '@/stores/searchStore' 
+} from '@/features/core/stores/searchStore' 

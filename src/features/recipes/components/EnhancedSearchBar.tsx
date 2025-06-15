@@ -7,7 +7,7 @@ import {
   EnhancedSearchQuery, 
   SearchState, 
   SearchFilterCategory
-} from '@/types/dietary-preferences'
+} from '@/features/core/types/dietary-preferences'
 
 interface EnhancedSearchBarProps {
   onSearch?: (query: EnhancedSearchQuery) => void
