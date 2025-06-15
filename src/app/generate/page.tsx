@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Header } from '@/components/layout/Header'
 import { RecipeCardDeck } from '@/components/recipe/RecipeCardDeck'
@@ -18,7 +18,7 @@ interface Recipe {
   dietaryCompliance: string[]
 }
 
-export default function GeneratePage() {
+function GeneratePageContent() {
   const searchParams = useSearchParams()
   const [recipes, setRecipes] = useState<Recipe[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -280,5 +280,28 @@ export default function GeneratePage() {
         )}
       </main>
     </div>
+  )
+}
+
+export default function GeneratePage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="container mx-auto px-4 py-8">
+          <div className="text-center py-16">
+            <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <h2 className="text-2xl font-semibold mb-2 text-foreground">
+              Loading...
+            </h2>
+            <p className="text-muted-foreground">
+              Preparing your recipe generation
+            </p>
+          </div>
+        </main>
+      </div>
+    }>
+      <GeneratePageContent />
+    </Suspense>
   )
 } 

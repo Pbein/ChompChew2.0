@@ -4,7 +4,6 @@ import React, { useState } from 'react'
 import { cn } from '@/lib/utils'
 import { 
   DietPreferences, 
-  MedicalCondition, 
   DIET_TEMPLATES, 
   COMMON_ALLERGENS, 
   CONDITION_TRIGGERS,
@@ -139,7 +138,7 @@ export function DietQuickSetModal({
           {/* Progress Indicator */}
           <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
             <div className="flex space-x-4">
-              {Object.values(ModalSection).map((section, index) => (
+              {Object.values(ModalSection).map((section) => (
                 <button
                   key={section}
                   onClick={() => setCurrentSection(section)}
@@ -289,7 +288,7 @@ export function DietQuickSetModal({
                     Medical Conditions
                   </h3>
                   <p className="text-sm text-gray-600 mb-6">
-                    Select any medical conditions that affect your diet. We'll automatically avoid trigger foods.
+                    Select any medical conditions that affect your diet. We will automatically avoid trigger foods.
                   </p>
                   
                   {/* Medical Conditions Grid - Placeholder */}
@@ -301,7 +300,7 @@ export function DietQuickSetModal({
                       >
                         <div className="font-medium text-gray-900 mb-2">
                           {condition === 'UC' ? 'Ulcerative Colitis' : 
-                           condition === 'Crohns' ? "Crohn's Disease" : 
+                           condition === 'Crohns' ? 'Crohns Disease' : 
                            condition}
                         </div>
                         <div className="text-sm text-gray-600 mb-3">

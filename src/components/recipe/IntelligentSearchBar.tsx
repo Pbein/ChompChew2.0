@@ -340,28 +340,28 @@ export function IntelligentSearchBar({
             <div>
               <div className="font-medium text-blue-600 mb-2">🍽️ Recipe Search</div>
               <div className="space-y-1 text-gray-600">
-                <div>"chicken soup"</div>
-                <div>"keto breakfast"</div>
-                <div>"Italian pasta"</div>
-                <div>"quick dinner"</div>
+                <div>chicken soup</div>
+                <div>keto breakfast</div>
+                <div>Italian pasta</div>
+                <div>quick dinner</div>
               </div>
             </div>
             <div>
               <div className="font-medium text-green-600 mb-2">🥕 Ingredient Search</div>
               <div className="space-y-1 text-gray-600">
-                <div>"chicken + broth"</div>
-                <div>"leftover rice"</div>
-                <div>"ground beef onions"</div>
-                <div>"using tomatoes"</div>
+                <div>chicken + broth</div>
+                <div>leftover rice</div>
+                <div>ground beef onions</div>
+                <div>using tomatoes</div>
               </div>
             </div>
             <div>
               <div className="font-medium text-purple-600 mb-2">🎯 Smart Search</div>
               <div className="space-y-1 text-gray-600">
-                <div>"healthy chicken soup"</div>
-                <div>"easy pasta recipes"</div>
-                <div>"dairy-free dessert"</div>
-                <div>"30 minute meals"</div>
+                <div>healthy chicken soup</div>
+                <div>easy pasta recipes</div>
+                <div>dairy-free dessert</div>
+                <div>30 minute meals</div>
               </div>
             </div>
           </div>

@@ -134,8 +134,8 @@ export async function validateSearchConstraints(
   const issues: string[] = []
 
   // Check for conflicting preferences
-  const hasConflicts = userPreferences.embraceFoods.some(embraceFood =>
-    userPreferences.avoidFoods.some(avoidFood =>
+  const hasConflicts = userPreferences.embraceFoods.some((embraceFood: string) =>
+    userPreferences.avoidFoods.some((avoidFood: string) =>
       embraceFood.toLowerCase().includes(avoidFood.toLowerCase())
     )
   )
@@ -161,8 +161,7 @@ export async function validateSearchConstraints(
  * Placeholder implementation
  */
 export async function getSafeAlternatives(
-  ingredient: string,
-  userPreferences: DietPreferences
+  ingredient: string
 ): Promise<string[]> {
   // Placeholder implementation - would use comprehensive ingredient database
   const alternatives: string[] = []

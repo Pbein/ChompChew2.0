@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState } from 'react'
-import { cn } from '@/lib/utils'
 
 // Placeholder Recipe interface
 interface Recipe {
@@ -28,7 +27,6 @@ export function RecipeCardDeck({
   onSave,
   onSkip,
   onViewDetails,
-  onLoadMore,
   isLoading = false
 }: RecipeCardDeckProps) {
   const [currentIndex, setCurrentIndex] = useState(0)

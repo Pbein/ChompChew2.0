@@ -83,7 +83,19 @@ export function fromGeneratedRecipe(generated: GeneratedRecipe, id: string): Rec
     difficulty: generated.metadata.difficulty,
     ingredients: generated.ingredients,
     instructions: generated.instructions,
-    nutrition: generated.nutrition,
+    nutrition: generated.nutrition && 
+      generated.nutrition.calories !== undefined &&
+      generated.nutrition.protein !== undefined &&
+      generated.nutrition.carbs !== undefined &&
+      generated.nutrition.fat !== undefined
+      ? {
+          calories: generated.nutrition.calories,
+          protein: generated.nutrition.protein,
+          carbs: generated.nutrition.carbs,
+          fat: generated.nutrition.fat,
+          fiber: generated.nutrition.fiber
+        }
+      : undefined,
     dietaryTags: generated.tags || [],
     safetyValidated: true, // Assume generated recipes are safe
     metadata: {

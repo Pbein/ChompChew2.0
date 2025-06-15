@@ -1,5 +1,4 @@
 import { FC, ReactNode } from 'react';
-import { FiZap, FiSmile, FiSunrise } from 'react-icons/fi';
 
 interface Category {
   name: string;
@@ -7,9 +6,24 @@ interface Category {
 }
 
 const categories: Category[] = [
-  { name: 'Quick Meals', icon: <FiZap className="h-8 w-8" /> },
-  { name: 'Gut-Friendly', icon: <FiSmile className="h-8 w-8" /> },
-  { name: 'Vegan', icon: <FiSunrise className="h-8 w-8" /> },
+  { 
+    name: 'Quick Meals', 
+    icon: <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+    </svg>
+  },
+  { 
+    name: 'Gut-Friendly', 
+    icon: <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1.5a2.5 2.5 0 010 5H9m4.5-5a2.5 2.5 0 010 5M15 8.5V7a2 2 0 00-2-2h-2a2 2 0 00-2 2v1.5" />
+    </svg>
+  },
+  { 
+    name: 'Vegan', 
+    icon: <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5H9a2 2 0 00-2 2v10a4 4 0 004 4h6a2 2 0 002-2V7a2 2 0 00-2-2z" />
+    </svg>
+  },
 ];
 
 export const CategoryTiles: FC = () => {

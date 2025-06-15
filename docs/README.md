@@ -5,27 +5,71 @@
 
 ---
 
-## 📋 **Documentation Navigation**
+## **🏗️ REBUILD IN PROGRESS**
+
+**Current Status**: We're rebuilding ChompChew from the ground up while preserving all valuable features we've developed. This ensures a clean, maintainable codebase with excellent UI/UX.
+
+### **📋 Rebuild Documentation**
+- **[FEATURE_CATALOG.md](FEATURE_CATALOG.md)** - **COMPLETE FEATURE INVENTORY** - All 27 features we've built that must be preserved
+- **[REBUILD_PLAN.md](REBUILD_PLAN.md)** - **SEQUENTIAL REBUILD STRATEGY** - 7-phase plan to rebuild with clean architecture
 
 ### **🎯 Vision & Strategy**
 - **[PROJECT_VISION.md](PROJECT_VISION.md)** - Core mission, value propositions, and strategic alignment
 - **[PRODUCT_DESIGN_BRIEF.md](PRODUCT_DESIGN_BRIEF.md)** - Complete UX specifications and user experience requirements
 
-### **🚀 Development Planning**
-- **[development/functional_architecture/DEVELOPMENT_TODO_LIST.md](development/functional_architecture/DEVELOPMENT_TODO_LIST.md)** - **PRIMARY ROADMAP** - Complete development plan with sprints and phases
+---
 
-### **🎨 Design & User Experience**
-- **[design/DESIGN_SYSTEM.md](design/DESIGN_SYSTEM.md)** - Comprehensive design system with components and patterns
+## **🔥 Key Features We've Built**
 
-### **🛠️ Technical Setup**
-- **[setup/TECH_STACK_OVERVIEW.md](setup/TECH_STACK_OVERVIEW.md)** - **COMPLETE TECH STACK** - Framework, state management (Zustand), and recommended tools
-- **[setup/SUPABASE_SETUP.md](setup/SUPABASE_SETUP.md)** - Database configuration and schema
-- **[setup/REDIS_SETUP.md](setup/REDIS_SETUP.md)** - Caching and rate limiting setup
-- **[setup/OPENAI_SETUP.md](setup/OPENAI_SETUP.md)** - AI integration and recipe generation
+### **🧠 Smart Search System** ✅ **COMPLETE**
+- **Natural Language Processing**: "chicken paleo no dairy dinner" → structured categories
+- **9 Category Types**: ingredients, exclusions, diets, meal types, cuisines, cooking methods, etc.
+- **Real-time Categorization**: with confidence scoring and visual confirmation
+- **Demo**: Available at `/search-demo`
+
+### **🛡️ Safety & Dietary Management** ✅ **COMPLETE**
+- **Medical Condition Support**: UC, Crohn's, IBS trigger food management
+- **Allergen Safety**: Zero-tolerance allergen detection and blocking
+- **Severity Levels**: Distinguish preference from medical necessity
+- **Safety Validation**: Recipe safety checking against user restrictions
+
+### **🍽️ Recipe Intelligence** ✅ **COMPLETE**
+- **AI Recipe Generation**: OpenAI-powered recipe creation with dietary constraints
+- **Recipe Card Deck**: Swipeable discovery interface
+- **Ingredient Substitutions**: Safe alternatives for restricted ingredients
+- **Nutrition Tracking**: Calorie goals and macro targeting
+
+### **⚡ State Management** ✅ **COMPLETE**
+- **Zustand Stores**: Centralized state management with devtools
+- **Type Safety**: Complete TypeScript coverage
+- **Performance**: Redis caching and optimization
 
 ---
 
-## 🎯 **Mission-Aligned Feature Overview**
+## **📊 Current Development Status**
+
+### ✅ **Features Complete & Preserved**
+- Smart Semantic Search System (27 components)
+- Recipe Generation Service with OpenAI
+- Safety Validation Service
+- Diet Quick-Set Modal with medical conditions
+- Macro Target Sliders & Calorie Goals
+- Zustand Store Implementation
+- Complete Type Definitions
+- Design System & UI Components
+
+### 🏗️ **Rebuild Progress**
+- **Phase 0**: ⏳ **READY TO START** - Feature backup and clean slate preparation
+- **Phase 1-7**: 📋 **PLANNED** - Sequential feature integration with testing
+
+### 🎯 **Next Steps**
+1. **Execute Phase 0** - Backup all features to `src/features/` structure
+2. **Clean Current Structure** - Start with minimal app shell
+3. **Sequential Integration** - Add features back one by one with proper testing and UI/UX
+
+---
+
+## **🎯 Mission-Aligned Feature Overview**
 
 ### **Core Problem We're Solving**
 People with dietary restrictions, medical conditions, or busy lifestyles experience daily anxiety around meal planning. The question "What can I actually eat?" creates decision fatigue and stress.
@@ -52,31 +96,42 @@ People with dietary restrictions, medical conditions, or busy lifestyles experie
 
 ---
 
-## 📊 **Current Development Status**
+## **🛠️ Technical Architecture**
 
-### ✅ **Foundation Complete**
+### **Foundation Complete**
 - Next.js 15 with TypeScript and Tailwind CSS
 - Supabase database with authentication
 - OpenAI integration for recipe generation
 - Redis caching and rate limiting
 - Comprehensive design system
 
-### 🔥 **Immediate Priorities** (Next 8 Weeks)
-1. **Enhanced Search Bar** - Multi-modal input (ingredients + calories + macros)
-2. **Diet Quick-Set Modal** - List Y/Z management with medical conditions
-3. **Recipe Card Deck** - Core swipeable discovery interface
-4. **Medical Condition Support** - Trigger food management and safety validation
-
-### 🚀 **Phase 1 Goals** (Weeks 9-16)
-- Interactive cooking mode with timer integration
-- Custom recipe generation ("Make One for Me")
-- User authentication and personal profiles
-- Recipe collection management
-- Public recipe sharing
+### **Key Technical Components**
+- **SmartSemanticSearch**: Natural language search with categorization
+- **SafetyValidationService**: Medical condition and allergen safety
+- **RecipeGenerationService**: AI-powered recipe creation
+- **DietQuickSetModal**: Comprehensive dietary preference management
+- **Zustand Stores**: Centralized state management
 
 ---
 
-## 🎯 **Success Metrics**
+## **📋 Documentation Navigation**
+
+### **🏗️ Rebuild Documentation**
+- **[FEATURE_CATALOG.md](FEATURE_CATALOG.md)** - Complete inventory of all 27 features built
+- **[REBUILD_PLAN.md](REBUILD_PLAN.md)** - 7-phase sequential rebuild strategy
+
+### **🎯 Vision & Strategy**
+- **[PROJECT_VISION.md](PROJECT_VISION.md)** - Core mission and strategic alignment
+- **[PRODUCT_DESIGN_BRIEF.md](PRODUCT_DESIGN_BRIEF.md)** - UX specifications and user flows
+
+### **🛠️ Technical Setup**
+- **[setup/TECH_STACK_OVERVIEW.md](setup/TECH_STACK_OVERVIEW.md)** - Complete tech stack with Zustand
+- **[setup/ZUSTAND_IMPLEMENTATION_GUIDE.md](setup/ZUSTAND_IMPLEMENTATION_GUIDE.md)** - State management setup
+- **[development/SMART_SEMANTIC_SEARCH_IMPLEMENTATION.md](development/SMART_SEMANTIC_SEARCH_IMPLEMENTATION.md)** - Search system documentation
+
+---
+
+## **🎯 Success Metrics**
 
 ### **User Experience**
 - **Anxiety Reduction**: Measured through user surveys
@@ -92,21 +147,13 @@ People with dietary restrictions, medical conditions, or busy lifestyles experie
 
 ---
 
-## 🛠️ **Development Workflow**
+## **🚀 Getting Started with Rebuild**
 
-### **Document Hierarchy**
-1. **Start with PROJECT_VISION.md** - Understand the mission and strategic goals
-2. **Review PRODUCT_DESIGN_BRIEF.md** - Understand UX requirements and user flows
-3. **Follow development/functional_architecture/DEVELOPMENT_TODO_LIST.md** - Primary development roadmap with sprint planning
-4. **Reference DESIGN_SYSTEM.md** - Implementation patterns and components
-5. **Use setup guides** - Technical configuration and deployment
-
-### **Sprint Planning Process**
-1. **Mission Alignment Check** - Does this feature reduce "What can I eat?" anxiety?
-2. **UX Requirements Review** - Reference design brief for user experience specs
-3. **Technical Implementation** - Use design system components and patterns
-4. **Safety Validation** - Ensure medical condition and allergen safety
-5. **Accessibility Testing** - Verify WCAG 2.2 AA compliance
+### **For Developers**
+1. **Review Feature Catalog** - Understand what we've built
+2. **Study Rebuild Plan** - Understand the sequential approach
+3. **Start Phase 0** - Backup features and create clean slate
+4. **Follow Phase-by-Phase** - Integrate features with testing and UI/UX focus
 
 ### **Quality Assurance**
 - **Medical Condition Testing** - Validate trigger food detection
@@ -117,30 +164,24 @@ People with dietary restrictions, medical conditions, or busy lifestyles experie
 
 ---
 
-## 📋 **Quick Reference**
+## **📊 Rebuild Timeline**
 
-### **Key User Personas**
-- **Medical Condition Users**: UC, Crohn's, IBS patients needing trigger food avoidance
-- **Allergy Management**: Users requiring strict allergen avoidance
-- **Fitness Focused**: Users tracking calories and macros
-- **Busy Professionals**: Users seeking quick, constraint-aware meal solutions
+| Phase | Duration | Focus | Status |
+|-------|----------|-------|--------|
+| 0 | 1.5 days | Feature backup & clean slate | ⏳ Ready |
+| 1 | 4 days | Foundation & core services | 📋 Planned |
+| 2 | 5 days | Search foundation | 📋 Planned |
+| 3 | 5 days | Recipe discovery | 📋 Planned |
+| 4 | 5 days | Safety & dietary features | 📋 Planned |
+| 5 | 2 days | Nutrition & macro features | 📋 Planned |
+| 6 | 5 days | UI/UX polish | 📋 Planned |
+| 7 | 3 days | Integration & launch | 📋 Planned |
 
-### **Core Technical Components**
-- **SearchBar**: Multi-modal input with calorie/macro support
-- **DietQuickSetModal**: List Y/Z management with medical conditions
-- **RecipeCardDeck**: Swipeable discovery interface
-- **InteractiveCookingMode**: Step-by-step cooking with timers
-- **SafetyValidation**: Allergen and trigger food checking
-
-### **Safety-First Principles**
-- **Zero Tolerance**: No allergen inclusion in generated recipes
-- **Clear Warnings**: Visual indicators for trigger foods
-- **Severity Levels**: Distinguish preference from medical necessity
-- **User Education**: Help users understand safety implications
+**Total**: ~30 days (6 weeks) for complete rebuild with all features
 
 ---
 
-## 🔄 **Document Maintenance**
+## **🔄 Document Maintenance**
 
 ### **Update Process**
 1. **Mission Alignment**: All changes must serve core mission
@@ -148,16 +189,9 @@ People with dietary restrictions, medical conditions, or busy lifestyles experie
 3. **Version Control**: Track significant changes with clear commit messages
 4. **Review Process**: Technical and UX review for all documentation updates
 
-### **Document Owners**
-- **PROJECT_VISION.md**: Product strategy and mission alignment
-- **development/functional_architecture/DEVELOPMENT_TODO_LIST.md**: Development team roadmap and sprint planning
-- **PRODUCT_DESIGN_BRIEF.md**: UX specifications and user flows
-- **DESIGN_SYSTEM.md**: UX/UI team specifications and patterns
-- **Setup guides**: DevOps and technical configuration
-
 ---
 
-**Remember: Every feature, every line of code, every design decision should serve our core mission of removing "What can I actually eat?" anxiety. If it doesn't directly help users feel confident about their food choices, it's not aligned with our vision.**
+**Remember: Every feature, every line of code, every design decision should serve our core mission of removing "What can I actually eat?" anxiety. The rebuild ensures we maintain this focus while creating a clean, maintainable, and beautiful application.**
 
 ## 📖 Documentation Guidelines
 
