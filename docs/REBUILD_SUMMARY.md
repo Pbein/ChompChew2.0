@@ -49,14 +49,15 @@ We're rebuilding ChompChew from the ground up while preserving all the valuable 
 3. **Clean Slate** - Start with minimal app shell
 4. **Preserve Logic** - Keep all business logic and services intact
 
-### **Phase 1-7: Sequential Integration** (28 days)
-1. **Foundation** - Core infrastructure and services + comprehensive testing
-2. **Search** - Unified search interface + search functionality tests
-3. **Recipes** - Recipe display and management + recipe integration tests
-4. **Safety** - Dietary preferences and safety + critical safety validation tests
-5. **Nutrition** - Macro and calorie features + nutrition calculation tests
-6. **Polish** - UI/UX enhancement + accessibility and performance tests
-7. **Launch** - Integration and deployment + E2E testing
+### **Phase 1-8: Sequential Integration** (≈35 days)
+1. **Foundation** – Core infrastructure & comprehensive testing
+2. **Search Foundation** – Homepage search bar & basic results (MVP ✅)
+3. **Dietary Needs & Preferences** – Profile page & personalization (MVP 🎯)
+4. **Recipe Discovery** – Cards, detail pages, saving (MVP)
+5. **Advanced Safety & Dietary Features** – Medical & allergen integration
+6. **Nutrition & Macro Features** – Calorie & macro tracking
+7. **UI/UX Polish & Premium Features** – Design enhancements & paid AI generation
+8. **Integration & Launch** – End-to-end testing & deployment
 
 ---
 
@@ -64,7 +65,7 @@ We're rebuilding ChompChew from the ground up while preserving all the valuable 
 
 ### **Core Documents**
 - **[FEATURE_CATALOG.md](FEATURE_CATALOG.md)** - Complete inventory of 27 features
-- **[REBUILD_PLAN.md](REBUILD_PLAN.md)** - Detailed 7-phase implementation plan
+- **[REBUILD_PLAN.md](REBUILD_PLAN.md)** - Detailed 8-phase implementation plan with MVP scope
 - **[PROJECT_VISION.md](PROJECT_VISION.md)** - Mission and strategic alignment
 - **[PRODUCT_DESIGN_BRIEF.md](PRODUCT_DESIGN_BRIEF.md)** - UX specifications
 
@@ -79,8 +80,9 @@ We're rebuilding ChompChew from the ground up while preserving all the valuable 
 
 ### **Immediate Actions**
 1. **Review Documentation** - Read FEATURE_CATALOG.md and REBUILD_PLAN.md
-2. **Start Phase 0** - Execute feature backup and clean slate preparation
-3. **Set Up Testing** - Prepare testing infrastructure for rebuild
+2. **Begin Phase 3** - Build the Dietary Needs & Preferences page (MVP)
+3. **Integrate Preferences** - Personalize discovery feed and search results
+4. **Implement Recipe Saving** - Enable bookmarking and the Cookbook page
 
 ### **Success Criteria**
 - ✅ All 27 features preserved and working
@@ -129,11 +131,7 @@ We're rebuilding ChompChew from the ground up while preserving all the valuable 
 - ✅ Error boundaries and loading states
 
 ### **Phase 2: Dietary Needs & User Preferences** 🎯 **UP NEXT**
-- **Objective**: Implement a dedicated page for users to set their dietary profiles, which will persist across the application and influence recipe searches and suggestions.
-- **Key Features**:
-  - User interface for selecting and saving dietary restrictions (e.g., Paleo, Vegan, allergies).
-  - Integration with the search system to filter results based on saved preferences.
-  - Clear indicators throughout the UI to reflect the active dietary profile.
+<!-- Begin Phase 2: Dietary Needs & User Preferences. -->
 
 ### **Next Steps**
 - Begin Phase 2: Dietary Needs & User Preferences.
@@ -141,6 +139,26 @@ We're rebuilding ChompChew from the ground up while preserving all the valuable 
 - Connect user preferences to the backend and ensure data persistence.
 - Integrate the dietary profile with the existing search and recipe display functionalities.
 - Add comprehensive tests for the new feature.
+
+### **Phase 2: Search Foundation** ✅ **COMPLETE**
+- ✅ Simple search bar integrated on the homepage
+- ✅ Search state management with Zustand
+- ✅ Basic search results display implemented
+- ✅ Initial integration tests passing
+
+### **Phase 3: Dietary Needs & User Preferences** 🎯 **UP NEXT**
+- **Objective**: Build a dedicated page for users to set their dietary profiles and preferences, enabling personalized discovery and search.
+- **Key Features**:
+  - User interface for selecting diets, avoided/embraced ingredients, macro targets
+  - Backend persistence of preferences
+  - Automatic filtering of discovery feed and search results
+
+### **Next Steps**
+- Begin Phase 3: Dietary Needs & User Preferences
+- Design and build the UI for the dietary needs page
+- Connect user preferences to Supabase and update Zustand store
+- Integrate preferences with search and homepage discovery feed
+- Add tests for the new feature
 
 ---
 

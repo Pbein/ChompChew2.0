@@ -1,5 +1,27 @@
 # 🏗️ ChompChew Rebuild Plan
 
+## 🏆 MVP Definition
+The Minimum Viable Product (MVP) will deliver the core personalized recipe discovery experience. The following features define the scope of the MVP:
+
+- **Core User Journey**:
+    - **Authentication**: Full sign-up and login capabilities.
+    - **Guest Experience**: Unauthenticated users can explore, but are prompted to sign up to save recipes. Saved items for guests can be temporarily stored locally.
+    - **Homepage**: A main page with a simple search bar and a personalized discovery feed of recipes.
+    - **Recipe Detail Page**: Users can click any recipe to view its full details.
+
+- **Personalization**:
+    - **Dietary Needs Profile**: A dedicated page for users to set their dietary preferences (avoided/embraced ingredients, diets, macro targets).
+    - **Personalized Discovery & Search**: The homepage feed and search results are tailored to the authenticated user's profile.
+
+- **Recipe Management**:
+    - **Save Recipes**: Users can save/bookmark recipes.
+    - **Cookbook Page**: A page where users can view their saved recipes.
+
+- **Monetization Strategy**:
+    - **Gated AI Generation**: The AI Recipe Generation feature is reserved for paying subscribers. This will be built post-MVP, but the business rule is established now.
+
+---
+
 ## **🎯 Rebuild Strategy**
 
 **Goal**: Start with a clean, minimal foundation and systematically add back features in a logical order that allows for proper testing, UI/UX design, and integration at each step.
@@ -105,11 +127,12 @@ src/
 **Focus**: Get the foundation working without UI complexity
 
 **Actions**:
-- [x] Set up basic layout with navigation
-- [x] Integrate design system from `src/features/core/utils/design-system.ts`
-- [x] Set up Zustand store integration
-- [x] Create basic error boundaries and loading states
+- [x] **[MVP]** Set up basic layout with navigation
+- [x] **[MVP]** Integrate design system from `src/features/core/utils/design-system.ts`
+- [x] **[MVP]** Set up Zustand store integration
+- [x] **[MVP]** Create basic error boundaries and loading states
 - [x] Set up testing framework (Vitest + Testing Library)
+- [ ] **[MVP]** Implement User Authentication (sign-up, login, session management)
 
 **Deliverables**:
 - Clean, minimal app shell
@@ -154,166 +177,156 @@ src/
 ### **Step 2.1: Basic Search Interface**
 **Duration**: 3 days
 
-**Focus**: Create a clean, unified search experience
+**Focus**: Create a clean, unified search experience for the MVP.
 
 **Actions**:
-- [ ] Design new search interface (consolidate multiple search bars)
-- [ ] Integrate smart semantic search store
-- [ ] Create unified search input component
-- [ ] Add basic search results display
-- [ ] Implement search state management
+- [ ] **[MVP]** Design a simple search interface for the homepage.
+- [ ] **[MVP]** Create a unified search input component.
+- [ ] **[MVP]** Add a basic search results display area.
+- [ ] **[MVP]** Implement search state management.
+- [ ] Integrate smart semantic search store (can be deferred post-MVP).
 
 **Components to Build**:
 - `SearchInterface` - Main search component
-- `SearchInput` - Unified input with smart features
-- `SearchResults` - Basic results display
-- `SearchFilters` - Filter management
+- `SearchInput` - **[MVP]** Unified input for the homepage.
+- `SearchResults` - **[MVP]** Basic results display.
+- `SearchFilters` - (Post-MVP)
 
 **Deliverables**:
-- Single, unified search interface
-- Working semantic search with categorization
-- Clean search results display
+- **[MVP]** A simple, working search bar on the homepage.
+- (Post-MVP) Single, unified search interface
+- (Post-MVP) Working semantic search with categorization
+- (Post-MVP) Clean search results display
 
 **Testing**:
-- [ ] Search input functionality tests (typing, keyboard shortcuts)
-- [ ] Token parsing and categorization tests (natural language processing)
-- [ ] Search state management tests (Zustand store interactions)
-- [ ] User interaction tests (suggestions, chips, history)
-- [ ] Accessibility tests for search interface
-- [ ] Performance tests for search response times
+- [ ] **[MVP]** Search input functionality tests.
+- [ ] **[MVP]** Search state management tests.
+- [ ] Token parsing and categorization tests (Post-MVP).
+- [ ] User interaction tests (suggestions, chips, history) (Post-MVP).
+- [ ] Accessibility tests for search interface.
+- [ ] Performance tests for search response times.
 
 ### **Step 2.2: Advanced Search Features**
 **Duration**: 2 days
-
-**Focus**: Add intelligent search features
-
-**Actions**:
-- [ ] Integrate suggestion popover
-- [ ] Add search chips for filters
-- [ ] Implement search history
-- [ ] Add search intent detection
-- [ ] Create search demo page
-
-**Deliverables**:
-- Full smart semantic search functionality
-- Visual filter management
-- Search history and suggestions
-
-**Testing**:
-- [ ] Suggestion system tests
-- [ ] Filter management tests
-- [ ] Search history tests
+**Focus**: (Post-MVP) Add intelligent search features
 
 ---
 
-## **🛡️ Phase 3: Dietary Needs & User Preferences**
+## **🛡️ Phase 3: Dietary Needs & User Preferences (MVP)**
 
 ### **Step 3.1: Dietary Preferences Page**
 **Duration**: 3 days
 
-**Focus**: Build a dedicated page for users to manage their dietary needs, which will influence search and recommendations across the app.
+**Focus**: **[MVP]** Build a dedicated page for users to manage their dietary needs, which will influence search and recommendations across the app.
 
 **Actions**:
-- [ ] Design the UI for the "Dietary Needs" page, accessible from the main navigation.
-- [ ] Build the frontend components for selecting and saving dietary profiles (e.g., Paleo, Keto, Vegan).
-- [ ] Implement state management (Zustand) to handle user's dietary preferences.
-- [ ] Connect the preferences to a backend service to persist user choices.
-- [ ] Ensure preferences are clearly displayed and can be easily updated.
+- [x] **[MVP]** Design the UI for the "Dietary Needs" page.
+- [x] **[MVP]** Build the frontend components for selecting and saving dietary profiles, avoided/embraced ingredients, and macro targets.
+- [x] **[MVP]** Implement state management (Zustand) to handle user's dietary preferences.
+- [x] **[MVP]** Connect the preferences to a backend service to persist user choices (Supabase integration).
+- [x] **[MVP]** Ensure preferences are clearly displayed and can be easily updated.
 
 **Components to Build**:
-- `DietaryNeedsPage` - The main page for managing preferences.
-- `DietaryProfileSelector` - Component for choosing predefined diets.
-- `AllergenManager` - Interface for adding and removing specific allergens.
-- `PreferenceCard` - A component to display a summary of the user's current settings.
+- `DietaryNeedsPage` - **[MVP]** The main page for managing preferences.
+- `DietaryProfileSelector` - **[MVP]** Component for choosing predefined diets.
+- `AllergenManager` - **[MVP]** Interface for adding and removing specific allergens/avoided ingredients.
+- `PreferenceCard` - **[MVP]** A component to display a summary of the user's current settings.
 
 **Deliverables**:
-- A fully functional "Dietary Needs" page.
-- Persistent storage of user dietary preferences.
-- A global state that makes preferences accessible to other parts of the application.
+- **[MVP]** A fully functional "Dietary Needs" page.
+- **[MVP]** Persistent storage of user dietary preferences.
+- **[MVP]** A global state that makes preferences accessible to other parts of the application.
 
 **Testing**:
-- [ ] Unit tests for preference selection components.
-- [ ] State management tests for the dietary store.
-- [ ] Integration tests to ensure preferences are saved and retrieved correctly.
-- [ ] E2E test for the user flow of setting and changing a dietary profile.
+- [ ] **[MVP]** Unit tests for preference selection components.
+- [ ] **[MVP]** State management tests for the dietary store.
+- [ ] **[MVP]** Integration tests to ensure preferences are saved and retrieved correctly.
+- [ ] **[MVP]** E2E test for the user flow of setting and changing a dietary profile.
 
 ### **Step 3.2: Integration with Search**
 **Duration**: 2 days
 
-**Focus**: Integrate the saved dietary preferences directly into the search functionality.
+**Focus**: **[MVP]** Integrate the saved dietary preferences directly into the search functionality.
 
 **Actions**:
-- [ ] Modify the search query logic to automatically include dietary profile filters.
-- [ ] Update the `searchStore` to be aware of the user's dietary settings.
-- [ ] Display active dietary filters as non-removable chips or indicators in the search UI.
-- [ ] Ensure that search suggestions are also influenced by the dietary profile.
+- [x] **[MVP]** Modify the search query logic to automatically include dietary profile filters.
+- [x] **[MVP]** Update the `searchStore` to be aware of the user's dietary settings.
+- [x] Display active dietary filters as chips in the search UI (Personalization indicator).
+- [ ] Ensure that search suggestions are also influenced by the dietary profile (Post-MVP).
 
 **Deliverables**:
-- Search results that are automatically filtered by the user's saved dietary preferences.
-- A clear visual indication in the UI that dietary filters are active.
+- **[MVP]** Search results that are automatically filtered by the user's saved dietary preferences.
+- A clear visual indication in the UI that dietary filters are active (Post-MVP).
 
 **Testing**:
-- [ ] Integration tests for search results with active dietary filters.
-- [ ] Unit tests for the logic that incorporates dietary preferences into the search query.
-- [ ] E2E test: perform a search, set a dietary preference, and verify the search results are updated accordingly.
+- [ ] **[MVP]** Integration tests for search results with active dietary filters.
+- [ ] **[MVP]** Unit tests for the logic that incorporates dietary preferences into the search query.
+- [ ] **[MVP]** E2E test: perform a search, set a dietary preference, and verify the search results are updated accordingly.
 
 ---
 
-## **🍽️ Phase 4: Recipe Discovery**
+## **🍽️ Phase 4: Recipe Discovery (MVP)**
 
 ### **Step 4.1: Recipe Display System**
 **Duration**: 3 days
 
-**Focus**: Create beautiful, functional recipe displays
+**Focus**: **[MVP]** Create beautiful, functional recipe displays for the homepage discovery feed and recipe pages.
 
 **Actions**:
-- [ ] Design new recipe card system
-- [ ] Integrate recipe generation service
-- [ ] Create recipe detail views
-- [ ] Add recipe loading and error states
-- [ ] Implement recipe card deck interface
+- [x] **[MVP]** Design new recipe card system.
+- [x] **[MVP]** Create recipe detail views (`/recipe/[id]`).
+- [x] **[MVP]** Add recipe loading and error states.
+- [x] **[MVP]** Implement a recipe grid for the homepage discovery feed (live Supabase data).
+- [ ] Integrate recipe generation service (Post-MVP, Gated Feature).
+- [ ] Implement recipe card deck interface (Post-MVP).
 
 **Components to Build**:
-- `RecipeCard` - Unified recipe display
-- `RecipeGrid` - Grid layout for multiple recipes
-- `RecipeDetail` - Detailed recipe view
-- `RecipeCardDeck` - Swipeable interface
+- `RecipeCard` - **[MVP]** Unified recipe display.
+- `RecipeGrid` - **[MVP]** Grid layout for multiple recipes.
+- `RecipeDetail` - **[MVP]** Detailed recipe view.
+- `RecipeCardDeck` - (Post-MVP) Swipeable interface.
 
 **Deliverables**:
-- Beautiful recipe display system
-- Working recipe generation integration
-- Swipeable recipe discovery
+- **[MVP]** A functional and visually appealing recipe display system.
+- (Post-MVP) Working recipe generation integration.
+- (Post-MVP) Swipeable recipe discovery.
 
 **Testing**:
-- [ ] Recipe display tests
-- [ ] Recipe generation integration tests
-- [ ] User interaction tests
+- [ ] **[MVP]** Recipe display tests.
+- [ ] **[MVP]** User interaction tests (e.g., clicking a card).
+- [ ] Recipe generation integration tests (Post-MVP).
 
 ### **Step 4.2: Recipe Management**
 **Duration**: 2 days
 
-**Focus**: Recipe saving, collections, and user features
+**Focus**: **[MVP]** Basic recipe saving and viewing. Advanced features are post-MVP.
 
 **Actions**:
-- [ ] Add recipe saving functionality
-- [ ] Create recipe collections
-- [ ] Implement recipe sharing
-- [ ] Add recipe rating and feedback
+- [x] **[MVP]** Add recipe saving functionality (bookmarking).
+- [x] **[MVP]** Create a "Cookbook" page to view saved recipes.
+- [x] **[MVP]** Integrate recipe saving with RecipeSection component.
+- [x] **[MVP]** Fix authentication patterns for consistent user session handling.
+- [ ] Implement recipe sharing (Post-MVP).
+- [ ] Create recipe collections (Post-MVP).
+- [ ] Add recipe rating and feedback (Post-MVP).
 
 **Deliverables**:
-- Recipe collection management
-- User recipe interactions
-- Recipe sharing capabilities
+- **[MVP]** Ability for users to save and view their favorite recipes.
+- Recipe collection management (Post-MVP).
+- User recipe interactions (Post-MVP).
+- Recipe sharing capabilities (Post-MVP).
 
 **Testing**:
-- [ ] Recipe saving tests
-- [ ] Collection management tests
-- [ ] Sharing functionality tests
+- [x] **[MVP]** Recipe saving tests (savedRecipesStore.test.ts passing).
+- [ ] **[MVP]** Cookbook page display tests.
+- [ ] **[MVP]** Recipe saving integration tests.
+- [ ] Collection management tests (Post-MVP).
+- [ ] Sharing functionality tests (Post-MVP).
 
 ---
 
 ## **🛡️ Phase 5: Advanced Safety & Dietary Features**
-
+**(Post-MVP)**
 ### **Step 5.1: Medical & Allergen Integration**
 **Duration**: 3 days
 
@@ -392,7 +405,7 @@ src/
 ---
 
 ## **🎨 Phase 7: UI/UX Polish & Advanced Features**
-
+**(Post-MVP)**
 ### **Step 7.1: UI/UX Enhancement**
 **Duration**: 3 days
 
@@ -420,13 +433,14 @@ src/
 ### **Step 7.2: Advanced Features**
 **Duration**: 2 days
 
-**Focus**: Add premium features
+**Focus**: (Post-MVP) Add premium features
 
 **Actions**:
 - [ ] Add recipe variations
 - [ ] Implement ingredient substitutions
 - [ ] Create meal planning features
 - [ ] Add social sharing
+- [ ] **(Paid Feature)** Implement UI for AI Recipe Generation.
 
 **Deliverables**:
 - Recipe variation system

@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
+import { useProfileStore } from '@/store/profileStore'
 
 // Search query structure matching the specification
 export interface SearchQuery {
@@ -358,8 +359,14 @@ export const useSearchStore = create<SearchStoreState>()(
         // Add to history
         get().addToHistory(state.structuredQuery)
         
-        // Here you would trigger the actual search
-        console.log('Executing search with query:', state.structuredQuery)
+        const { profile } = useProfileStore.getState()
+        const finalQuery: SearchQuery = {
+          ...state.structuredQuery,
+          dietaryPreferences: Array.from(new Set([...(state.structuredQuery.dietaryPreferences || []), ...(profile?.dietary_preferences || [])])),
+          excludedIngredients: Array.from(new Set([...(state.structuredQuery.excludedIngredients || []), ...(profile?.allergens || [])]))
+        }
+        
+        console.log('Executing search with query:', finalQuery)
         
         // Simulate search completion
         setTimeout(() => {
@@ -379,4 +386,19 @@ export const useSearchStore = create<SearchStoreState>()(
     }),
     { name: 'search-store' }
   )
-) 
+)
+
+// Helper to merge profile filters
+export const useFinalSearchQuery = () => {
+  const { structuredQuery } = useSearchStore()
+  const { profile } = useProfileStore()
+
+  // Merge dietary preferences and avoided ingredients from profile
+  const combined: SearchQuery = {
+    ...structuredQuery,
+    dietaryPreferences: Array.from(new Set([...(structuredQuery.dietaryPreferences || []), ...(profile?.dietary_preferences || [])])),
+    excludedIngredients: Array.from(new Set([...(structuredQuery.excludedIngredients || []), ...(profile?.allergens || [])]))
+  }
+
+  return combined
+} 

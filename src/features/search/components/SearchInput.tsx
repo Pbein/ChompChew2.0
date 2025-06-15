@@ -2,6 +2,7 @@
 
 import React, { useRef, useEffect, useState } from 'react'
 import { useSearchStore, SearchQuery, TokenCategory } from '@/features/core/stores/searchStore'
+import { useProfileStore } from '@/store/profileStore'
 import { SuggestionPopover } from './SuggestionPopover'
 import { SearchChip } from './SearchChip'
 import { cn } from '@/lib/utils'
@@ -37,6 +38,13 @@ export const SearchInput: React.FC<SearchInputProps> = ({
     executeSearch,
     setShowSuggestions
   } = useSearchStore()
+
+  const { profile } = useProfileStore()
+  const profileFilterSummary = React.useMemo(() => {
+    if (!profile) return ''
+    const tags = [...(profile.dietary_preferences || []), ...(profile.allergens || [])]
+    return tags.slice(0, 3).join(', ') + (tags.length > 3 ? ` +${tags.length - 3}` : '')
+  }, [profile])
 
   // Auto-focus on mount if requested
   useEffect(() => {
@@ -196,6 +204,13 @@ export const SearchInput: React.FC<SearchInputProps> = ({
               onRemove={removeChip}
             />
           ))}
+        </div>
+      )}
+
+      {/* Profile Filters Active Indicator */}
+      {profile && (profile.dietary_preferences?.length || profile.allergens?.length) && (
+        <div className="mt-3 flex items-center gap-2 text-sm text-emerald-700">
+          <span className="px-2 py-1 bg-emerald-100 rounded-full">Personalized: {profileFilterSummary}</span>
         </div>
       )}
 

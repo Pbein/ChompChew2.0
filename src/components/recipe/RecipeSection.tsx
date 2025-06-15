@@ -1,9 +1,13 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { CategoryScroller, RecipeCategory } from './CategoryScroller'
 import { RecipeGrid } from './RecipeGrid'
 import { RecipeCardData } from './RecipeCard'
+import { fetchRecipes } from '@/lib/recipes'
+import { useFinalSearchQuery } from '@/features/core/stores/searchStore'
+import { useSavedRecipesStore } from '@/store/savedRecipesStore'
+import { createClientComponentClient } from '@/lib/supabase'
 
 // Sample data for demonstration
 const sampleCategories: RecipeCategory[] = [
@@ -15,83 +19,11 @@ const sampleCategories: RecipeCategory[] = [
   { id: 'gluten-free', name: 'Gluten-Free', emoji: '🌾', count: 7 },
   { id: 'high-protein', name: 'High Protein', emoji: '💪', count: 9 },
   { id: 'low-carb', name: 'Low Carb', emoji: '🥩', count: 5 },
-  { id: 'desserts', name: 'Desserts', emoji: '🍰', count: 4 }
+  { id: 'desserts', name: 'Desserts', emoji: '��', count: 4 }
 ]
 
-const sampleRecipes: RecipeCardData[] = [
-  {
-    id: '1',
-    title: 'Mediterranean Quinoa Bowl',
-    image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop',
-    prepTime: 25,
-    difficulty: 'easy',
-    servings: 2,
-    dietaryCompliance: ['Vegetarian', 'Gluten-Free', 'High Protein'],
-    safetyValidated: true,
-    calories: 420,
-    rating: 4.8
-  },
-  {
-    id: '2',
-    title: 'Grilled Chicken with Herbs',
-    image: 'https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=400&h=300&fit=crop',
-    prepTime: 30,
-    difficulty: 'medium',
-    servings: 4,
-    dietaryCompliance: ['High Protein', 'Low Carb', 'Paleo'],
-    safetyValidated: true,
-    calories: 350,
-    rating: 4.6
-  },
-  {
-    id: '3',
-    title: 'Vegan Buddha Bowl',
-    image: 'https://images.unsplash.com/photo-1546793665-c74683f339c1?w=400&h=300&fit=crop',
-    prepTime: 20,
-    difficulty: 'easy',
-    servings: 1,
-    dietaryCompliance: ['Vegan', 'Gluten-Free', 'High Fiber'],
-    safetyValidated: true,
-    calories: 380,
-    rating: 4.7
-  },
-  {
-    id: '4',
-    title: 'Creamy Mushroom Risotto',
-    image: 'https://images.unsplash.com/photo-1476124369491-e7addf5db371?w=400&h=300&fit=crop',
-    prepTime: 45,
-    difficulty: 'hard',
-    servings: 3,
-    dietaryCompliance: ['Vegetarian', 'Comfort Food'],
-    safetyValidated: true,
-    calories: 520,
-    rating: 4.9
-  },
-  {
-    id: '5',
-    title: 'Salmon with Roasted Vegetables',
-    image: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400&h=300&fit=crop',
-    prepTime: 35,
-    difficulty: 'medium',
-    servings: 2,
-    dietaryCompliance: ['High Protein', 'Omega-3', 'Low Carb'],
-    safetyValidated: true,
-    calories: 450,
-    rating: 4.5
-  },
-  {
-    id: '6',
-    title: 'Chocolate Avocado Mousse',
-    image: 'https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=400&h=300&fit=crop',
-    prepTime: 15,
-    difficulty: 'easy',
-    servings: 4,
-    dietaryCompliance: ['Vegan', 'Gluten-Free', 'Healthy Dessert'],
-    safetyValidated: true,
-    calories: 180,
-    rating: 4.4
-  }
-]
+// initial empty list – will load from Supabase
+const sampleRecipes: RecipeCardData[] = []
 
 interface RecipeSectionProps {
   className?: string
@@ -99,12 +31,38 @@ interface RecipeSectionProps {
 
 export function RecipeSection({ className }: RecipeSectionProps) {
   const [activeCategory, setActiveCategory] = useState('all')
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [recipes, setRecipes] = useState<RecipeCardData[]>([])
+  const [user, setUser] = useState<{ id: string } | null>(null)
 
-  // Filter recipes based on active category
+  const filters = useFinalSearchQuery()
+  const { toggleSave } = useSavedRecipesStore()
+
+  // Get user session
+  useEffect(() => {
+    const supabase = createClientComponentClient()
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      setUser(user)
+    }
+    getUser()
+  }, [])
+
+  useEffect(() => {
+    const load = async () => {
+      setLoading(true)
+      const data = await fetchRecipes(24, filters)
+      setRecipes(data)
+      setLoading(false)
+    }
+    load()
+  }, [JSON.stringify(filters)])
+
+  const baseRecipes = recipes.length ? recipes : sampleRecipes
+
   const filteredRecipes = activeCategory === 'all' 
-    ? sampleRecipes 
-    : sampleRecipes.filter(recipe => {
+    ? baseRecipes 
+    : baseRecipes.filter(recipe => {
         // Simple filtering logic - in real app this would be more sophisticated
         switch (activeCategory) {
           case 'quick':
@@ -130,19 +88,14 @@ export function RecipeSection({ className }: RecipeSectionProps) {
 
   const handleCategorySelect = (categoryId: string) => {
     setActiveCategory(categoryId)
-    setLoading(true)
-    // Simulate loading
-    setTimeout(() => setLoading(false), 500)
   }
 
-  const handleSaveRecipe = (recipe: RecipeCardData) => {
-    console.log('Saving recipe:', recipe.title)
-    // TODO: Implement save functionality
+  const handleSaveRecipe = async (recipe: RecipeCardData) => {
+    await toggleSave(recipe, user?.id)
   }
 
   const handleViewRecipe = (recipe: RecipeCardData) => {
-    console.log('Viewing recipe:', recipe.title)
-    // TODO: Implement view details functionality
+    window.location.href = `/recipe/${recipe.id}`
   }
 
   return (

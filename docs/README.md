@@ -7,11 +7,11 @@
 
 ## **🏗️ REBUILD IN PROGRESS**
 
-**Current Status**: We're rebuilding ChompChew from the ground up while preserving all valuable features we've developed. This ensures a clean, maintainable codebase with excellent UI/UX.
+**Current Status**: We are midway through the rebuild. **Phase 0 (Preparation & Backup)** and **Phase 1 (Foundation & Core Services)** are ✅ complete, and the **Search foundation** work from Phase 2 has been integrated. Our next focus is **Phase 3: Dietary Needs & User Preferences**.
 
 ### **📋 Rebuild Documentation**
-- **[FEATURE_CATALOG.md](FEATURE_CATALOG.md)** - **COMPLETE FEATURE INVENTORY** - All 27 features we've built that must be preserved
-- **[REBUILD_PLAN.md](REBUILD_PLAN.md)** - **SEQUENTIAL REBUILD STRATEGY** - 7-phase plan to rebuild with clean architecture
+- **[FEATURE_CATALOG.md](FEATURE_CATALOG.md)** – **COMPLETE FEATURE INVENTORY** – All 27 features we've built that must be preserved
+- **[REBUILD_PLAN.md](REBUILD_PLAN.md)** – **SEQUENTIAL REBUILD STRATEGY** – 8-phase plan with a clearly defined **🏆 MVP** scope
 
 ### **🎯 Vision & Strategy**
 - **[PROJECT_VISION.md](PROJECT_VISION.md)** - Core mission, value propositions, and strategic alignment
@@ -59,13 +59,19 @@
 - Design System & UI Components
 
 ### 🏗️ **Rebuild Progress**
-- **Phase 0**: ⏳ **READY TO START** - Feature backup and clean slate preparation
-- **Phase 1-7**: 📋 **PLANNED** - Sequential feature integration with testing
+- **Phase 0**: ✅ **COMPLETE** – Feature backup and clean slate preparation
+- **Phase 1**: ✅ **COMPLETE** – Foundation & core services
+- **Phase 2**: ✅ **COMPLETE** – Search foundation (simple homepage search)
+- **Phase 3**: 🎯 **UP NEXT** – Dietary needs & user preferences (MVP)
+- **Phase 4**: 📋 **PLANNED** – Recipe discovery system (MVP)
+- **Phase 5–8**: 📋 **PLANNED** – Post-MVP enhancements, polish, and launch
 
-### 🎯 **Next Steps**
-1. **Execute Phase 0** - Backup all features to `src/features/` structure
-2. **Clean Current Structure** - Start with minimal app shell
-3. **Sequential Integration** - Add features back one by one with proper testing and UI/UX
+### 🎯 **Next Steps (MVP Focus)**
+1. **Begin Phase 3** – Build the Dietary Needs page and persist user preferences
+2. **Integrate Preferences** – Personalize discovery feed and search results
+3. **Implement Recipe Saving** – Enable bookmarking and the Cookbook page
+4. **Develop Recipe Display** – Recipe cards, grid, and detail pages
+5. **Prep for Auth-Gated AI Generation** – Define paywall for recipe generation (post-MVP)
 
 ---
 
@@ -118,7 +124,7 @@ People with dietary restrictions, medical conditions, or busy lifestyles experie
 
 ### **🏗️ Rebuild Documentation**
 - **[FEATURE_CATALOG.md](FEATURE_CATALOG.md)** - Complete inventory of all 27 features built
-- **[REBUILD_PLAN.md](REBUILD_PLAN.md)** - 7-phase sequential rebuild strategy
+- **[REBUILD_PLAN.md](REBUILD_PLAN.md)** - 8-phase sequential rebuild strategy with MVP scope
 
 ### **🎯 Vision & Strategy**
 - **[PROJECT_VISION.md](PROJECT_VISION.md)** - Core mission and strategic alignment
@@ -153,7 +159,7 @@ People with dietary restrictions, medical conditions, or busy lifestyles experie
 1. **Review Feature Catalog** - Understand what we've built
 2. **Study Rebuild Plan** - Understand the sequential approach
 3. **Start Phase 0** - Backup features and create clean slate
-4. **Follow Phase-by-Phase** - Integrate features with testing and UI/UX focus
+4. **Follow Phase-by-Phase** - Integrate features with testing and UI/UX
 
 ### **Quality Assurance**
 - **Medical Condition Testing** - Validate trigger food detection
@@ -164,20 +170,19 @@ People with dietary restrictions, medical conditions, or busy lifestyles experie
 
 ---
 
-## **📊 Rebuild Timeline**
+## **�� Rebuild Timeline (Updated)**
 
 | Phase | Duration | Focus | Status |
 |-------|----------|-------|--------|
-| 0 | 1.5 days | Feature backup & clean slate | ⏳ Ready |
-| 1 | 4 days | Foundation & core services | 📋 Planned |
-| 2 | 5 days | Search foundation | 📋 Planned |
-| 3 | 5 days | Recipe discovery | 📋 Planned |
-| 4 | 5 days | Safety & dietary features | 📋 Planned |
-| 5 | 2 days | Nutrition & macro features | 📋 Planned |
-| 6 | 5 days | UI/UX polish | 📋 Planned |
-| 7 | 3 days | Integration & launch | 📋 Planned |
-
-**Total**: ~30 days (6 weeks) for complete rebuild with all features
+| 0 | 1.5 days | Preparation & backup | ✅ Complete |
+| 1 | 4 days | Foundation & core services | ✅ Complete |
+| 2 | 3 days | Search foundation (simple) | ✅ Complete |
+| 3 | 5 days | Dietary needs & preferences | 🎯 Up Next |
+| 4 | 5 days | Recipe discovery (cards, detail, saving) | Planned |
+| 5 | 5 days | Advanced safety & dietary features | Planned |
+| 6 | 2 days | Nutrition & macro features | Planned |
+| 7 | 5 days | UI/UX polish & premium features | Planned |
+| 8 | 3 days | Integration & launch | Planned |
 
 ---
 

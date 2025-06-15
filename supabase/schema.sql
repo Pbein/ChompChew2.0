@@ -14,6 +14,8 @@ CREATE TABLE users (
   bio TEXT,
   dietary_preferences TEXT[],
   allergens TEXT[],
+  macro_targets JSONB,
+  fiber_sensitivity BOOLEAN DEFAULT false,
   cooking_level cooking_level,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL

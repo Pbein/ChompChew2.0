@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { RecipeGenerationService, RecipeGenerationInputSchema } from '@/features/core/services/recipeGenerationService'
-import { createRouteHandlerClient } from '@/lib/supabase'
+import { createRouteHandlerClient } from '@/lib/supabase-server'
 import { checkRateLimit, RATE_LIMIT_CONFIGS } from '@/lib/middleware/rateLimiter'
 import { getClientIP } from '@/lib/utils/ip'
 

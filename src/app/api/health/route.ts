@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { CacheService } from '@/features/core/services/cacheService'
-import { createServerComponentClient } from '@/lib/supabase'
+import { createServerComponentClient } from '@/lib/supabase-server'
 
 export async function GET() {
   try {

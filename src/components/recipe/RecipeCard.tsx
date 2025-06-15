@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { cn } from '@/lib/utils'
+import { useSavedRecipesStore } from '@/store/savedRecipesStore'
 
 // Recipe card data interface
 export interface RecipeCardData {
@@ -44,6 +45,9 @@ export function RecipeCard({
     large: 'h-56'
   }
 
+  const { toggleSave, isSaved } = useSavedRecipesStore()
+  const saved = isSaved(recipe.id)
+
   return (
     <div
       className={cn(
@@ -84,18 +88,30 @@ export function RecipeCard({
         )}
 
         {/* Save Button */}
-        {onSave && (
+        {(
+          typeof onSave === 'function' || typeof toggleSave === 'function'
+        ) && (
           <button
             onClick={(e) => {
               e.stopPropagation()
-              onSave(recipe)
+              if (onSave) {
+                onSave(recipe)
+              } else {
+                toggleSave(recipe)
+              }
             }}
             className="absolute top-3 right-3 w-8 h-8 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-md transition-all duration-200 hover:scale-110"
             aria-label="Save recipe"
           >
-            <svg className="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-            </svg>
+            {saved ? (
+              <svg className="w-4 h-4 text-red-500 fill-current" viewBox="0 0 24 24">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+              </svg>
+            ) : (
+              <svg className="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            )}
           </button>
         )}
 
