@@ -12,6 +12,7 @@ export interface UserProfile {
 
   dietary_preferences?: string[]; // e.g., ['vegan', 'keto']
   allergens?: string[]; // avoided ingredients
+  medical_conditions?: string[]; // medical conditions for dietary management
   macro_targets?: MacroTargets;
   fiber_sensitivity?: boolean;
 

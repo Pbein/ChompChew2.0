@@ -1,6 +1,6 @@
 // Safety validation service from technical specifications
 
-import { DietPreferences } from '@/types/dietary-preferences'
+import { DietPreferences } from '@/features/core/types/dietary-preferences'
 
 // Placeholder Recipe interface - will be replaced with actual type
 interface Recipe {

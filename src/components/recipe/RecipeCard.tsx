@@ -12,7 +12,7 @@ export interface RecipeCardData {
   prepTime: number
   difficulty: 'easy' | 'medium' | 'hard'
   servings: number
-  dietaryCompliance: string[]
+  dietaryCompliance?: string[]
   safetyValidated: boolean
   calories?: number
   rating?: number
@@ -50,6 +50,7 @@ export function RecipeCard({
 
   return (
     <div
+      data-testid="recipe-card"
       className={cn(
         "bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden",
         "transition-all duration-300 ease-out hover:shadow-xl hover:-translate-y-1",
@@ -66,12 +67,16 @@ export function RecipeCard({
       )}>
         {recipe.image ? (
           <img
+            data-testid="recipe-image"
             src={recipe.image}
             alt={recipe.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-emerald-100 to-teal-100 flex items-center justify-center">
+          <div 
+            data-testid="recipe-image"
+            className="w-full h-full bg-gradient-to-br from-emerald-100 to-teal-100 flex items-center justify-center"
+          >
             <svg className="w-12 h-12 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
             </svg>
@@ -130,14 +135,17 @@ export function RecipeCard({
 
       {/* Recipe Details */}
       <div className="p-4 space-y-3">
-        <h3 className="text-lg font-semibold text-gray-900 line-clamp-2 group-hover:text-emerald-700 transition-colors">
+        <h3 
+          data-testid="recipe-title"
+          className="text-lg font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-emerald-700 transition-colors"
+        >
           {recipe.title}
         </h3>
         
         {/* Recipe Meta */}
         <div className="flex items-center justify-between text-sm text-gray-600">
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1" data-testid="recipe-prep-time">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -156,18 +164,21 @@ export function RecipeCard({
             )}
           </div>
           
-          <span className={cn(
-            "px-2 py-1 rounded-full text-xs font-medium",
-            recipe.difficulty === 'easy' && "bg-green-100 text-green-700",
-            recipe.difficulty === 'medium' && "bg-yellow-100 text-yellow-700",
-            recipe.difficulty === 'hard' && "bg-red-100 text-red-700"
-          )}>
+          <span 
+            data-testid="recipe-difficulty"
+            className={cn(
+              "px-2 py-1 rounded-full text-xs font-medium",
+              recipe.difficulty === 'easy' && "bg-green-100 text-green-700",
+              recipe.difficulty === 'medium' && "bg-yellow-100 text-yellow-700",
+              recipe.difficulty === 'hard' && "bg-red-100 text-red-700"
+            )}
+          >
             {recipe.difficulty}
           </span>
         </div>
 
         {/* Dietary Compliance Tags */}
-        {recipe.dietaryCompliance.length > 0 && (
+        {recipe.dietaryCompliance && recipe.dietaryCompliance.length > 0 && (
           <div className="flex flex-wrap gap-1">
             {recipe.dietaryCompliance.slice(0, 3).map((tag) => (
               <span

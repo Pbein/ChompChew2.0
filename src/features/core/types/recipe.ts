@@ -1,5 +1,5 @@
 // Common Recipe types for the application
-import { GeneratedRecipe } from '@/lib/services/recipeGenerationService'
+import { GeneratedRecipe } from '@/features/core/services/recipeGenerationService'
 
 export interface Recipe {
   id: string

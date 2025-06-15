@@ -1,5 +1,6 @@
 import { createServerComponentClient } from '@/lib/supabase-server'
-import { Database, UserProfile } from '@/types/database'
+import { UserProfile } from '@/types/profile'
+import { Database } from '@/features/core/types/database'
 
 export class UserService {
   async getUserProfile(userId: string): Promise<UserProfile | null> {

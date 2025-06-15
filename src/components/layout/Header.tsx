@@ -1,9 +1,10 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/Button'
+import { createClientComponentClient } from '@/lib/supabase'
 
 interface HeaderProps {
   className?: string
@@ -11,6 +12,33 @@ interface HeaderProps {
 
 export function Header({ className }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [user, setUser] = useState<{ id: string; email?: string } | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  const supabase = createClientComponentClient()
+
+  // Check authentication status
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      setUser(user)
+      setLoading(false)
+    }
+
+    getUser()
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [supabase.auth])
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut()
+    setIsMobileMenuOpen(false)
+  }
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen)
@@ -39,19 +67,11 @@ export function Header({ className }: HeaderProps) {
           {/* Center Navigation - Core User Journey */}
           <nav className="hidden md:flex items-center space-x-8">
             <Link 
-              href="/search" 
-              className="text-sm font-semibold text-gray-800 hover:text-emerald-700 transition-colors duration-200 relative group flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/60 hover:shadow-sm"
-            >
-              <span>🔍</span>
-              <span>Find Recipes</span>
-              <span className="absolute -bottom-1 left-3 w-0 h-0.5 bg-gradient-to-r from-emerald-500 to-teal-600 transition-all duration-200 group-hover:w-[calc(100%-24px)] rounded-full"></span>
-            </Link>
-            <Link 
               href="/dietary-needs" 
               className="text-sm font-semibold text-gray-800 hover:text-emerald-700 transition-colors duration-200 relative group flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/60 hover:shadow-sm"
             >
               <span>🛡️</span>
-              <span>My Dietary Needs</span>
+              <span>Dietary Needs</span>
               <span className="absolute -bottom-1 left-3 w-0 h-0.5 bg-gradient-to-r from-emerald-500 to-teal-600 transition-all duration-200 group-hover:w-[calc(100%-24px)] rounded-full"></span>
             </Link>
             <Link 
@@ -62,34 +82,66 @@ export function Header({ className }: HeaderProps) {
               <span>Saved Recipes</span>
               <span className="absolute -bottom-1 left-3 w-0 h-0.5 bg-gradient-to-r from-emerald-500 to-teal-600 transition-all duration-200 group-hover:w-[calc(100%-24px)] rounded-full"></span>
             </Link>
+            <Link 
+              href="/generate-recipe" 
+              className="text-sm font-semibold text-gray-800 hover:text-emerald-700 transition-colors duration-200 relative group flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/60 hover:shadow-sm"
+            >
+              <span>✨</span>
+              <span>Generate Recipe</span>
+              <span className="absolute -bottom-1 left-3 w-0 h-0.5 bg-gradient-to-r from-emerald-500 to-teal-600 transition-all duration-200 group-hover:w-[calc(100%-24px)] rounded-full"></span>
+            </Link>
           </nav>
 
           {/* Right Side - User Actions */}
           <div className="hidden md:flex items-center space-x-4">
-            {/* Quick Access to Safety Settings */}
-            <button className="p-2 rounded-lg hover:bg-white/60 hover:shadow-sm transition-all duration-200 text-gray-700 hover:text-emerald-700 hover:scale-105" title="Quick Safety Check">
-              <span className="text-lg">⚠️</span>
-            </button>
-            
-            {/* User Profile/Auth */}
-            <Link href="/profile">
-              <Button
-                variant="ghost"
-                size="md"
-                className="font-semibold hover:bg-white/60 hover:shadow-sm transition-all duration-200 text-gray-800 hover:text-emerald-700"
-              >
-                Profile
-              </Button>
-            </Link>
-            <Link href="/auth/signup">
-              <Button
-                variant="primary"
-                size="md"
-                className="font-semibold bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white shadow-lg shadow-emerald-200/50 hover:shadow-xl hover:shadow-emerald-300/50 transition-all duration-200 hover:scale-105 border-0"
-              >
-                Get Started
-              </Button>
-            </Link>
+            {!loading && (
+              <>
+                {user ? (
+                  // Authenticated user options
+                  <>
+                    <Link href="/profile">
+                      <Button
+                        variant="ghost"
+                        size="md"
+                        className="font-semibold hover:bg-white/60 hover:shadow-sm transition-all duration-200 text-gray-800 hover:text-emerald-700"
+                      >
+                        Profile
+                      </Button>
+                    </Link>
+                    <Button
+                      variant="ghost"
+                      size="md"
+                      onClick={handleSignOut}
+                      className="font-semibold hover:bg-white/60 hover:shadow-sm transition-all duration-200 text-gray-800 hover:text-emerald-700"
+                    >
+                      Sign Out
+                    </Button>
+                  </>
+                ) : (
+                  // Unauthenticated user options
+                  <>
+                    <Link href="/auth/signin">
+                      <Button
+                        variant="ghost"
+                        size="md"
+                        className="font-semibold hover:bg-white/60 hover:shadow-sm transition-all duration-200 text-gray-800 hover:text-emerald-700"
+                      >
+                        Sign In
+                      </Button>
+                    </Link>
+                    <Link href="/auth/signup">
+                      <Button
+                        variant="primary"
+                        size="md"
+                        className="font-semibold bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white shadow-lg shadow-emerald-200/50 hover:shadow-xl hover:shadow-emerald-300/50 transition-all duration-200 hover:scale-105 border-0"
+                      >
+                        Get Started
+                      </Button>
+                    </Link>
+                  </>
+                )}
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -125,23 +177,13 @@ export function Header({ className }: HeaderProps) {
             <div className="px-4 pt-4 pb-6 space-y-2">
               {/* Core Navigation */}
               <Link
-                href="/search"
-                className="block px-4 py-3 text-base font-semibold text-gray-800 hover:text-emerald-700 hover:bg-white/60 hover:shadow-sm rounded-lg transition-all duration-200"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <div className="flex items-center gap-3">
-                  <span>🔍</span>
-                  <span>Find Recipes</span>
-                </div>
-              </Link>
-              <Link
                 href="/dietary-needs"
                 className="block px-4 py-3 text-base font-semibold text-gray-800 hover:text-emerald-700 hover:bg-white/60 hover:shadow-sm rounded-lg transition-all duration-200"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 <div className="flex items-center gap-3">
                   <span>🛡️</span>
-                  <span>My Dietary Needs</span>
+                  <span>Dietary Needs</span>
                 </div>
               </Link>
               <Link
@@ -154,39 +196,66 @@ export function Header({ className }: HeaderProps) {
                   <span>Saved Recipes</span>
                 </div>
               </Link>
-              
-              {/* Safety Quick Access */}
-              <button
-                className="block w-full px-4 py-3 text-base font-semibold text-gray-800 hover:text-emerald-700 hover:bg-white/60 hover:shadow-sm rounded-lg transition-all duration-200 text-left"
+              <Link
+                href="/generate-recipe"
+                className="block px-4 py-3 text-base font-semibold text-gray-800 hover:text-emerald-700 hover:bg-white/60 hover:shadow-sm rounded-lg transition-all duration-200"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 <div className="flex items-center gap-3">
-                  <span>⚠️</span>
-                  <span>Safety Check</span>
+                  <span>✨</span>
+                  <span>Generate Recipe</span>
                 </div>
-              </button>
+              </Link>
               
               {/* Auth Buttons */}
-              <div className="pt-4 space-y-3 border-t border-emerald-200/50">
-                <Link href="/profile" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Button
-                    variant="ghost"
-                    size="lg"
-                    className="w-full justify-start font-semibold text-gray-800 hover:text-emerald-700 hover:bg-white/60"
-                  >
-                    Profile
-                  </Button>
-                </Link>
-                <Link href="/auth/signup" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Button
-                    variant="primary"
-                    size="lg"
-                    className="w-full justify-start font-semibold bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white shadow-lg shadow-emerald-200/50"
-                  >
-                    Get Started
-                  </Button>
-                </Link>
-              </div>
+              {!loading && (
+                <div className="pt-4 space-y-3 border-t border-emerald-200/50">
+                  {user ? (
+                    // Authenticated user options
+                    <>
+                      <Link href="/profile" onClick={() => setIsMobileMenuOpen(false)}>
+                        <Button
+                          variant="ghost"
+                          size="lg"
+                          className="w-full justify-start font-semibold text-gray-800 hover:text-emerald-700 hover:bg-white/60"
+                        >
+                          Profile
+                        </Button>
+                      </Link>
+                      <Button
+                        variant="ghost"
+                        size="lg"
+                        onClick={handleSignOut}
+                        className="w-full justify-start font-semibold text-gray-800 hover:text-emerald-700 hover:bg-white/60"
+                      >
+                        Sign Out
+                      </Button>
+                    </>
+                  ) : (
+                    // Unauthenticated user options
+                    <>
+                      <Link href="/auth/signin" onClick={() => setIsMobileMenuOpen(false)}>
+                        <Button
+                          variant="ghost"
+                          size="lg"
+                          className="w-full justify-start font-semibold text-gray-800 hover:text-emerald-700 hover:bg-white/60"
+                        >
+                          Sign In
+                        </Button>
+                      </Link>
+                      <Link href="/auth/signup" onClick={() => setIsMobileMenuOpen(false)}>
+                        <Button
+                          variant="primary"
+                          size="lg"
+                          className="w-full justify-start font-semibold bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white shadow-lg shadow-emerald-200/50"
+                        >
+                          Get Started
+                        </Button>
+                      </Link>
+                    </>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         )}

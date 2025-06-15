@@ -51,7 +51,7 @@ export function RecipeGrid({
       <div className={`w-full ${className}`}>
         <div className="text-center py-16">
           <div className="text-6xl mb-4">🍽️</div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
             {emptyMessage}
           </h3>
                      <p className="text-gray-600 max-w-md mx-auto">
@@ -68,13 +68,15 @@ export function RecipeGrid({
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-8 auto-rows-fr">
         {recipes.map((recipe) => (
           <div key={recipe.id} className="flex">
-                         <RecipeCard
-               recipe={recipe}
-               onSave={() => onSaveRecipe(recipe)}
-               onViewDetails={() => onViewRecipe(recipe)}
-               size={cardSize}
-               className="w-full h-full"
-             />
+            <a href={`/recipe/${recipe.id}`} className="w-full h-full">
+              <RecipeCard
+                recipe={recipe}
+                onSave={() => onSaveRecipe(recipe)}
+                onViewDetails={() => onViewRecipe(recipe)}
+                size={cardSize}
+                className="w-full h-full"
+              />
+            </a>
           </div>
         ))}
       </div>

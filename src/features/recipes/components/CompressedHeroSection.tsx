@@ -6,7 +6,7 @@ import { SearchBar } from './SearchBar'
 import { Button } from '@/components/ui/Button'
 import { FeaturedRecipeSpotlight } from './FeaturedRecipeSpotlight'
 import { CategoryQuickAccess, CategoryTile } from './CategoryQuickAccess'
-import { EnhancedSearchQuery } from '@/types/dietary-preferences'
+import { EnhancedSearchQuery } from '@/features/core/types/dietary-preferences'
 
 interface FeaturedRecipe {
   id: string

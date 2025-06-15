@@ -34,7 +34,6 @@ export default function SearchPage() {
             <SmartSemanticSearch 
               onSearch={handleSearch}
               placeholder="Try: 'chicken paleo no dairy dinner' or 'quick breakfast under 300 calories'"
-              showExamples={true}
               className="mb-8"
             />
           </div>
@@ -85,7 +84,7 @@ export default function SearchPage() {
                   Exclude Ingredients
                 </h3>
                 <p className="text-gray-600 text-sm">
-                  Use "no" or "without": "no nuts", "without dairy", "avoid shellfish"
+                  Use &quot;no&quot; or &quot;without&quot;: &quot;no nuts&quot;, &quot;without dairy&quot;, &quot;avoid shellfish&quot;
                 </p>
               </div>
 

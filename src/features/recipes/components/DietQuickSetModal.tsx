@@ -8,7 +8,7 @@ import {
   COMMON_ALLERGENS, 
   CONDITION_TRIGGERS,
   DietTemplateName
-} from '@/types/dietary-preferences'
+} from '@/features/core/types/dietary-preferences'
 
 interface DietQuickSetModalProps {
   isOpen: boolean
