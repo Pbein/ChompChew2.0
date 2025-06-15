@@ -18,6 +18,7 @@
 - **[design/DESIGN_SYSTEM.md](design/DESIGN_SYSTEM.md)** - Comprehensive design system with components and patterns
 
 ### **🛠️ Technical Setup**
+- **[setup/TECH_STACK_OVERVIEW.md](setup/TECH_STACK_OVERVIEW.md)** - **COMPLETE TECH STACK** - Framework, state management (Zustand), and recommended tools
 - **[setup/SUPABASE_SETUP.md](setup/SUPABASE_SETUP.md)** - Database configuration and schema
 - **[setup/REDIS_SETUP.md](setup/REDIS_SETUP.md)** - Caching and rate limiting setup
 - **[setup/OPENAI_SETUP.md](setup/OPENAI_SETUP.md)** - AI integration and recipe generation

@@ -30,10 +30,20 @@ export interface SeverityMap {
 // Enhanced search query interface with multi-modal support
 export interface EnhancedSearchQuery {
   ingredients: string[]
+  excludeIngredients?: string[] // New: ingredients to avoid
   calorieGoal?: number
+  calorieRange?: { min: number; max: number } // New: range instead of single value
   macroTargets?: MacroTargets
   dietaryRestrictions: string[]
   avoidFoods: string[]
+  cuisineTypes?: string[] // New: cuisine preferences
+  mealTypes?: string[] // New: breakfast, lunch, dinner, snack
+  prepTime?: number // New: maximum prep time in minutes
+  difficulty?: 'easy' | 'medium' | 'hard' // New: difficulty level
+  servings?: number // New: number of servings needed
+  equipmentAvailable?: string[] // New: available cooking equipment
+  savedSearchId?: string // New: reference to saved search
+  recipeQuery?: string // New: original recipe search query for name/description matching
 }
 
 export interface MacroTargets {
@@ -88,4 +98,44 @@ export const DIET_TEMPLATES = {
 
 export type DietTemplateName = keyof typeof DIET_TEMPLATES
 export type MedicalConditionName = keyof typeof CONDITION_TRIGGERS
-export type CommonAllergen = typeof COMMON_ALLERGENS[number] 
+export type CommonAllergen = typeof COMMON_ALLERGENS[number]
+
+// New: Search filter categories for progressive disclosure
+export interface SearchFilterCategory {
+  id: string
+  name: string
+  emoji: string
+  description: string
+  filters: SearchFilter[]
+  priority: number // For ordering
+}
+
+export interface SearchFilter {
+  id: string
+  name: string
+  type: 'text' | 'number' | 'range' | 'multiselect' | 'boolean' | 'tags'
+  value?: string | number | boolean | string[] | { min: number; max: number }
+  options?: string[]
+  validation?: {
+    min?: number
+    max?: number
+    required?: boolean
+  }
+}
+
+// New: Search state management
+export interface SearchState {
+  query: EnhancedSearchQuery
+  activeFilters: string[]
+  resultCount: number
+  appliedFilters: Record<string, string | number | boolean | string[]>
+  searchHistory: SearchHistoryItem[]
+}
+
+export interface SearchHistoryItem {
+  id: string
+  query: EnhancedSearchQuery
+  timestamp: Date
+  resultCount: number
+  name?: string // User-given name for saved search
+} 
