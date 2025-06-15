@@ -122,11 +122,27 @@ This document catalogs all the features, components, and services we've built th
 **Diet Templates**: Keto, Paleo, Mediterranean, Vegan, etc.
 **Medical Conditions**: UC, Crohn's, IBS support
 
+### **9. Dietary Needs Page** ⏳ **PLANNED**
+**Location**: `src/app/dietary-needs/page.tsx` (proposed)
+
+**Features**:
+- A dedicated page for users to set and manage their dietary profiles.
+- Ability to select from predefined diets (Paleo, Vegan, etc.).
+- Custom allergen and ingredient avoidance lists.
+- Persistent storage of preferences, linked to the user's account.
+- Global application of preferences to search, discovery, and recipe generation.
+- Clear UI indicators across the app to show the active dietary profile.
+
+**Dependencies**:
+- `userService` for saving preferences.
+- `searchStore` to integrate with search.
+- A new Zustand store `dietaryStore` for managing state.
+
 ---
 
 ## **🎯 Macro & Nutrition Features**
 
-### **9. Macro Target Sliders** ✅ **COMPLETE**
+### **10. Macro Target Sliders** ✅ **COMPLETE**
 **Location**: `src/components/recipe/MacroTargetSliders.tsx`
 
 **Features**:
@@ -135,7 +151,7 @@ This document catalogs all the features, components, and services we've built th
 - Visual feedback for macro distribution
 - Preset macro templates
 
-### **10. Calorie Goal Input** ✅ **COMPLETE**
+### **11. Calorie Goal Input** ✅ **COMPLETE**
 **Location**: `src/components/recipe/CalorieGoalInput.tsx`
 
 **Features**:
@@ -147,7 +163,7 @@ This document catalogs all the features, components, and services we've built th
 
 ## **🏠 UI & Layout Features**
 
-### **11. Hero Sections** ✅ **COMPLETE**
+### **12. Hero Sections** ✅ **COMPLETE**
 **Location**: `src/components/recipe/HeroSection.tsx`, `CompressedHeroSection.tsx`
 
 **Features**:
@@ -156,7 +172,7 @@ This document catalogs all the features, components, and services we've built th
 - Mission-focused messaging
 - Call-to-action buttons
 
-### **12. Category Quick Access** ✅ **COMPLETE**
+### **13. Category Quick Access** ✅ **COMPLETE**
 **Location**: `src/components/recipe/CategoryQuickAccess.tsx`
 
 **Features**:
@@ -164,7 +180,7 @@ This document catalogs all the features, components, and services we've built th
 - Visual category tiles with icons
 - Dietary preference shortcuts
 
-### **13. Featured Recipe Spotlight** ✅ **COMPLETE**
+### **14. Featured Recipe Spotlight** ✅ **COMPLETE**
 **Location**: `src/components/recipe/FeaturedRecipeSpotlight.tsx`
 
 **Features**:
@@ -172,7 +188,7 @@ This document catalogs all the features, components, and services we've built th
 - Recipe details and nutrition info
 - Call-to-action buttons
 
-### **14. Browse Components** ✅ **COMPLETE**
+### **15. Browse Components** ✅ **COMPLETE**
 **Location**: `src/components/browse/CategoryTiles.tsx`
 
 **Features**:
@@ -184,7 +200,7 @@ This document catalogs all the features, components, and services we've built th
 
 ## **🔧 Core Services & Infrastructure**
 
-### **15. Cache Service** ✅ **COMPLETE**
+### **16. Cache Service** ✅ **COMPLETE**
 **Location**: `src/lib/services/cacheService.ts`
 
 **Features**:
@@ -193,7 +209,7 @@ This document catalogs all the features, components, and services we've built th
 - Cache invalidation strategies
 - Performance optimization
 
-### **16. User Service** ✅ **COMPLETE**
+### **17. User Service** ✅ **COMPLETE**
 **Location**: `src/lib/services/userService.ts`
 
 **Features**:
@@ -202,7 +218,7 @@ This document catalogs all the features, components, and services we've built th
 - Recipe collection management
 - User authentication integration
 
-### **17. Design System** ✅ **COMPLETE**
+### **18. Design System** ✅ **COMPLETE**
 **Location**: `src/lib/design-system.ts`
 
 **Features**:
@@ -215,7 +231,7 @@ This document catalogs all the features, components, and services we've built th
 
 ## **🗄️ Data & State Management**
 
-### **18. Type Definitions** ✅ **COMPLETE**
+### **19. Type Definitions** ✅ **COMPLETE**
 **Location**: `src/types/`
 
 **Key Types**:
@@ -223,7 +239,7 @@ This document catalogs all the features, components, and services we've built th
 - `recipe.ts` - Recipe interfaces and conversion utilities
 - Complete TypeScript coverage
 
-### **19. Zustand Store** ✅ **COMPLETE**
+### **20. Zustand Store** ✅ **COMPLETE**
 **Location**: `src/stores/searchStore.ts`
 
 **Features**:
@@ -236,7 +252,7 @@ This document catalogs all the features, components, and services we've built th
 
 ## **🔌 API & Integration**
 
-### **20. OpenAI Integration** ✅ **COMPLETE**
+### **21. OpenAI Integration** ✅ **COMPLETE**
 **Location**: `src/lib/openai.ts`
 
 **Features**:
@@ -244,7 +260,7 @@ This document catalogs all the features, components, and services we've built th
 - Recipe generation prompts
 - Error handling and rate limiting
 
-### **21. Database Integration** ✅ **COMPLETE**
+### **22. Database Integration** ✅ **COMPLETE**
 **Location**: `src/lib/supabase.ts`, `src/lib/auth.ts`
 
 **Features**:
@@ -252,7 +268,7 @@ This document catalogs all the features, components, and services we've built th
 - Authentication setup
 - Database schema integration
 
-### **22. Redis Integration** ✅ **COMPLETE**
+### **23. Redis Integration** ✅ **COMPLETE**
 **Location**: `src/lib/redis.ts`
 
 **Features**:
@@ -264,14 +280,14 @@ This document catalogs all the features, components, and services we've built th
 
 ## **📱 Pages & Routes**
 
-### **23. Search Demo Page** ✅ **COMPLETE**
+### **24. Search Demo Page** ✅ **COMPLETE**
 **Location**: `src/app/search-demo/page.tsx`
 
 **Features**:
 - Interactive demo of smart semantic search
 - Feature showcase and testing interface
 
-### **24. Recipe Generation Page** ✅ **COMPLETE**
+### **25. Recipe Generation Page** ✅ **COMPLETE**
 **Location**: `src/app/generate/page.tsx`
 
 **Features**:
@@ -280,7 +296,7 @@ This document catalogs all the features, components, and services we've built th
 - Suspense boundary for useSearchParams
 - Loading and error states
 
-### **25. Main Landing Page** ✅ **COMPLETE**
+### **26. Main Landing Page** ✅ **COMPLETE**
 **Location**: `src/app/page.tsx`
 
 **Features**:
@@ -292,14 +308,14 @@ This document catalogs all the features, components, and services we've built th
 
 ## **🛠️ Development Infrastructure**
 
-### **26. Middleware** ✅ **COMPLETE**
+### **27. Middleware** ✅ **COMPLETE**
 **Location**: `src/middleware.ts`
 
 **Features**:
 - Request handling and routing
 - Authentication middleware
 
-### **27. Utilities** ✅ **COMPLETE**
+### **28. Utilities** ✅ **COMPLETE**
 **Location**: `src/lib/utils.ts`
 
 **Features**:

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { SearchChip as SearchChipType, CATEGORY_CONFIG } from '@/stores/searchStore'
+import { SearchChip as SearchChipType, CATEGORY_CONFIG } from '@/features/core/stores/searchStore'
 import { cn } from '@/lib/utils'
 
 interface SearchChipProps {

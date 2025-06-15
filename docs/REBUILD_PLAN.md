@@ -18,12 +18,12 @@
 **Duration**: 1 day
 
 **Actions**:
-- [ ] Create `src/features/` directory structure
-- [ ] Move all core services to `src/features/core/services/`
-- [ ] Move Zustand stores to `src/features/core/stores/`
-- [ ] Move type definitions to `src/features/core/types/`
-- [ ] Move utilities to `src/features/core/utils/`
-- [ ] Create feature-specific directories for components
+- [x] Create `src/features/` directory structure
+- [x] Move all core services to `src/features/core/services/`
+- [x] Move Zustand stores to `src/features/core/stores/`
+- [x] Move type definitions to `src/features/core/types/`
+- [x] Move utilities to `src/features/core/utils/`
+- [x] Create feature-specific directories for components
 
 **Backup Structure**:
 ```
@@ -43,14 +43,34 @@ src/features/
     └── components/       # Macro and calorie components
 ```
 
-### **Step 0.2: Clean Current Structure**
+### **Step 0.2: Set Up Testing Infrastructure**
 **Duration**: 0.5 days
 
 **Actions**:
-- [ ] Remove all pages except basic layout
-- [ ] Remove all components except essential UI primitives
-- [ ] Keep only core configuration files
-- [ ] Maintain API routes structure
+- [x] Install testing dependencies (Vitest, Testing Library, Playwright, MSW)
+- [x] Configure Vitest with TypeScript support
+- [x] Set up Testing Library with custom render utilities
+- [x] Configure MSW for API mocking
+- [x] Set up Playwright for E2E tests
+- [x] Configure coverage reporting (>90% target)
+- [ ] Set up CI/CD testing pipeline
+
+**Testing Stack Setup**:
+```bash
+npm install -D vitest @testing-library/react @testing-library/jest-dom
+npm install -D @playwright/test msw @axe-core/react
+npm install -D @testing-library/user-event c8
+```
+
+### **Step 0.3: Clean Current Structure**
+**Duration**: 0.5 days
+
+**Actions**:
+- [x] Remove all pages except basic layout
+- [x] Remove all components except essential UI primitives
+- [x] Keep only core configuration files
+- [x] Maintain API routes structure
+- [x] Create test directory structure
 
 **Minimal Structure After Cleanup**:
 ```
@@ -64,7 +84,15 @@ src/
 ├── lib/
 │   ├── utils.ts          # Basic utilities only
 │   └── config/           # Configuration files
-└── features/             # All preserved features
+├── features/             # All preserved features
+└── tests/                # Testing infrastructure
+    ├── setup/
+    │   ├── vitest.config.ts
+    │   ├── test-utils.tsx
+    │   ├── msw-handlers.ts
+    │   └── playwright.config.ts
+    ├── mocks/
+    └── fixtures/
 ```
 
 ---
@@ -77,11 +105,11 @@ src/
 **Focus**: Get the foundation working without UI complexity
 
 **Actions**:
-- [ ] Set up basic layout with navigation
-- [ ] Integrate design system from `src/features/core/utils/design-system.ts`
-- [ ] Set up Zustand store integration
-- [ ] Create basic error boundaries and loading states
-- [ ] Set up testing framework (Vitest + Testing Library)
+- [x] Set up basic layout with navigation
+- [x] Integrate design system from `src/features/core/utils/design-system.ts`
+- [x] Set up Zustand store integration
+- [x] Create basic error boundaries and loading states
+- [x] Set up testing framework (Vitest + Testing Library)
 
 **Deliverables**:
 - Clean, minimal app shell
@@ -90,8 +118,10 @@ src/
 - Testing infrastructure
 
 **Testing**: 
-- [ ] Unit tests for core utilities
-- [ ] Integration tests for store setup
+- [x] Unit tests for core utilities (design system, configuration)
+- [x] Zustand store testing with proper mocking
+- [x] Integration tests for store setup
+- [x] Test coverage >90% for all core infrastructure (17 tests passing)
 
 ### **Step 1.2: API & Service Layer**
 **Duration**: 2 days
@@ -99,11 +129,11 @@ src/
 **Focus**: Ensure all backend services work independently
 
 **Actions**:
-- [ ] Integrate recipe generation service
-- [ ] Integrate safety validation service
-- [ ] Integrate cache service
-- [ ] Integrate user service
-- [ ] Create service integration tests
+- [x] Integrate recipe generation service
+- [x] Integrate safety validation service
+- [x] Integrate cache service
+- [x] Integrate user service
+- [x] Create service integration tests
 
 **Deliverables**:
 - All services working and tested
@@ -111,9 +141,11 @@ src/
 - Service layer documentation
 
 **Testing**:
-- [ ] Unit tests for each service
-- [ ] API endpoint tests
-- [ ] Service integration tests
+- [x] Unit tests for each service (recipe generation, safety validation, cache, user)
+- [x] API endpoint tests with MSW mocking
+- [x] Service integration tests with real API calls
+- [x] Critical safety validation tests (zero-tolerance allergen blocking)
+- [x] Error handling and edge case tests
 
 ---
 
@@ -143,10 +175,12 @@ src/
 - Clean search results display
 
 **Testing**:
-- [ ] Search input functionality tests
-- [ ] Token parsing and categorization tests
-- [ ] Search state management tests
-- [ ] User interaction tests
+- [ ] Search input functionality tests (typing, keyboard shortcuts)
+- [ ] Token parsing and categorization tests (natural language processing)
+- [ ] Search state management tests (Zustand store interactions)
+- [ ] User interaction tests (suggestions, chips, history)
+- [ ] Accessibility tests for search interface
+- [ ] Performance tests for search response times
 
 ### **Step 2.2: Advanced Search Features**
 **Duration**: 2 days
@@ -172,9 +206,62 @@ src/
 
 ---
 
-## **🍽️ Phase 3: Recipe Discovery**
+## **🛡️ Phase 3: Dietary Needs & User Preferences**
 
-### **Step 3.1: Recipe Display System**
+### **Step 3.1: Dietary Preferences Page**
+**Duration**: 3 days
+
+**Focus**: Build a dedicated page for users to manage their dietary needs, which will influence search and recommendations across the app.
+
+**Actions**:
+- [ ] Design the UI for the "Dietary Needs" page, accessible from the main navigation.
+- [ ] Build the frontend components for selecting and saving dietary profiles (e.g., Paleo, Keto, Vegan).
+- [ ] Implement state management (Zustand) to handle user's dietary preferences.
+- [ ] Connect the preferences to a backend service to persist user choices.
+- [ ] Ensure preferences are clearly displayed and can be easily updated.
+
+**Components to Build**:
+- `DietaryNeedsPage` - The main page for managing preferences.
+- `DietaryProfileSelector` - Component for choosing predefined diets.
+- `AllergenManager` - Interface for adding and removing specific allergens.
+- `PreferenceCard` - A component to display a summary of the user's current settings.
+
+**Deliverables**:
+- A fully functional "Dietary Needs" page.
+- Persistent storage of user dietary preferences.
+- A global state that makes preferences accessible to other parts of the application.
+
+**Testing**:
+- [ ] Unit tests for preference selection components.
+- [ ] State management tests for the dietary store.
+- [ ] Integration tests to ensure preferences are saved and retrieved correctly.
+- [ ] E2E test for the user flow of setting and changing a dietary profile.
+
+### **Step 3.2: Integration with Search**
+**Duration**: 2 days
+
+**Focus**: Integrate the saved dietary preferences directly into the search functionality.
+
+**Actions**:
+- [ ] Modify the search query logic to automatically include dietary profile filters.
+- [ ] Update the `searchStore` to be aware of the user's dietary settings.
+- [ ] Display active dietary filters as non-removable chips or indicators in the search UI.
+- [ ] Ensure that search suggestions are also influenced by the dietary profile.
+
+**Deliverables**:
+- Search results that are automatically filtered by the user's saved dietary preferences.
+- A clear visual indication in the UI that dietary filters are active.
+
+**Testing**:
+- [ ] Integration tests for search results with active dietary filters.
+- [ ] Unit tests for the logic that incorporates dietary preferences into the search query.
+- [ ] E2E test: perform a search, set a dietary preference, and verify the search results are updated accordingly.
+
+---
+
+## **🍽️ Phase 4: Recipe Discovery**
+
+### **Step 4.1: Recipe Display System**
 **Duration**: 3 days
 
 **Focus**: Create beautiful, functional recipe displays
@@ -202,7 +289,7 @@ src/
 - [ ] Recipe generation integration tests
 - [ ] User interaction tests
 
-### **Step 3.2: Recipe Management**
+### **Step 4.2: Recipe Management**
 **Duration**: 2 days
 
 **Focus**: Recipe saving, collections, and user features
@@ -225,63 +312,57 @@ src/
 
 ---
 
-## **🛡️ Phase 4: Safety & Dietary Features**
+## **🛡️ Phase 5: Advanced Safety & Dietary Features**
 
-### **Step 4.1: Dietary Preferences System**
+### **Step 5.1: Medical & Allergen Integration**
 **Duration**: 3 days
 
-**Focus**: Comprehensive dietary management
+**Focus**: Enhance safety features with medical condition support and advanced allergen handling.
 
 **Actions**:
-- [ ] Redesign diet quick-set modal
-- [ ] Integrate safety validation service
-- [ ] Create dietary preference management
-- [ ] Add medical condition support
-- [ ] Implement allergen management
+- [ ] Redesign diet quick-set modal for more complex scenarios.
+- [ ] Integrate safety validation service more deeply based on user profiles.
+- [ ] Add explicit support for medical conditions (e.g., UC, Crohn's, IBS).
+- [ ] Implement robust allergen management and cross-contamination warnings.
 
 **Components to Build**:
-- `DietaryPreferences` - Main preferences interface
-- `AllergenManager` - Allergen selection and management
-- `MedicalConditions` - Medical condition setup
-- `SafetyIndicators` - Visual safety feedback
+- `MedicalConditionSelector` - Interface for users to specify medical conditions.
+- `SafetyIndicators` - Visual safety feedback on recipe cards and pages.
+- `IngredientSafetyTooltip` - On-hover details for potentially unsafe ingredients.
 
 **Deliverables**:
-- Comprehensive dietary preference system
-- Medical condition support
-- Safety validation integration
+- Comprehensive dietary preference system considering medical needs.
+- Stronger safety validation and user warnings.
 
 **Testing**:
-- [ ] Dietary preference tests
-- [ ] Safety validation tests
-- [ ] Medical condition tests
-- [ ] Allergen management tests
+- [ ] Tests for medical condition filtering.
+- [ ] Critical safety validation tests for allergens.
 
-### **Step 4.2: Safety Integration**
+### **Step 5.2: Safety in UI**
 **Duration**: 2 days
 
-**Focus**: Integrate safety throughout the app
+**Focus**: Integrate safety feedback throughout the application.
 
 **Actions**:
-- [ ] Add safety indicators to recipe displays
-- [ ] Implement safety warnings and blockers
-- [ ] Create ingredient substitution suggestions
-- [ ] Add safety validation to search results
+- [ ] Add dynamic safety indicators to all recipe displays.
+- [ ] Implement contextual safety warnings and blockers.
+- [ ] Create intelligent ingredient substitution suggestions for unsafe items.
+- [ ] Add safety validation filters to search results.
 
 **Deliverables**:
-- App-wide safety integration
-- Clear safety indicators
-- Ingredient substitution system
+- App-wide safety integration.
+- Clear safety indicators and warnings.
+- Ingredient substitution system based on dietary profiles.
 
 **Testing**:
-- [ ] Safety integration tests
-- [ ] Warning system tests
-- [ ] Substitution suggestion tests
+- [ ] UI tests for safety indicators and warnings.
+- [ ] Tests for the substitution suggestion engine.
 
 ---
 
-## **🎯 Phase 5: Nutrition & Macro Features**
+## **🎯 Phase 6: Nutrition & Macro Features**
 
-### **Step 5.1: Nutrition Tracking**
+### **Step 6.1: Nutrition Tracking**
 **Duration**: 2 days
 
 **Focus**: Calorie and macro management
@@ -310,9 +391,9 @@ src/
 
 ---
 
-## **🎨 Phase 6: UI/UX Polish & Advanced Features**
+## **🎨 Phase 7: UI/UX Polish & Advanced Features**
 
-### **Step 6.1: UI/UX Enhancement**
+### **Step 7.1: UI/UX Enhancement**
 **Duration**: 3 days
 
 **Focus**: Polish the user experience
@@ -336,7 +417,7 @@ src/
 - [ ] Mobile interaction tests
 - [ ] Performance tests
 
-### **Step 6.2: Advanced Features**
+### **Step 7.2: Advanced Features**
 **Duration**: 2 days
 
 **Focus**: Add premium features
@@ -359,9 +440,9 @@ src/
 
 ---
 
-## **🚀 Phase 7: Integration & Launch Preparation**
+## **🚀 Phase 8: Integration & Launch Preparation**
 
-### **Step 7.1: Full Integration Testing**
+### **Step 8.1: Full Integration Testing**
 **Duration**: 2 days
 
 **Focus**: Ensure everything works together
@@ -377,7 +458,7 @@ src/
 - Performance optimizations
 - Comprehensive test coverage
 
-### **Step 7.2: Documentation & Launch**
+### **Step 8.2: Documentation & Launch**
 **Duration**: 1 day
 
 **Focus**: Prepare for launch
@@ -413,11 +494,14 @@ src/
 
 ### **Quality Gates**
 Each phase must pass:
-- [ ] All tests passing
+- [ ] All tests passing (unit, integration, component)
+- [ ] Test coverage >90% for new code
 - [ ] Code review completed
-- [ ] Accessibility audit passed
+- [ ] Accessibility audit passed (WCAG 2.2 AA)
 - [ ] Performance benchmarks met
+- [ ] No critical safety validation failures
 - [ ] Documentation updated
+- [ ] E2E tests for critical user paths
 
 ---
 
@@ -428,13 +512,14 @@ Each phase must pass:
 | 0 | 1.5 days | Preparation | Feature backup, clean slate |
 | 1 | 4 days | Foundation | Core infrastructure, services |
 | 2 | 5 days | Search | Unified search interface |
-| 3 | 5 days | Recipes | Recipe display and management |
-| 4 | 5 days | Safety | Dietary preferences and safety |
-| 5 | 2 days | Nutrition | Macro and calorie features |
-| 6 | 5 days | Polish | UI/UX and advanced features |
-| 7 | 3 days | Launch | Integration and deployment |
+| 3 | 5 days | Dietary Needs | User preferences & search integration |
+| 4 | 5 days | Recipes | Recipe display and management |
+| 5 | 5 days | Safety | Advanced safety and medical |
+| 6 | 2 days | Nutrition | Macro and calorie features |
+| 7 | 5 days | Polish | UI/UX and advanced features |
+| 8 | 3 days | Launch | Integration and deployment |
 
-**Total Duration**: ~30 days (6 weeks)
+**Total Duration**: ~35 days
 
 ---
 

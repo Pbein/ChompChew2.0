@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { ParsedToken, TokenCategory, CATEGORY_CONFIG } from '@/stores/searchStore'
+import { ParsedToken, TokenCategory, CATEGORY_CONFIG } from '@/features/core/stores/searchStore'
 import { cn } from '@/lib/utils'
 
 interface SuggestionPopoverProps {
@@ -25,7 +25,8 @@ export const SuggestionPopover: React.FC<SuggestionPopoverProps> = ({
   return (
     <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-xl border border-gray-200 z-50 max-h-96 overflow-y-auto">
       <div className="p-4">
-        <div className="text-sm font-medium text-gray-700 mb-3">
+        <div className="text-sm font-medium text-gray-700 mb-3 flex items-center">
+          <span className="text-emerald-600 mr-2">✨</span>
           Categorize your search terms:
         </div>
         
@@ -33,10 +34,11 @@ export const SuggestionPopover: React.FC<SuggestionPopoverProps> = ({
           const originalIndex = tokens.indexOf(token)
           
           return (
-                         <div key={`${token.text}-${tokenIndex}`} className="mb-4 last:mb-0">
-               <div className="text-sm font-medium text-gray-600 mb-2">
-                 &ldquo;{token.text}&rdquo;
-               </div>
+            <div key={`${token.text}-${tokenIndex}`} className="mb-4 last:mb-0">
+              <div className="text-sm font-medium text-gray-600 mb-2 flex items-center">
+                <span className="text-emerald-500 mr-1">🔍</span>
+                &ldquo;{token.text}&rdquo;
+              </div>
               
               <div className="space-y-1">
                 {token.suggestedCategories.map((suggestion, suggestionIndex) => {
@@ -49,10 +51,10 @@ export const SuggestionPopover: React.FC<SuggestionPopoverProps> = ({
                         onConfirmToken(originalIndex, suggestion.category, suggestion.label)
                       }}
                       className={cn(
-                        "w-full text-left px-3 py-2 rounded-lg border transition-all hover:shadow-sm",
+                        "w-full text-left px-3 py-2 rounded-lg border transition-all hover:shadow-md",
                         "flex items-center justify-between group",
                         config.color,
-                        "hover:scale-[1.02]"
+                        "hover:scale-[1.02] hover:border-emerald-300"
                       )}
                     >
                       <div className="flex items-center">
@@ -64,7 +66,7 @@ export const SuggestionPopover: React.FC<SuggestionPopoverProps> = ({
                         <span className="text-xs opacity-70 mr-2">
                           {Math.round(suggestion.confidence * 100)}% match
                         </span>
-                        <div className="w-2 h-2 rounded-full bg-current opacity-60 group-hover:opacity-100 transition-opacity"></div>
+                        <div className="w-2 h-2 rounded-full bg-emerald-500 opacity-60 group-hover:opacity-100 transition-opacity"></div>
                       </div>
                     </button>
                   )
@@ -76,12 +78,13 @@ export const SuggestionPopover: React.FC<SuggestionPopoverProps> = ({
         
         <div className="mt-4 pt-3 border-t border-gray-100">
           <div className="flex items-center justify-between">
-            <div className="text-xs text-gray-500">
+            <div className="text-xs text-gray-500 flex items-center">
+              <span className="text-emerald-500 mr-1">⌨️</span>
               Press Enter to auto-confirm best matches
             </div>
             <button
               onClick={onClose}
-              className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+              className="text-xs text-gray-400 hover:text-emerald-600 transition-colors px-2 py-1 rounded hover:bg-emerald-50"
             >
               Close
             </button>

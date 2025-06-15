@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { SearchInput } from './SearchInput'
-import { useSearchStore, SearchQuery } from '@/stores/searchStore'
+import { useSearchStore, SearchQuery } from '@/features/core/stores/searchStore'
 
 interface SmartSemanticSearchProps {
   className?: string

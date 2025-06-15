@@ -1,5 +1,5 @@
 import { RedisCache, REDIS_KEYS, CACHE_TTL } from '@/lib/redis'
-import { Recipe, UserProfile } from '@/types/database'
+import { Recipe, UserProfile } from '@/features/core/types/database'
 
 export class CacheService {
   
