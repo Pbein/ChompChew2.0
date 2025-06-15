@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
+import { useMemo } from 'react'
 import { useProfileStore } from '@/store/profileStore'
 
 // Search query structure matching the specification
@@ -393,12 +394,27 @@ export const useFinalSearchQuery = () => {
   const { structuredQuery } = useSearchStore()
   const { profile } = useProfileStore()
 
-  // Merge dietary preferences and avoided ingredients from profile
-  const combined: SearchQuery = {
-    ...structuredQuery,
-    dietaryPreferences: Array.from(new Set([...(structuredQuery.dietaryPreferences || []), ...(profile?.dietary_preferences || [])])),
-    excludedIngredients: Array.from(new Set([...(structuredQuery.excludedIngredients || []), ...(profile?.allergens || [])]))
-  }
+  // Memoize the combined query to prevent unnecessary re-renders
+  return useMemo(() => {
+    // Merge dietary preferences and avoided ingredients from profile
+    const combined: SearchQuery = {
+      ...structuredQuery,
+      dietaryPreferences: Array.from(new Set([...(structuredQuery.dietaryPreferences || []), ...(profile?.dietary_preferences || [])])),
+      excludedIngredients: Array.from(new Set([...(structuredQuery.excludedIngredients || []), ...(profile?.allergens || [])]))
+    }
 
-  return combined
+    return combined
+  }, [
+    structuredQuery.ingredients.join(','),
+    structuredQuery.excludedIngredients.join(','),
+    structuredQuery.dietaryPreferences.join(','),
+    structuredQuery.mealType.join(','),
+    structuredQuery.cuisine.join(','),
+    structuredQuery.cookingMethod.join(','),
+    structuredQuery.nutritionGoals.join(','),
+    structuredQuery.prepConstraints.join(','),
+    structuredQuery.dishes.join(','),
+    profile?.dietary_preferences?.join(',') || '',
+    profile?.allergens?.join(',') || ''
+  ])
 } 

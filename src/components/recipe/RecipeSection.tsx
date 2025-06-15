@@ -193,9 +193,6 @@ export function RecipeSection({ className }: RecipeSectionProps) {
     getUser()
   }, [])
 
-  // Extract searchQuery serialization to avoid complex expression in dependency array
-  const searchQueryString = JSON.stringify(searchQuery)
-
   useEffect(() => {
     const load = async () => {
       setLoading(true)
@@ -237,7 +234,7 @@ export function RecipeSection({ className }: RecipeSectionProps) {
       }
     }
     load()
-  }, [user, searchQuery, searchQueryString])
+  }, [user, searchQuery])
 
   const baseRecipes = recipes.length ? recipes : sampleRecipes
 
