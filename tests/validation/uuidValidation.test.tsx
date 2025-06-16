@@ -178,7 +178,7 @@ describe('UUID Format Validation', () => {
       })
     })
 
-    test('should handle empty database gracefully with fallback UUIDs', async () => {
+    test('should handle empty database gracefully in database-only mode', async () => {
       // Mock empty database
       vi.mocked(fetchRecipes).mockResolvedValue([])
       
@@ -186,23 +186,15 @@ describe('UUID Format Validation', () => {
       
       await waitFor(() => {
         const recipeCards = container.querySelectorAll('[data-testid="recipe-card"]')
-        expect(recipeCards.length).toBe(12) // Should show fallback recipes
+        expect(recipeCards.length).toBe(0) // Database-only mode: no fallback recipes
         
-        // Verify fallback recipes use proper UUIDs
-        const recipeLinks = container.querySelectorAll('a[href*="/recipe/"]')
-        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
-        
-        recipeLinks.forEach((link) => {
-          const href = link.getAttribute('href')
-          if (href) {
-            const recipeId = href.split('/recipe/')[1]
-            expect(recipeId).toMatch(uuidRegex)
-          }
-        })
+        // Should show empty state message
+        const emptyMessage = container.querySelector('h3')
+        expect(emptyMessage?.textContent).toContain('No recipes found')
       })
     })
 
-    test('should handle database errors with fallback UUIDs', async () => {
+    test('should handle database errors gracefully in database-only mode', async () => {
       // Mock database error
       vi.mocked(fetchRecipes).mockRejectedValue(new Error('Database connection failed'))
       
@@ -210,19 +202,11 @@ describe('UUID Format Validation', () => {
       
       await waitFor(() => {
         const recipeCards = container.querySelectorAll('[data-testid="recipe-card"]')
-        expect(recipeCards.length).toBe(12) // Should show fallback recipes
+        expect(recipeCards.length).toBe(0) // Database-only mode: no fallback recipes
         
-        // Verify fallback recipes use proper UUIDs
-        const recipeLinks = container.querySelectorAll('a[href*="/recipe/"]')
-        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
-        
-        recipeLinks.forEach((link) => {
-          const href = link.getAttribute('href')
-          if (href) {
-            const recipeId = href.split('/recipe/')[1]
-            expect(recipeId).toMatch(uuidRegex)
-          }
-        })
+        // Should show empty state message
+        const emptyMessage = container.querySelector('h3')
+        expect(emptyMessage?.textContent).toContain('No recipes found')
       })
     })
   })
@@ -271,8 +255,8 @@ describe('UUID Format Validation', () => {
   })
 
   describe('UUID Consistency Validation', () => {
-    test('should maintain UUID format consistency across components', async () => {
-      // Test that both database and fallback recipes use the same UUID format
+    test('should maintain UUID format consistency for database recipes', async () => {
+      // Test that database recipes use proper UUID format
       const dbRecipes = Array.from({ length: 3 }, (_, i) => createMockRecipeWithUUID(i))
       vi.mocked(fetchRecipes).mockResolvedValue(dbRecipes)
       
@@ -281,22 +265,11 @@ describe('UUID Format Validation', () => {
       await waitFor(() => {
         const dbLinks = dbContainer.querySelectorAll('a[href*="/recipe/"]')
         expect(dbLinks.length).toBe(3)
-      })
-      
-      // Test fallback recipes
-      vi.mocked(fetchRecipes).mockResolvedValue([])
-      
-      const { container: fallbackContainer } = render(<RecipeSection />)
-      
-      await waitFor(() => {
-        const fallbackLinks = fallbackContainer.querySelectorAll('a[href*="/recipe/"]')
-        expect(fallbackLinks.length).toBe(12)
         
-        // Both should use the same UUID format
+        // All database recipes should use proper UUID format
         const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
         
-        const allLinks = [...dbContainer.querySelectorAll('a[href*="/recipe/"]'), ...fallbackLinks]
-        allLinks.forEach((link) => {
+        dbLinks.forEach((link) => {
           const href = link.getAttribute('href')
           if (href) {
             const recipeId = href.split('/recipe/')[1]
@@ -306,31 +279,25 @@ describe('UUID Format Validation', () => {
       })
     })
 
-    test('should ensure no legacy sample-X format exists', async () => {
-      // Test both database and fallback scenarios
-      const scenarios = [
-        { name: 'database', mockData: Array.from({ length: 5 }, (_, i) => createMockRecipeWithUUID(i)) },
-        { name: 'fallback', mockData: [] }
-      ]
+    test('should ensure no legacy sample-X format exists in database recipes', async () => {
+      // Test database recipes only (database-only mode)
+      const dbRecipes = Array.from({ length: 5 }, (_, i) => createMockRecipeWithUUID(i))
+      vi.mocked(fetchRecipes).mockResolvedValue(dbRecipes)
       
-      for (const scenario of scenarios) {
-        vi.mocked(fetchRecipes).mockResolvedValue(scenario.mockData)
+      const { container } = render(<RecipeSection />)
+      
+      await waitFor(() => {
+        const recipeLinks = container.querySelectorAll('a[href*="/recipe/"]')
+        expect(recipeLinks.length).toBe(5)
         
-        const { container } = render(<RecipeSection />)
-        
-        await waitFor(() => {
-          const recipeLinks = container.querySelectorAll('a[href*="/recipe/"]')
-          expect(recipeLinks.length).toBeGreaterThan(0)
-          
-          recipeLinks.forEach((link) => {
-            const href = link.getAttribute('href')
-            if (href) {
-              const recipeId = href.split('/recipe/')[1]
-              expect(recipeId).not.toMatch(/^sample-\d+$/)
-            }
-          })
+        recipeLinks.forEach((link) => {
+          const href = link.getAttribute('href')
+          if (href) {
+            const recipeId = href.split('/recipe/')[1]
+            expect(recipeId).not.toMatch(/^sample-\d+$/)
+          }
         })
-      }
+      })
     })
   })
 }) 

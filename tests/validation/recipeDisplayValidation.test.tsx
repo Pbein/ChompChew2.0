@@ -39,15 +39,19 @@ describe('Recipe Display Validation', () => {
   })
 
   describe('Homepage Recipe Count', () => {
-    test('should display at least 12 recipes on homepage with fallback data', async () => {
-      // Mock empty database response to trigger fallback
+    test('should display empty state when database is empty (database-only mode)', async () => {
+      // Mock empty database response
       vi.mocked(fetchRecipes).mockResolvedValue([])
       
       const { container } = render(<RecipeSection />)
       
       await waitFor(() => {
         const recipeCards = container.querySelectorAll('[data-testid="recipe-card"]')
-        expect(recipeCards.length).toBeGreaterThanOrEqual(12)
+        expect(recipeCards.length).toBe(0) // Database-only mode: no fallback recipes
+        
+        // Should show empty state message
+        const emptyMessage = container.querySelector('h3')
+        expect(emptyMessage?.textContent).toContain('No recipes found')
       }, { timeout: 3000 })
     })
 
@@ -65,7 +69,7 @@ describe('Recipe Display Validation', () => {
       })
     })
 
-    test('should gracefully handle database errors with fallback', async () => {
+    test('should gracefully handle database errors in database-only mode', async () => {
       // Mock database failure
       vi.mocked(fetchRecipes).mockRejectedValue(new Error('Database connection failed'))
       
@@ -73,19 +77,24 @@ describe('Recipe Display Validation', () => {
       
       await waitFor(() => {
         const recipeCards = container.querySelectorAll('[data-testid="recipe-card"]')
-        expect(recipeCards.length).toBeGreaterThanOrEqual(12) // Should show fallback recipes
+        expect(recipeCards.length).toBe(0) // Database-only mode: no fallback recipes
+        
+        // Should show empty state message
+        const emptyMessage = container.querySelector('h3')
+        expect(emptyMessage?.textContent).toContain('No recipes found')
       })
     })
 
-    test('should validate fallback recipe data structure', async () => {
-      // Mock empty database to trigger fallback
-      vi.mocked(fetchRecipes).mockResolvedValue([])
+    test('should validate database recipe data structure', async () => {
+      // Mock database with recipes
+      const mockRecipes = Array.from({ length: 5 }, (_, i) => createMockRecipe(i))
+      vi.mocked(fetchRecipes).mockResolvedValue(mockRecipes)
       
       const { container } = render(<RecipeSection />)
       
       await waitFor(() => {
         const recipeCards = container.querySelectorAll('[data-testid="recipe-card"]')
-        expect(recipeCards.length).toBeGreaterThanOrEqual(12)
+        expect(recipeCards.length).toBe(5)
         
         // Validate that each recipe card has required elements
         recipeCards.forEach((card) => {
@@ -112,48 +121,45 @@ describe('Recipe Display Validation', () => {
   })
 
   describe('Recipe Data Consistency', () => {
-    test('should have consistent recipe data structure between fallback and database', async () => {
+    test('should have consistent recipe data structure for database recipes', async () => {
       // Test with database recipes
       const dbRecipes = Array.from({ length: 5 }, (_, i) => createMockRecipe(i))
       vi.mocked(fetchRecipes).mockResolvedValue(dbRecipes)
       
-      const { container: dbContainer } = render(<RecipeSection />)
+      const { container } = render(<RecipeSection />)
       
       await waitFor(() => {
-        const dbCards = dbContainer.querySelectorAll('[data-testid="recipe-card"]')
+        const dbCards = container.querySelectorAll('[data-testid="recipe-card"]')
         expect(dbCards.length).toBe(5)
-      })
-      
-      // Test with fallback recipes
-      vi.mocked(fetchRecipes).mockResolvedValue([])
-      
-      const { container: fallbackContainer } = render(<RecipeSection />)
-      
-      await waitFor(() => {
-        const fallbackCards = fallbackContainer.querySelectorAll('[data-testid="recipe-card"]')
-        expect(fallbackCards.length).toBeGreaterThanOrEqual(12)
         
-        // Both should have the same structure
-        const dbFirstCard = dbContainer.querySelector('[data-testid="recipe-card"]')
-        const fallbackFirstCard = fallbackContainer.querySelector('[data-testid="recipe-card"]')
+        // All database recipe cards should have consistent structure
+        const firstCard = container.querySelector('[data-testid="recipe-card"]')
+        expect(firstCard).toBeTruthy()
         
-        if (dbFirstCard && fallbackFirstCard) {
-          expect(dbFirstCard.children.length).toBe(fallbackFirstCard.children.length)
+        if (firstCard) {
+          // Validate structure consistency
+          dbCards.forEach((card) => {
+            expect(card.children.length).toBe(firstCard.children.length)
+          })
         }
       })
     })
 
-    test('should validate fallback recipes have proper UUID format', async () => {
-      // Mock empty database to trigger fallback
-      vi.mocked(fetchRecipes).mockResolvedValue([])
+    test('should validate database recipes have proper UUID format', async () => {
+      // Mock database with recipes that have proper UUIDs
+      const mockRecipes = Array.from({ length: 5 }, (_, i) => ({
+        ...createMockRecipe(i),
+        id: `550e8400-e29b-41d4-a716-44665544000${i + 1}`
+      }))
+      vi.mocked(fetchRecipes).mockResolvedValue(mockRecipes)
       
       const { container } = render(<RecipeSection />)
       
       await waitFor(() => {
         const recipeCards = container.querySelectorAll('[data-testid="recipe-card"]')
-        expect(recipeCards.length).toBe(12)
+        expect(recipeCards.length).toBe(5)
         
-        // Validate that fallback recipes use proper UUID format
+        // Validate that database recipes use proper UUID format
         const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
         
         // Check that recipe links have proper UUID format
@@ -171,7 +177,7 @@ describe('Recipe Display Validation', () => {
   })
 
   describe('Error Handling and Edge Cases', () => {
-    test('should handle network timeout gracefully', async () => {
+    test('should handle network timeout gracefully in database-only mode', async () => {
       // Mock network timeout
       vi.mocked(fetchRecipes).mockImplementation(() => 
         new Promise((_, reject) => 
@@ -183,7 +189,11 @@ describe('Recipe Display Validation', () => {
       
       await waitFor(() => {
         const recipeCards = container.querySelectorAll('[data-testid="recipe-card"]')
-        expect(recipeCards.length).toBeGreaterThanOrEqual(12) // Should show fallback
+        expect(recipeCards.length).toBe(0) // Database-only mode: no fallback recipes
+        
+        // Should show empty state message
+        const emptyMessage = container.querySelector('h3')
+        expect(emptyMessage?.textContent).toContain('No recipes found')
       }, { timeout: 5000 })
     })
 
