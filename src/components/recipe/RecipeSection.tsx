@@ -22,153 +22,7 @@ const sampleCategories: RecipeCategory[] = [
   { id: 'desserts', name: 'Desserts', emoji: '��', count: 4 }
 ]
 
-// Fallback sample recipes in case database is empty (using placeholder UUIDs)
-const sampleRecipes: RecipeCardData[] = [
-  {
-    id: '550e8400-e29b-41d4-a716-446655440001',
-    title: 'Mediterranean Quinoa Bowl',
-    image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop',
-    prepTime: 25,
-    difficulty: 'easy',
-    servings: 2,
-    dietaryCompliance: ['vegetarian', 'gluten-free', 'high-protein'],
-    safetyValidated: true,
-    calories: 420,
-    rating: 4.8
-  },
-  {
-    id: '550e8400-e29b-41d4-a716-446655440002',
-    title: 'Honey Garlic Salmon',
-    image: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400&h=300&fit=crop',
-    prepTime: 20,
-    difficulty: 'easy',
-    servings: 4,
-    dietaryCompliance: ['high-protein', 'omega-3'],
-    safetyValidated: true,
-    calories: 350,
-    rating: 4.6
-  },
-  {
-    id: '550e8400-e29b-41d4-a716-446655440003',
-    title: 'Vegan Buddha Bowl',
-    image: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400&h=300&fit=crop',
-    prepTime: 30,
-    difficulty: 'medium',
-    servings: 2,
-    dietaryCompliance: ['vegan', 'dairy-free', 'high-fiber'],
-    safetyValidated: true,
-    calories: 380,
-    rating: 4.7
-  },
-  {
-    id: '550e8400-e29b-41d4-a716-446655440004',
-    title: 'Classic Chicken Soup',
-    image: 'https://images.unsplash.com/photo-1547592180-85f173990554?w=400&h=300&fit=crop',
-    prepTime: 15,
-    difficulty: 'easy',
-    servings: 4,
-    dietaryCompliance: ['low-fiber', 'uc-safe', 'comfort-food'],
-    safetyValidated: true,
-    calories: 280,
-    rating: 4.9
-  },
-  {
-    id: '550e8400-e29b-41d4-a716-446655440005',
-    title: 'Avocado Toast with Poached Egg',
-    image: 'https://images.unsplash.com/photo-1541519227354-08fa5d50c44d?w=400&h=300&fit=crop',
-    prepTime: 15,
-    difficulty: 'easy',
-    servings: 2,
-    dietaryCompliance: ['vegetarian', 'high-protein', 'healthy-fats'],
-    safetyValidated: true,
-    calories: 320,
-    rating: 4.5
-  },
-  {
-    id: '550e8400-e29b-41d4-a716-446655440006',
-    title: 'Thai Green Curry',
-    image: 'https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=400&h=300&fit=crop',
-    prepTime: 35,
-    difficulty: 'medium',
-    servings: 4,
-    dietaryCompliance: ['vegan', 'dairy-free', 'spicy'],
-    safetyValidated: true,
-    calories: 450,
-    rating: 4.6
-  },
-  {
-    id: '550e8400-e29b-41d4-a716-446655440007',
-    title: 'Grilled Chicken Caesar Salad',
-    image: 'https://images.unsplash.com/photo-1546793665-c74683f339c1?w=400&h=300&fit=crop',
-    prepTime: 27,
-    difficulty: 'easy',
-    servings: 2,
-    dietaryCompliance: ['high-protein', 'low-carb'],
-    safetyValidated: true,
-    calories: 380,
-    rating: 4.4
-  },
-  {
-    id: '550e8400-e29b-41d4-a716-446655440008',
-    title: 'Mushroom Risotto',
-    image: 'https://images.unsplash.com/photo-1476124369491-e7addf5db371?w=400&h=300&fit=crop',
-    prepTime: 35,
-    difficulty: 'medium',
-    servings: 4,
-    dietaryCompliance: ['vegetarian', 'comfort-food'],
-    safetyValidated: true,
-    calories: 340,
-    rating: 4.7
-  },
-  {
-    id: '550e8400-e29b-41d4-a716-446655440009',
-    title: 'Black Bean Tacos',
-    image: 'https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=400&h=300&fit=crop',
-    prepTime: 18,
-    difficulty: 'easy',
-    servings: 4,
-    dietaryCompliance: ['vegetarian', 'dairy-free', 'high-fiber'],
-    safetyValidated: true,
-    calories: 290,
-    rating: 4.3
-  },
-  {
-    id: '550e8400-e29b-41d4-a716-446655440010',
-    title: 'Beef Stir Fry',
-    image: 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=400&h=300&fit=crop',
-    prepTime: 25,
-    difficulty: 'medium',
-    servings: 3,
-    dietaryCompliance: ['high-protein', 'low-carb', 'dairy-free'],
-    safetyValidated: true,
-    calories: 320,
-    rating: 4.5
-  },
-  {
-    id: '550e8400-e29b-41d4-a716-446655440011',
-    title: 'Chocolate Chip Cookies',
-    image: 'https://images.unsplash.com/photo-1499636136210-6f4ee915583e?w=400&h=300&fit=crop',
-    prepTime: 26,
-    difficulty: 'easy',
-    servings: 36,
-    dietaryCompliance: ['dessert', 'comfort-food'],
-    safetyValidated: true,
-    calories: 140,
-    rating: 4.8
-  },
-  {
-    id: '550e8400-e29b-41d4-a716-446655440012',
-    title: 'Greek Yogurt Parfait',
-    image: 'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=400&h=300&fit=crop',
-    prepTime: 5,
-    difficulty: 'easy',
-    servings: 2,
-    dietaryCompliance: ['vegetarian', 'high-protein', 'probiotic'],
-    safetyValidated: true,
-    calories: 280,
-    rating: 4.6
-  }
-]
+// Database-only mode - no fallback recipes
 
 interface RecipeSectionProps {
   className?: string
@@ -216,19 +70,12 @@ export function RecipeSection({ className }: RecipeSectionProps) {
         
         const data = await fetchRecipes(24, filters)
         
-        // If no recipes from database, use sample recipes for demo
-        if (data && data.length === 0 && Object.keys(filters).length === 0) {
-          setRecipes(sampleRecipes)
-        } else if (data) {
-          setRecipes(data)
-        } else {
-          // Fallback to sample recipes if data is null/undefined
-          setRecipes(sampleRecipes)
-        }
+        // Set recipes from database (could be empty array)
+        setRecipes(data || [])
       } catch (error) {
         console.error('Error loading recipes:', error)
-        // On error, always fall back to sample recipes
-        setRecipes(sampleRecipes)
+        // On error, show empty array (database-only mode)
+        setRecipes([])
       } finally {
         setLoading(false)
       }
@@ -236,7 +83,7 @@ export function RecipeSection({ className }: RecipeSectionProps) {
     load()
   }, [user, searchQuery])
 
-  const baseRecipes = recipes.length ? recipes : sampleRecipes
+  const baseRecipes = recipes
 
   const filteredRecipes = activeCategory === 'all' 
     ? baseRecipes 

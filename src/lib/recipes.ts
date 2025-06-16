@@ -417,22 +417,21 @@ export async function fetchRecipes(limit = 12, filters?: Partial<SearchQuery>): 
 
     if (error) {
       console.error('fetchRecipes database error:', error)
-      console.log('Falling back to sample recipes')
-      
-      // Return sample recipes from fallback data
-      return Object.values(fallbackDetailRecipes).slice(0, limit).map(mapDbRecipe)
+      console.log('Database error occurred, returning empty array')
+      return []
     }
 
     if (!data || data.length === 0) {
-      console.log('No recipes found in database, using fallback recipes')
-      return Object.values(fallbackDetailRecipes).slice(0, limit).map(mapDbRecipe)
+      console.log('No recipes found in database, returning empty array')
+      return []
     }
 
+    console.log(`Found ${data.length} recipes in database`)
     return (data as DBRecipe[]).map(mapDbRecipe)
   } catch (error) {
     console.error('fetchRecipes error:', error)
-    console.log('Using fallback recipes due to connection error')
-    return Object.values(fallbackDetailRecipes).slice(0, limit).map(mapDbRecipe)
+    console.log('Connection error occurred, returning empty array')
+    return []
   }
 }
 

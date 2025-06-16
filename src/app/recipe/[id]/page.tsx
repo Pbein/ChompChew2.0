@@ -111,8 +111,8 @@ export default async function RecipePage({ params }: RecipePageProps) {
         <section>
           <h2 className="text-xl font-semibold mb-3">Instructions</h2>
           <ol className="list-decimal ml-6 space-y-3">
-            {instructions.map((step) => (
-              <li key={step.step}>{step.text}</li>
+            {instructions.map((step, index) => (
+              <li key={`step-${step.step || index}`}>{step.text}</li>
             ))}
           </ol>
         </section>
