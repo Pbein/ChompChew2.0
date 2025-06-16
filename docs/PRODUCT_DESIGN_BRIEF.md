@@ -184,6 +184,8 @@ Every design decision must serve this core mission of helping users feel confide
 
 ## Feature 6: Empty-State Generation & Sign-Up Flow
 
+***Implementation Note**: The initial implementation provides a dedicated `/generate-recipe` page for authenticated premium/admin users, which includes the form and displays the results. The "empty-state" generation flow described here can be integrated later.*
+
 ### Screen: Custom Recipe Generation
 
 #### State: Generation Prompt

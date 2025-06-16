@@ -132,7 +132,7 @@ export default function DietaryNeedsPage() {
             <Heart className="h-8 w-8 text-red-500" />
             <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">My Dietary Needs</h1>
           </div>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-800 dark:text-gray-200 max-w-2xl mx-auto">
             Tell us about your dietary preferences, allergies, and health conditions so we can recommend safe, personalized recipes just for you.
           </p>
           
@@ -235,7 +235,7 @@ export default function DietaryNeedsPage() {
               <Shield className="h-6 w-6 text-blue-600" />
               <h2 className="text-2xl font-semibold text-gray-900">Medical Conditions</h2>
             </div>
-            <p className="text-gray-600 mb-4">
+                            <p className="text-gray-800 dark:text-gray-200 mb-4">
               Help us recommend recipes that support your health conditions and dietary management needs.
             </p>
             
@@ -292,7 +292,7 @@ export default function DietaryNeedsPage() {
             {saveStatus === 'idle' && '💾 Save My Preferences'}
           </button>
 
-          <div className="mt-4 flex items-center justify-center gap-4 text-sm text-gray-600">
+                      <div className="mt-4 flex items-center justify-center gap-4 text-sm text-gray-700 dark:text-gray-300">
             <button
               onClick={() => router.push('/')}
               className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"

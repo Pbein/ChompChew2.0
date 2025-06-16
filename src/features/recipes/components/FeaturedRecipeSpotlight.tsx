@@ -48,6 +48,7 @@ export function FeaturedRecipeSpotlight({
               src={recipe.image} 
               alt={recipe.title}
               fill
+              sizes="(max-width: 768px) 100vw, 192px"
               className="object-cover"
             />
           ) : (

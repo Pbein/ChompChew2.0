@@ -188,6 +188,10 @@ Respond ONLY with the JSON object, no additional text.`
 // Main recipe generation service
 export class RecipeGenerationService {
   private static async callOpenAI(prompt: string): Promise<string> {
+    if (!openai) {
+      throw new Error('OpenAI client is not initialized. Please check OPENAI_SECRET_KEY environment variable.')
+    }
+
     try {
       const response = await openai.chat.completions.create({
         model: OPENAI_CONFIG.model,

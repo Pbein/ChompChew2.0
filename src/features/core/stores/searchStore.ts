@@ -405,16 +405,8 @@ export const useFinalSearchQuery = () => {
 
     return combined
   }, [
-    structuredQuery.ingredients.join(','),
-    structuredQuery.excludedIngredients.join(','),
-    structuredQuery.dietaryPreferences.join(','),
-    structuredQuery.mealType.join(','),
-    structuredQuery.cuisine.join(','),
-    structuredQuery.cookingMethod.join(','),
-    structuredQuery.nutritionGoals.join(','),
-    structuredQuery.prepConstraints.join(','),
-    structuredQuery.dishes.join(','),
-    profile?.dietary_preferences?.join(',') || '',
-    profile?.allergens?.join(',') || ''
+    structuredQuery,
+    profile?.dietary_preferences,
+    profile?.allergens
   ])
 } 

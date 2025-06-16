@@ -72,6 +72,7 @@ export function RecipeCard({
             src={recipe.image}
             alt={recipe.title}
             fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="object-cover group-hover:scale-105 transition-transform duration-300"
           />
         ) : (
@@ -145,7 +146,7 @@ export function RecipeCard({
         </h3>
         
         {/* Recipe Meta */}
-        <div className="flex items-center justify-between text-sm text-gray-600">
+        <div className="flex items-center justify-between text-sm text-gray-800 dark:text-gray-200">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-1" data-testid="recipe-prep-time">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -191,7 +192,7 @@ export function RecipeCard({
               </span>
             ))}
             {recipe.dietaryCompliance.length > 3 && (
-              <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded-full">
+              <span className="px-2 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-full">
                 +{recipe.dietaryCompliance.length - 3}
               </span>
             )}

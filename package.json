@@ -9,11 +9,11 @@
     "start": "next start",
     "lint": "next lint",
     "test": "vitest --config tests/setup/vitest.config.ts",
-    "test:ui": "vitest --config tests/setup/vitest.config.ts --ui",
-    "test:coverage": "vitest --config tests/setup/vitest.config.ts --coverage",
-    "test:watch": "vitest --config tests/setup/vitest.config.ts --watch",
+    "test:unit": "vitest --config tests/setup/vitest.config.ts --run",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
+    "test:all": "npm run test:unit && npm run test:e2e",
+    "test:watch": "vitest --config tests/setup/vitest.config.ts --watch",
     "seed": "node scripts/load-seed-data.js"
   },
   "dependencies": {

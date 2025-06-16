@@ -7,11 +7,12 @@
 
 ## **🏗️ REBUILD IN PROGRESS**
 
-**Current Status**: We are midway through the rebuild. **Phase 0 (Preparation & Backup)** and **Phase 1 (Foundation & Core Services)** are ✅ complete, and the **Search foundation** work from Phase 2 has been integrated. Our next focus is **Phase 3: Dietary Needs & User Preferences**.
+**Current Status**: We are midway through the rebuild. **Phase 0 (Preparation & Backup)**, **Phase 1 (Foundation & Core Services)**, and **Phase 2 (Search Foundation)** are ✅ complete. We have also completed a major post-MVP feature: **AI-powered Recipe Generation**, with comprehensive testing. Our next focus is **Phase 3: Dietary Needs & User Preferences**.
 
 ### **📋 Rebuild Documentation**
 - **[FEATURE_CATALOG.md](FEATURE_CATALOG.md)** – **COMPLETE FEATURE INVENTORY** – All 27 features we've built that must be preserved
 - **[REBUILD_PLAN.md](REBUILD_PLAN.md)** – **SEQUENTIAL REBUILD STRATEGY** – 8-phase plan with a clearly defined **🏆 MVP** scope
+- **[TESTING_STRATEGY.md](TESTING_STRATEGY.md)** - **COMPREHENSIVE TESTING APPROACH** - Detailed strategy with updated status.
 
 ### **🎯 Vision & Strategy**
 - **[PROJECT_VISION.md](PROJECT_VISION.md)** - Core mission, value propositions, and strategic alignment
@@ -63,7 +64,7 @@
 - **Phase 1**: ✅ **COMPLETE** – Foundation & core services
 - **Phase 2**: ✅ **COMPLETE** – Search foundation (simple homepage search)
 - **Phase 3**: 🎯 **UP NEXT** – Dietary needs & user preferences (MVP)
-- **Phase 4**: 📋 **PLANNED** – Recipe discovery system (MVP)
+- **Phase 4**: ✅ **PARTIALLY COMPLETE** – Recipe discovery system (AI Generation is done!)
 - **Phase 5–8**: 📋 **PLANNED** – Post-MVP enhancements, polish, and launch
 
 ### 🎯 **Next Steps (MVP Focus)**
@@ -71,7 +72,7 @@
 2. **Integrate Preferences** – Personalize discovery feed and search results
 3. **Implement Recipe Saving** – Enable bookmarking and the Cookbook page
 4. **Develop Recipe Display** – Recipe cards, grid, and detail pages
-5. **Prep for Auth-Gated AI Generation** – Define paywall for recipe generation (post-MVP)
+5. **(Post-MVP) Continue Phase 4** - Build out remaining recipe discovery features
 
 ---
 
@@ -170,7 +171,7 @@ People with dietary restrictions, medical conditions, or busy lifestyles experie
 
 ---
 
-## **�� Rebuild Timeline (Updated)**
+## **🎯 Rebuild Timeline (Updated)**
 
 | Phase | Duration | Focus | Status |
 |-------|----------|-------|--------|
@@ -178,7 +179,7 @@ People with dietary restrictions, medical conditions, or busy lifestyles experie
 | 1 | 4 days | Foundation & core services | ✅ Complete |
 | 2 | 3 days | Search foundation (simple) | ✅ Complete |
 | 3 | 5 days | Dietary needs & preferences | 🎯 Up Next |
-| 4 | 5 days | Recipe discovery (cards, detail, saving) | Planned |
+| 4 | 5 days | Recipe discovery (cards, detail, saving) | ✅ In Progress |
 | 5 | 5 days | Advanced safety & dietary features | Planned |
 | 6 | 2 days | Nutrition & macro features | Planned |
 | 7 | 5 days | UI/UX polish & premium features | Planned |

@@ -81,10 +81,10 @@ export default function HomePage() {
               <h2 className="text-2xl font-semibold text-gray-800 mb-4">
                 🏗️ Rebuild in Progress
               </h2>
-              <p className="text-gray-600 mb-4">
+              <p className="text-gray-800 dark:text-gray-200 mb-4">
                 We&apos;re systematically rebuilding ChompChew with:
               </p>
-              <ul className="text-left text-gray-600 space-y-2">
+              <ul className="text-left text-gray-800 dark:text-gray-200 space-y-2">
                 <li>✅ Testing infrastructure setup complete</li>
                 <li>✅ Feature backup preserved (27 features)</li>
                 <li>✅ Mission-aligned header navigation</li>
@@ -93,7 +93,7 @@ export default function HomePage() {
                 <li>✅ Component testing with 26 passing tests</li>
                 <li>🔄 Phase 1: Finalizing foundation components</li>
               </ul>
-              <div className="mt-6 text-sm text-gray-500">
+              <div className="mt-6 text-sm text-gray-700 dark:text-gray-300">
                 Phase 0: Complete ✅ | Phase 1: Foundation - 90% Complete 🔄
               </div>
             </div>

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/Button'
 import { createClientComponentClient } from '@/lib/supabase'
+import { ThemeToggleCompact } from '@/components/ui/ThemeToggle'
 
 interface HeaderProps {
   className?: string
@@ -94,20 +95,21 @@ export function Header({ className }: HeaderProps) {
 
           {/* Right Side - User Actions */}
           <div className="hidden md:flex items-center space-x-4">
+            <ThemeToggleCompact />
             {!loading && (
               <>
                 {user ? (
                   // Authenticated user options
                   <>
-                    <Link href="/profile">
-                      <Button
-                        variant="ghost"
-                        size="md"
-                        className="font-semibold hover:bg-white/60 hover:shadow-sm transition-all duration-200 text-gray-800 hover:text-emerald-700"
-                      >
-                        Profile
-                      </Button>
-                    </Link>
+            <Link href="/profile">
+              <Button
+                variant="ghost"
+                size="md"
+                className="font-semibold hover:bg-white/60 hover:shadow-sm transition-all duration-200 text-gray-800 hover:text-emerald-700"
+              >
+                Profile
+              </Button>
+            </Link>
                     <Button
                       variant="ghost"
                       size="md"
@@ -129,15 +131,15 @@ export function Header({ className }: HeaderProps) {
                         Sign In
                       </Button>
                     </Link>
-                    <Link href="/auth/signup">
-                      <Button
-                        variant="primary"
-                        size="md"
-                        className="font-semibold bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white shadow-lg shadow-emerald-200/50 hover:shadow-xl hover:shadow-emerald-300/50 transition-all duration-200 hover:scale-105 border-0"
-                      >
-                        Get Started
-                      </Button>
-                    </Link>
+            <Link href="/auth/signup">
+              <Button
+                variant="primary"
+                size="md"
+                className="font-semibold bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white shadow-lg shadow-emerald-200/50 hover:shadow-xl hover:shadow-emerald-300/50 transition-all duration-200 hover:scale-105 border-0"
+              >
+                Get Started
+              </Button>
+            </Link>
                   </>
                 )}
               </>
@@ -207,21 +209,29 @@ export function Header({ className }: HeaderProps) {
                 </div>
               </Link>
               
+              {/* Theme Toggle */}
+              <div className="pt-4 border-t border-emerald-200/50">
+                <div className="flex items-center justify-between px-4 py-3">
+                  <span className="text-base font-semibold text-gray-800">Theme</span>
+                  <ThemeToggleCompact />
+                </div>
+              </div>
+
               {/* Auth Buttons */}
               {!loading && (
-                <div className="pt-4 space-y-3 border-t border-emerald-200/50">
+              <div className="pt-4 space-y-3 border-t border-emerald-200/50">
                   {user ? (
                     // Authenticated user options
                     <>
-                      <Link href="/profile" onClick={() => setIsMobileMenuOpen(false)}>
-                        <Button
-                          variant="ghost"
-                          size="lg"
-                          className="w-full justify-start font-semibold text-gray-800 hover:text-emerald-700 hover:bg-white/60"
-                        >
-                          Profile
-                        </Button>
-                      </Link>
+                <Link href="/profile" onClick={() => setIsMobileMenuOpen(false)}>
+                  <Button
+                    variant="ghost"
+                    size="lg"
+                    className="w-full justify-start font-semibold text-gray-800 hover:text-emerald-700 hover:bg-white/60"
+                  >
+                    Profile
+                  </Button>
+                </Link>
                       <Button
                         variant="ghost"
                         size="lg"
@@ -243,18 +253,18 @@ export function Header({ className }: HeaderProps) {
                           Sign In
                         </Button>
                       </Link>
-                      <Link href="/auth/signup" onClick={() => setIsMobileMenuOpen(false)}>
-                        <Button
-                          variant="primary"
-                          size="lg"
-                          className="w-full justify-start font-semibold bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white shadow-lg shadow-emerald-200/50"
-                        >
-                          Get Started
-                        </Button>
-                      </Link>
+                <Link href="/auth/signup" onClick={() => setIsMobileMenuOpen(false)}>
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    className="w-full justify-start font-semibold bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white shadow-lg shadow-emerald-200/50"
+                  >
+                    Get Started
+                  </Button>
+                </Link>
                     </>
                   )}
-                </div>
+              </div>
               )}
             </div>
           </div>

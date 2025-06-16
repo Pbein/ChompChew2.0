@@ -83,29 +83,27 @@
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    /* Dark theme colors */
-    --background: 0 0% 4%;
-    --foreground: 0 0% 98%;
-    
-    /* Adjust brand colors for dark mode */
-    --primary: 14 100% 65%;        /* Slightly lighter orange */
-    --secondary: 140 35% 45%;      /* Slightly lighter green */
-    --accent: 36 83% 67%;         /* Keep warm yellow */
-    
-    /* Dark neutral colors */
-    --muted: 0 0% 10%;
-    --muted-foreground: 0 0% 63%;
-    --border: 0 0% 15%;
-    --input: 0 0% 10%;
-    
-    /* Dark card backgrounds */
-    --card: 0 0% 4%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 4%;
-    --popover-foreground: 0 0% 98%;
-  }
+.dark {
+  /* Dark theme colors */
+  --background: 0 0% 4%;
+  --foreground: 0 0% 98%;
+  
+  /* Adjust brand colors for dark mode */
+  --primary: 14 100% 65%;        /* Slightly lighter orange */
+  --secondary: 140 35% 45%;      /* Slightly lighter green */
+  --accent: 36 83% 67%;         /* Keep warm yellow */
+  
+  /* Dark neutral colors */
+  --muted: 0 0% 10%;
+  --muted-foreground: 0 0% 63%;
+  --border: 0 0% 15%;
+  --input: 0 0% 10%;
+  
+  /* Dark card backgrounds */
+  --card: 0 0% 4%;
+  --card-foreground: 0 0% 98%;
+  --popover: 0 0% 4%;
+  --popover-foreground: 0 0% 98%;
 }
 
 /* Base styles */

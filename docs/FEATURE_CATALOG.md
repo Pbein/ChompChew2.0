@@ -54,15 +54,17 @@ This document catalogs all the features, components, and services we've built th
 ## **🍽️ Recipe Management Features**
 
 ### **4. Recipe Generation Service** ✅ **COMPLETE**
-**Location**: `src/lib/services/recipeGenerationService.ts`
+**Location**: `src/lib/services/recipeGenerationService.ts`, `src/app/generate-recipe/actions.ts`
 
 **Features**:
 - OpenAI integration for recipe generation
+- Secure server action with rate limiting and user authentication
 - Zod schema validation for inputs and outputs
 - Recipe prompt builder with dietary constraints
 - Recipe variation generation
 - Ingredient substitution support
 - Token cost estimation
+- Comprehensive test suite (unit, integration) ensuring robustness
 
 **Input Schema**:
 - Ingredients, dietary restrictions, allergies
@@ -288,13 +290,14 @@ This document catalogs all the features, components, and services we've built th
 - Feature showcase and testing interface
 
 ### **25. Recipe Generation Page** ✅ **COMPLETE**
-**Location**: `src/app/generate/page.tsx`
+**Location**: `src/app/generate-recipe/page.tsx`
 
 **Features**:
-- Recipe generation interface
-- Search parameter parsing
-- Suspense boundary for useSearchParams
-- Loading and error states
+- Recipe generation interface for authenticated premium/admin users
+- Displays user's dietary preferences and allergens from their profile
+- Form handling with loading and error states
+- Displays generated recipe markdown
+- Fully tested with unit and integration tests
 
 ### **26. Main Landing Page** ✅ **COMPLETE**
 **Location**: `src/app/page.tsx`
@@ -335,6 +338,7 @@ This document catalogs all the features, components, and services we've built th
 - Zustand Store Implementation
 - Type Definitions
 - Design System
+- Recipe Generation Page
 
 ### **🟡 Needs Testing/Polish**
 - Recipe Card Deck (UI polish needed)

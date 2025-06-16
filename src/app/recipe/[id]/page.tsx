@@ -31,33 +31,33 @@ export default async function RecipePage({ params }: RecipePageProps) {
               <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">{recipe.title}</h1>
 
       {recipe.description && (
-        <p className="text-lg text-gray-600">{recipe.description}</p>
+        <p className="text-lg text-gray-800 dark:text-gray-200">{recipe.description}</p>
       )}
 
       {recipe.image_url && (
         <div className="relative w-full h-64 rounded-xl overflow-hidden shadow">
-          <Image src={recipe.image_url} alt={recipe.title} fill className="object-cover" />
+          <Image src={recipe.image_url} alt={recipe.title} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px" className="object-cover" />
         </div>
       )}
 
       {/* Recipe Info */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-6 bg-gray-50 rounded-lg">
         <div className="text-center">
-          <span className="block text-sm text-gray-500">Prep Time</span>
+          <span className="block text-sm text-gray-700 dark:text-gray-300">Prep Time</span>
           <span className="text-lg font-semibold">{recipe.prep_time || 0} min</span>
         </div>
         {recipe.cook_time && (
           <div className="text-center">
-            <span className="block text-sm text-gray-500">Cook Time</span>
+            <span className="block text-sm text-gray-700 dark:text-gray-300">Cook Time</span>
             <span className="text-lg font-semibold">{recipe.cook_time} min</span>
           </div>
         )}
         <div className="text-center">
-          <span className="block text-sm text-gray-500">Servings</span>
+          <span className="block text-sm text-gray-700 dark:text-gray-300">Servings</span>
           <span className="text-lg font-semibold">{recipe.servings || 1}</span>
         </div>
         <div className="text-center">
-          <span className="block text-sm text-gray-500">Difficulty</span>
+          <span className="block text-sm text-gray-700 dark:text-gray-300">Difficulty</span>
           <span className="text-lg font-semibold capitalize">{recipe.difficulty || 'Easy'}</span>
         </div>
       </div>
@@ -123,7 +123,7 @@ export default async function RecipePage({ params }: RecipePageProps) {
         <div className="flex items-center justify-between">
           {recipe.calories_per_serving && (
             <div>
-              <span className="text-sm text-gray-600">Calories per serving:</span>
+              <span className="text-sm text-gray-700 dark:text-gray-300">Calories per serving:</span>
               <span className="ml-2 text-lg font-semibold text-emerald-700">
                 {recipe.calories_per_serving}
               </span>
@@ -131,7 +131,7 @@ export default async function RecipePage({ params }: RecipePageProps) {
           )}
           {recipe.rating_average && (
             <div>
-              <span className="text-sm text-gray-600">Rating:</span>
+              <span className="text-sm text-gray-700 dark:text-gray-300">Rating:</span>
               <span className="ml-2 text-lg font-semibold text-emerald-700">
                 {recipe.rating_average}/5 ⭐
               </span>

@@ -5,6 +5,8 @@ import { createClientComponentClient } from '@/lib/supabase'
 import { Button } from '@/components/ui/Button'
 import Link from 'next/link'
 import { User, canGenerateRecipes, getUserRoleDisplay } from '@/lib/auth-utils'
+import { generateRecipeAction } from './actions'
+import { useFormStatus } from 'react-dom'
 
 export default function GenerateRecipePage() {
   const [user, setUser] = useState<User | null>(null)
@@ -12,6 +14,8 @@ export default function GenerateRecipePage() {
   const [recipeInput, setRecipeInput] = useState('')
   const [isGenerating, setIsGenerating] = useState(false)
   const [generatedRecipe, setGeneratedRecipe] = useState<string | null>(null)
+  const [dietaryPreferences, setDietaryPreferences] = useState<string[]>([])
+  const [allergens, setAllergens] = useState<string[]>([])
 
   const supabase = createClientComponentClient()
 
@@ -35,6 +39,7 @@ export default function GenerateRecipePage() {
           .single()
 
         if (profile) {
+          // Save basic user meta
           setUser({
             id: profile.id,
             email: profile.email,
@@ -45,6 +50,10 @@ export default function GenerateRecipePage() {
             created_at: profile.created_at,
             updated_at: profile.updated_at
           })
+
+          // Save dietary data so we can pass it to the generator
+          setDietaryPreferences(Array.isArray(profile.dietary_preferences) ? profile.dietary_preferences : [])
+          setAllergens(Array.isArray(profile.allergens) ? profile.allergens : [])
         } else {
           // Fallback for users without profile yet
           setUser({
@@ -78,46 +87,37 @@ export default function GenerateRecipePage() {
     return () => subscription.unsubscribe()
   }, [supabase])
 
-  const handleGenerateRecipe = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    if (!recipeInput.trim()) return
+  const handleGenerateRecipe = async (formData: FormData) => {
+    console.log('🎯 Starting recipe generation with server action')
+    console.log('👤 User dietary context:', { dietaryPreferences, allergens })
 
     setIsGenerating(true)
     
     try {
-      // TODO: Replace with actual API call to generate recipe
-      // For now, we'll simulate the generation with a timeout
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      // Add dietary context to form data
+      formData.set('dietaryPreferences', JSON.stringify(dietaryPreferences))
+      formData.set('allergens', JSON.stringify(allergens))
       
-      // Mock response for testing
-      const mockRecipe = `# ${recipeInput.charAt(0).toUpperCase() + recipeInput.slice(1)}
+      console.log('🚀 Calling server action...')
+      const result = await generateRecipeAction(formData)
+      
+      if (!result.success) {
+        console.error('❌ Server action failed:', result.error)
+        // TODO: Show user-friendly error message in UI
+        return
+      }
 
-## Ingredients:
-- 2 large flour tortillas
-- 1 lb chicken breast, diced
-- 1 cup cooked rice
-- 1/2 cup black beans
-- 1/2 cup shredded cheese
-- 1/4 cup diced onions
-- 2 tbsp olive oil
-- Salt and pepper to taste
-
-## Instructions:
-1. Heat olive oil in a large skillet over medium-high heat
-2. Season chicken with salt and pepper, then cook until golden brown
-3. Add onions and cook until softened
-4. Warm tortillas in microwave for 30 seconds
-5. Fill tortillas with rice, chicken, beans, and cheese
-6. Roll tightly and serve immediately
-
-## Cooking Time: 25 minutes
-## Servings: 2`
-
-      setGeneratedRecipe(mockRecipe)
+      console.log('✅ Recipe generation successful!')
+      console.log('📄 Received markdown length:', result.recipeMarkdown?.length || 0)
+      console.log('🍳 Recipe preview:', result.recipeMarkdown?.substring(0, 100) + '...')
+      
+      setGeneratedRecipe(result.recipeMarkdown || '')
+      
     } catch (error) {
-      console.error('Error generating recipe:', error)
+      console.error('❌ Frontend error with server action:', error)
+      // TODO: Show user-friendly error message in UI
     } finally {
+      console.log('🏁 Recipe generation process completed')
       setIsGenerating(false)
     }
   }
@@ -247,38 +247,56 @@ export default function GenerateRecipePage() {
           {/* Input Form */}
           {!generatedRecipe && (
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl shadow-emerald-100/20 dark:shadow-gray-900/20 p-8 border border-emerald-100 dark:border-gray-700 mb-8">
-              <form onSubmit={handleGenerateRecipe} className="space-y-6">
+              <form action={handleGenerateRecipe} className="space-y-6">
                 <div>
                   <label htmlFor="recipe-input" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                     What would you like to cook?
                   </label>
                   <input
                     id="recipe-input"
+                    name="prompt"
                     type="text"
                     value={recipeInput}
                     onChange={(e) => setRecipeInput(e.target.value)}
                     placeholder="e.g., chicken burrito, chocolate chip cookies, vegetarian pasta..."
                     className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors duration-200 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
                     disabled={isGenerating}
+                    required
                   />
                 </div>
                 
-                <Button
-                  type="submit"
-                  variant="primary"
-                  size="lg"
-                  disabled={!recipeInput.trim() || isGenerating}
-                  className="w-full font-semibold bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white shadow-lg shadow-emerald-200/50 hover:shadow-xl hover:shadow-emerald-300/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isGenerating ? (
-                    <div className="flex items-center justify-center gap-2">
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                      Generating Recipe...
-                    </div>
-                  ) : (
-                    'Generate Recipe ✨'
-                  )}
-                </Button>
+                {/* Show detected dietary preferences & allergens */}
+                {(dietaryPreferences.length > 0 || allergens.length > 0) && (
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    {dietaryPreferences.length > 0 && (
+                      <div>
+                        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Your Dietary Preferences</h3>
+                        <ul className="flex flex-wrap gap-2">
+                          {dietaryPreferences.map((pref) => (
+                            <li key={pref} className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-medium dark:bg-emerald-700/20 dark:text-emerald-300">
+                              {pref}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {allergens.length > 0 && (
+                      <div>
+                        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Allergens to Avoid</h3>
+                        <ul className="flex flex-wrap gap-2">
+                          {allergens.map((allergy) => (
+                            <li key={allergy} className="px-3 py-1 rounded-full bg-rose-100 text-rose-800 text-xs font-medium dark:bg-rose-700/20 dark:text-rose-300">
+                              {allergy}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                )}
+                
+                <SubmitButton disabled={!recipeInput.trim() || isGenerating} />
               </form>
             </div>
           )}
@@ -315,5 +333,30 @@ export default function GenerateRecipePage() {
         </div>
       </div>
     </div>
+  )
+}
+
+// Submit button component that uses form status
+function SubmitButton({ disabled }: { disabled: boolean }) {
+  const { pending } = useFormStatus()
+  const isLoading = pending || disabled
+
+  return (
+    <Button
+      type="submit"
+      variant="primary"
+      size="lg"
+      disabled={isLoading}
+      className="w-full font-semibold bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white shadow-lg shadow-emerald-200/50 hover:shadow-xl hover:shadow-emerald-300/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      {isLoading ? (
+        <div className="flex items-center justify-center gap-2">
+          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+          Generating Recipe...
+        </div>
+      ) : (
+        'Generate Recipe ✨'
+      )}
+    </Button>
   )
 } 
