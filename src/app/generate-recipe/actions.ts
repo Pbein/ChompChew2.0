@@ -3,6 +3,7 @@
 import { createServerComponentClient } from '@/lib/supabase-server'
 import { canGenerateRecipes } from '@/lib/auth-utils'
 import { generateRecipe } from '@/lib/openai'
+import { getRecipeImageUrl } from '@/lib/imageService'
 import type { AIRecipe } from '@/lib/validators'
 import { revalidatePath } from 'next/cache'
 
@@ -106,6 +107,11 @@ export async function generateRecipeAction(formData: FormData): Promise<Generate
 
     console.log('🍳 Recipe generated:', { title: aiRecipe.title })
 
+    // Generate image URL for the recipe
+    console.log('🖼️ Generating image URL for recipe...')
+    const imageUrl = getRecipeImageUrl(aiRecipe.title, aiRecipe.cuisine_type)
+    console.log('✅ Image URL generated:', imageUrl)
+
     // Insert into database
     console.log('💾 Inserting recipe into database...')
     const { data: insertData, error: insertError } = await supabase
@@ -123,6 +129,7 @@ export async function generateRecipeAction(formData: FormData): Promise<Generate
         cuisine_type: aiRecipe.cuisine_type,
         dietary_tags: aiRecipe.dietary_tags,
         calories_per_serving: aiRecipe.calories_per_serving,
+        image_url: imageUrl,
         is_ai_generated: true,
         created_by: authUser.id,
       })

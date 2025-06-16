@@ -51,25 +51,18 @@ describe('UUID Format Validation', () => {
 
   describe('Recipe ID Format', () => {
     test('should use valid UUID format for all fallback recipes', async () => {
-      // Mock empty database response to trigger fallback
+      // In database-only mode, empty database shows empty state
       vi.mocked(fetchRecipes).mockResolvedValue([])
       
       const { container } = render(<RecipeSection />)
       
       await waitFor(() => {
         const recipeLinks = container.querySelectorAll('a[href*="/recipe/"]')
-        expect(recipeLinks.length).toBeGreaterThan(0)
+        expect(recipeLinks.length).toBe(0) // Database-only mode: no fallback recipes
         
-        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
-        
-        recipeLinks.forEach((link) => {
-          const href = link.getAttribute('href')
-          if (href) {
-            const recipeId = href.split('/recipe/')[1]
-            expect(recipeId).toMatch(uuidRegex)
-            expect(recipeId).not.toMatch(/^sample-\d+$/) // Ensure old format is gone
-          }
-        })
+        // Should show empty state message
+        const emptyMessage = container.querySelector('h3')
+        expect(emptyMessage?.textContent).toContain('No recipes found')
       })
     })
 

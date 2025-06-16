@@ -183,19 +183,14 @@ describe('Recipe Fetching', () => {
       vi.mocked(supabase.from).mockReturnValue(mockQuery as any)
 
       const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-      const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
 
       const result = await fetchRecipes()
 
-      // Should return fallback recipes instead of empty array
-      expect(result.length).toBeGreaterThan(0)
-      expect(result[0]).toHaveProperty('id')
-      expect(result[0]).toHaveProperty('title')
+      // In database-only mode, should return empty array on error
+      expect(result.length).toBe(0)
       expect(consoleSpy).toHaveBeenCalledWith('fetchRecipes database error:', mockError)
-      expect(logSpy).toHaveBeenCalledWith('Falling back to sample recipes')
 
       consoleSpy.mockRestore()
-      logSpy.mockRestore()
     })
   })
 
