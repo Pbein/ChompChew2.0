@@ -68,11 +68,11 @@ export function Header({ className }: HeaderProps) {
           {/* Center Navigation - Core User Journey */}
           <nav className="hidden md:flex items-center space-x-8">
             <Link 
-              href="/dietary-needs" 
+              href="/generate-recipe" 
               className="text-sm font-semibold text-gray-800 hover:text-emerald-700 transition-colors duration-200 relative group flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/60 hover:shadow-sm"
             >
-              <span>🛡️</span>
-              <span>Dietary Needs</span>
+              <span>✨</span>
+              <span>Generate Recipe</span>
               <span className="absolute -bottom-1 left-3 w-0 h-0.5 bg-gradient-to-r from-emerald-500 to-teal-600 transition-all duration-200 group-hover:w-[calc(100%-24px)] rounded-full"></span>
             </Link>
             <Link 
@@ -84,11 +84,11 @@ export function Header({ className }: HeaderProps) {
               <span className="absolute -bottom-1 left-3 w-0 h-0.5 bg-gradient-to-r from-emerald-500 to-teal-600 transition-all duration-200 group-hover:w-[calc(100%-24px)] rounded-full"></span>
             </Link>
             <Link 
-              href="/generate-recipe" 
+              href="/dietary-needs" 
               className="text-sm font-semibold text-gray-800 hover:text-emerald-700 transition-colors duration-200 relative group flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/60 hover:shadow-sm"
             >
-              <span>✨</span>
-              <span>Generate Recipe</span>
+              <span>🛡️</span>
+              <span>Dietary Needs</span>
               <span className="absolute -bottom-1 left-3 w-0 h-0.5 bg-gradient-to-r from-emerald-500 to-teal-600 transition-all duration-200 group-hover:w-[calc(100%-24px)] rounded-full"></span>
             </Link>
           </nav>
@@ -179,13 +179,13 @@ export function Header({ className }: HeaderProps) {
             <div className="px-4 pt-4 pb-6 space-y-2">
               {/* Core Navigation */}
               <Link
-                href="/dietary-needs"
+                href="/generate-recipe"
                 className="block px-4 py-3 text-base font-semibold text-gray-800 hover:text-emerald-700 hover:bg-white/60 hover:shadow-sm rounded-lg transition-all duration-200"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 <div className="flex items-center gap-3">
-                  <span>🛡️</span>
-                  <span>Dietary Needs</span>
+                  <span>✨</span>
+                  <span>Generate Recipe</span>
                 </div>
               </Link>
               <Link
@@ -199,13 +199,13 @@ export function Header({ className }: HeaderProps) {
                 </div>
               </Link>
               <Link
-                href="/generate-recipe"
+                href="/dietary-needs"
                 className="block px-4 py-3 text-base font-semibold text-gray-800 hover:text-emerald-700 hover:bg-white/60 hover:shadow-sm rounded-lg transition-all duration-200"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 <div className="flex items-center gap-3">
-                  <span>✨</span>
-                  <span>Generate Recipe</span>
+                  <span>🛡️</span>
+                  <span>Dietary Needs</span>
                 </div>
               </Link>
               
