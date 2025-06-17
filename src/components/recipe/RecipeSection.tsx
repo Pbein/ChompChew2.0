@@ -131,7 +131,7 @@ export function RecipeSection({ className }: RecipeSectionProps) {
           <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
             Discover Recipes You Can Actually Eat
           </h2>
-          <p className="text-xl text-gray-800 dark:text-gray-200 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
             Browse our curated collection of safe, delicious recipes tailored to your dietary needs and preferences.
           </p>
         </div>
