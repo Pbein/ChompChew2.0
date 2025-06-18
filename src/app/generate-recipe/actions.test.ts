@@ -4,12 +4,12 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { generateRecipeAction } from './actions'
-import { generateRecipe } from '@/lib/openai'
+import { RecipeGenerationService } from '@/features/core/services/recipeGenerationService'
 import { canGenerateRecipes } from '@/lib/auth-utils'
 import { createServerComponentClient } from '@/lib/supabase-server'
 
 // Mock dependencies
-vi.mock('@/lib/openai')
+vi.mock('@/features/core/services/recipeGenerationService')
 vi.mock('@/lib/auth-utils')
 vi.mock('@/lib/supabase-server')
 vi.mock('next/cache', () => ({
@@ -17,7 +17,7 @@ vi.mock('next/cache', () => ({
 }))
 
 // Mock implementations
-const mockGenerateRecipe = generateRecipe as ReturnType<typeof vi.fn>
+const mockGenerateRecipe = vi.fn()
 const mockCanGenerateRecipes = canGenerateRecipes as ReturnType<typeof vi.fn>
 const mockCreateServerComponentClient = createServerComponentClient as ReturnType<typeof vi.fn>
 
@@ -61,6 +61,9 @@ describe('Recipe Generation Actions', () => {
     // Create fresh mock chain
     mockChain = createMockChain()
     
+    // Mock RecipeGenerationService
+    vi.mocked(RecipeGenerationService.generateRecipe).mockImplementation(mockGenerateRecipe)
+
     // Setup default mock implementations
     mockCreateServerComponentClient.mockResolvedValue({
       auth: {
@@ -96,27 +99,32 @@ describe('Recipe Generation Actions', () => {
 
   describe('generateRecipeAction', () => {
     it('should generate recipe successfully for authorized user', async () => {
-      // Mock successful AI generation
+      // Mock successful AI generation with new RecipeGenerationService format
       const mockRecipe = {
         title: 'Test Chicken Burrito',
         description: 'A delicious test recipe',
         ingredients: [
-          { name: 'chicken breast', quantity: '200g' },
-          { name: 'tortilla', quantity: '2' }
+          { name: 'chicken breast', amount: '200g', unit: 'g' },
+          { name: 'tortilla', amount: '2', unit: 'pieces' }
         ],
         instructions: [
-          'Cook the chicken',
-          'Warm the tortillas',
-          'Assemble the burrito'
+          { step: 1, instruction: 'Cook the chicken' },
+          { step: 2, instruction: 'Warm the tortillas' },
+          { step: 3, instruction: 'Assemble the burrito' }
         ],
-        prep_time: 15,
-        cook_time: 20,
-        total_time: 35,
-        servings: 2,
-        difficulty: 'easy' as const,
-        cuisine_type: 'Mexican',
-        dietary_tags: ['high-protein'],
-        calories_per_serving: 450
+        metadata: {
+          prepTime: 15,
+          cookTime: 20,
+          totalTime: 35,
+          servings: 2,
+          difficulty: 'easy' as const,
+          cuisineType: 'Mexican'
+        },
+        tags: ['high-protein'],
+        nutrition: {
+          calories: 450
+        },
+        imageUrl: 'https://example.com/test-image.jpg'
       }
 
       mockGenerateRecipe.mockResolvedValue(mockRecipe)
@@ -144,10 +152,14 @@ describe('Recipe Generation Actions', () => {
       expect(result.recipeMarkdown).toContain('# Test Chicken Burrito')
       expect(result.recipeMarkdown).toContain('chicken breast')
       expect(result.recipeId).toBe('recipe-123')
+      expect(result.imageUrl).toBe('https://example.com/test-image.jpg')
       expect(mockGenerateRecipe).toHaveBeenCalledWith({
-        prompt: 'chicken burrito',
-        dietaryPreferences: [],
-        allergens: []
+        ingredients: ['chicken burrito'],
+        dietaryRestrictions: [],
+        allergies: [],
+        difficulty: 'medium',
+        servings: 4,
+        equipment: []
       })
     })
 
@@ -205,11 +217,22 @@ describe('Recipe Generation Actions', () => {
     it('should handle database insertion errors', async () => {
       const mockRecipe = {
         title: 'Test Recipe',
-        ingredients: [{ name: 'test ingredient' }],
-        instructions: ['test instruction'],
-        prep_time: 10,
-        cook_time: 15,
-        difficulty: 'easy' as const
+        description: 'A test recipe',
+        ingredients: [{ name: 'test ingredient', amount: '1', unit: 'cup' }],
+        instructions: [{ step: 1, instruction: 'test instruction' }],
+        metadata: {
+          prepTime: 10,
+          cookTime: 15,
+          totalTime: 25,
+          servings: 2,
+          difficulty: 'easy' as const,
+          cuisineType: 'American'
+        },
+        tags: [],
+        nutrition: {
+          calories: 200
+        },
+        imageUrl: 'https://example.com/test.jpg'
       }
 
       mockGenerateRecipe.mockResolvedValue(mockRecipe)
@@ -263,9 +286,22 @@ describe('Recipe Generation Actions', () => {
     it('should parse dietary preferences from form data', async () => {
       const mockRecipe = {
         title: 'Healthy Recipe',
-        ingredients: [{ name: 'test ingredient' }],
-        instructions: ['test instruction'],
-        difficulty: 'easy' as const
+        description: 'A healthy test recipe',
+        ingredients: [{ name: 'test ingredient', amount: '1', unit: 'cup' }],
+        instructions: [{ step: 1, instruction: 'test instruction' }],
+        metadata: {
+          prepTime: 10,
+          cookTime: 15,
+          totalTime: 25,
+          servings: 2,
+          difficulty: 'easy' as const,
+          cuisineType: 'American'
+        },
+        tags: ['vegetarian', 'high-protein'],
+        nutrition: {
+          calories: 300
+        },
+        imageUrl: 'https://example.com/healthy.jpg'
       }
 
       mockGenerateRecipe.mockResolvedValue(mockRecipe)
@@ -287,10 +323,14 @@ describe('Recipe Generation Actions', () => {
       const result = await generateRecipeAction(formData)
 
       expect(result.success).toBe(true)
+      expect(result.imageUrl).toBe('https://example.com/healthy.jpg')
       expect(mockGenerateRecipe).toHaveBeenCalledWith({
-        prompt: 'healthy recipe',
-        dietaryPreferences: ['vegetarian', 'high-protein'],
-        allergens: ['nuts', 'dairy']
+        ingredients: ['healthy recipe'],
+        dietaryRestrictions: ['vegetarian', 'high-protein'],
+        allergies: ['nuts', 'dairy'],
+        difficulty: 'medium',
+        servings: 4,
+        equipment: []
       })
     })
   })

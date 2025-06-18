@@ -15,6 +15,13 @@ const nextConfig: NextConfig = {
         hostname: 'unsplash.com',
         port: '',
         pathname: '/**',
+      },
+      // OpenAI DALL-E generated images
+      {
+        protocol: 'https',
+        hostname: 'oaidalleapiprodscus.blob.core.windows.net',
+        port: '',
+        pathname: '/**',
       }
     ],
   },

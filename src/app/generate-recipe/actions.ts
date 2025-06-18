@@ -2,9 +2,8 @@
 
 import { createServerComponentClient } from '@/lib/supabase-server'
 import { canGenerateRecipes } from '@/lib/auth-utils'
-import { generateRecipe } from '@/lib/openai'
+import { RecipeGenerationService, type RecipeGenerationInput } from '@/features/core/services/recipeGenerationService'
 import { getRecipeImageUrl } from '@/lib/imageService'
-import type { AIRecipe } from '@/lib/validators'
 import { revalidatePath } from 'next/cache'
 
 // Rate limiting: Track generation attempts per user
@@ -17,6 +16,21 @@ interface GenerateRecipeResult {
   error?: string
   recipeId?: string
   recipeMarkdown?: string
+  imageUrl?: string
+  recipeData?: {
+    title: string
+    description: string
+    ingredients: Array<{ name: string; amount?: string; unit?: string }>
+    instructions: Array<{ step: number; instruction: string }>
+    metadata: {
+      prepTime: number
+      cookTime: number
+      totalTime: number
+      servings: number
+      difficulty: string
+      cuisineType?: string
+    }
+  }
 }
 
 export async function generateRecipeAction(formData: FormData): Promise<GenerateRecipeResult> {
@@ -97,38 +111,45 @@ export async function generateRecipeAction(formData: FormData): Promise<Generate
 
     console.log('✅ Rate limit check passed')
 
-    // Generate recipe
-    console.log('🤖 Calling generateRecipe function...')
-    const aiRecipe: AIRecipe = await generateRecipe({
-      prompt,
-      dietaryPreferences,
-      allergens,
-    })
+    // Generate recipe with AI image
+    console.log('🤖 Calling RecipeGenerationService...')
+    const generationInput: RecipeGenerationInput = {
+      ingredients: [prompt], // For now, treat the prompt as ingredients
+      dietaryRestrictions: dietaryPreferences,
+      allergies: allergens,
+      difficulty: 'medium' as const,
+      servings: 4,
+      equipment: [], // Required field
+    }
+    
+    const generatedRecipe = await RecipeGenerationService.generateRecipe(generationInput)
+    console.log('🍳 Recipe generated:', { title: generatedRecipe.title })
 
-    console.log('🍳 Recipe generated:', { title: aiRecipe.title })
-
-    // Generate image URL for the recipe
-    console.log('🖼️ Generating image URL for recipe...')
-    const imageUrl = getRecipeImageUrl(aiRecipe.title, aiRecipe.cuisine_type)
-    console.log('✅ Image URL generated:', imageUrl)
+    // Use AI-generated image URL or fallback to Unsplash
+    const imageUrl = generatedRecipe.imageUrl || getRecipeImageUrl(generatedRecipe.title, generatedRecipe.metadata.cuisineType)
+    console.log('✅ Image URL:', imageUrl)
 
     // Insert into database
     console.log('💾 Inserting recipe into database...')
     const { data: insertData, error: insertError } = await supabase
       .from('recipes')
       .insert({
-        title: aiRecipe.title,
-        description: aiRecipe.description,
-        instructions: aiRecipe.instructions,
-        ingredients: aiRecipe.ingredients,
-        prep_time: aiRecipe.prep_time,
-        cook_time: aiRecipe.cook_time,
-        total_time: aiRecipe.total_time ?? (aiRecipe.prep_time ?? 0) + (aiRecipe.cook_time ?? 0),
-        servings: aiRecipe.servings,
-        difficulty: aiRecipe.difficulty,
-        cuisine_type: aiRecipe.cuisine_type,
-        dietary_tags: aiRecipe.dietary_tags,
-        calories_per_serving: aiRecipe.calories_per_serving,
+        title: generatedRecipe.title,
+        description: generatedRecipe.description,
+        instructions: generatedRecipe.instructions.map(inst => inst.instruction),
+        ingredients: generatedRecipe.ingredients.map(ing => ({ 
+          name: ing.name, 
+          amount: ing.amount,
+          unit: ing.unit 
+        })),
+        prep_time: generatedRecipe.metadata.prepTime,
+        cook_time: generatedRecipe.metadata.cookTime,
+        total_time: generatedRecipe.metadata.totalTime,
+        servings: generatedRecipe.metadata.servings,
+        difficulty: generatedRecipe.metadata.difficulty,
+        cuisine_type: generatedRecipe.metadata.cuisineType,
+        dietary_tags: generatedRecipe.tags || [],
+        calories_per_serving: generatedRecipe.nutrition?.calories,
         image_url: imageUrl,
         is_ai_generated: true,
         created_by: authUser.id,
@@ -144,12 +165,28 @@ export async function generateRecipeAction(formData: FormData): Promise<Generate
     console.log('✅ Recipe saved with ID:', insertData?.id)
 
     // Generate markdown for display
-    const ingredientMd = aiRecipe.ingredients
-      .map((ing) => `- ${ing.quantity ? ing.quantity + ' ' : ''}${ing.unit ? ing.unit + ' ' : ''}${ing.name}`)
+    const ingredientMd = generatedRecipe.ingredients
+      .map((ing) => `- ${ing.amount ? ing.amount + ' ' : ''}${ing.unit ? ing.unit + ' ' : ''}${ing.name}`)
       .join('\n')
 
-    const instructionsMd = aiRecipe.instructions.map((step, idx) => `${idx + 1}. ${step}`).join('\n')
-    const recipeMarkdown = `# ${aiRecipe.title}\n\n${aiRecipe.description ?? ''}\n\n## Ingredients\n${ingredientMd}\n\n## Instructions\n${instructionsMd}`
+    const instructionsMd = generatedRecipe.instructions.map((inst, idx) => `${idx + 1}. ${inst.instruction}`).join('\n')
+    
+    // Add metadata section
+    const metadataMd = [
+      `**Prep Time:** ${generatedRecipe.metadata.prepTime} minutes`,
+      `**Cook Time:** ${generatedRecipe.metadata.cookTime} minutes`,
+      `**Total Time:** ${generatedRecipe.metadata.totalTime} minutes`,
+      `**Servings:** ${generatedRecipe.metadata.servings}`,
+      `**Difficulty:** ${generatedRecipe.metadata.difficulty}`,
+      generatedRecipe.metadata.cuisineType ? `**Cuisine:** ${generatedRecipe.metadata.cuisineType}` : null
+    ].filter(Boolean).join('\n')
+    
+    // Add tags section if tags exist
+    const tagsMd = generatedRecipe.tags && generatedRecipe.tags.length > 0 
+      ? `\n\n## Tags\n${generatedRecipe.tags.join(', ')}`
+      : ''
+    
+    const recipeMarkdown = `# ${generatedRecipe.title}\n\n${generatedRecipe.description ?? ''}\n\n## Details\n${metadataMd}\n\n## Ingredients\n${ingredientMd}\n\n## Instructions\n${instructionsMd}${tagsMd}`
 
     console.log('🎉 Recipe generation completed successfully')
 
@@ -159,7 +196,15 @@ export async function generateRecipeAction(formData: FormData): Promise<Generate
     return {
       success: true,
       recipeId: insertData?.id,
-      recipeMarkdown
+      recipeMarkdown,
+      imageUrl,
+      recipeData: {
+        title: generatedRecipe.title,
+        description: generatedRecipe.description,
+        ingredients: generatedRecipe.ingredients,
+        instructions: generatedRecipe.instructions,
+        metadata: generatedRecipe.metadata
+      }
     }
 
   } catch (error) {

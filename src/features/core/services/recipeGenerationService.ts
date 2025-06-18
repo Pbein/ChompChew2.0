@@ -1,4 +1,5 @@
 import { openai, OPENAI_CONFIG } from '@/lib/openai'
+import { generateRecipeImage } from '@/lib/aiImageService'
 import { z } from 'zod'
 
 // Input validation schemas
@@ -51,6 +52,7 @@ export const GeneratedRecipeSchema = z.object({
   }),
   tags: z.array(z.string()).optional(),
   tips: z.array(z.string()).optional(),
+  imageUrl: z.string().optional(), // AI-generated image URL
 })
 
 export type GeneratedRecipe = z.infer<typeof GeneratedRecipeSchema>
@@ -244,13 +246,37 @@ export class RecipeGenerationService {
     // Build prompt
     const prompt = RecipePromptBuilder.buildRecipeGenerationPrompt(validatedInput)
     
-    // Call OpenAI
-    const response = await this.callOpenAI(prompt)
+    // Generate recipe text and image in parallel for efficiency
+    const [response, imageUrl] = await Promise.all([
+      this.callOpenAI(prompt),
+      this.generateRecipeImageForInput(validatedInput)
+    ])
     
     // Parse and validate response
     const recipe = this.parseAndValidateRecipe(response)
     
+    // Add the generated image URL
+    recipe.imageUrl = imageUrl
+    
     return recipe
+  }
+
+  private static async generateRecipeImageForInput(input: RecipeGenerationInput): Promise<string> {
+    try {
+      // Create a basic recipe title from ingredients for image generation
+      const mainIngredients = input.ingredients.slice(0, 3).join(' ')
+      const recipeTitle = input.inspiration || `${mainIngredients} ${input.mealType || 'dish'}`
+      
+      return await generateRecipeImage({
+        title: recipeTitle,
+        ingredients: input.ingredients,
+        cuisineType: input.cuisineType
+      })
+    } catch (error) {
+      console.error('Failed to generate recipe image:', error)
+      // Return empty string if image generation fails - UI can handle fallback
+      return ''
+    }
   }
 
   static async generateRecipeVariation(
