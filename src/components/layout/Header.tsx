@@ -5,18 +5,22 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 import { createClientComponentClient } from "@/lib/supabase";
-import { ThemeToggleCompact } from "@/components/ui/ThemeToggle";
+import { ThemeToggleCompact, ThemeToggleWithLabel } from "@/components/ui/ThemeToggle";
+import { useSavedRecipesStore } from "@/store/savedRecipesStore";
+import type { AuthChangeEvent, Session } from "@supabase/supabase-js";
 
 interface HeaderProps {
   className?: string;
 }
 
+// Get singleton Supabase client outside component to prevent re-creation
+const supabase = createClientComponentClient();
+
 export function Header({ className }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [user, setUser] = useState<{ id: string; email?: string } | null>(null);
   const [loading, setLoading] = useState(true);
-
-  const supabase = createClientComponentClient();
+  const { handleUserAuthentication } = useSavedRecipesStore();
 
   // Check authentication status
   useEffect(() => {
@@ -26,6 +30,11 @@ export function Header({ className }: HeaderProps) {
       } = await supabase.auth.getUser();
       setUser(user);
       setLoading(false);
+      
+      // Handle authentication for existing session
+      if (user) {
+        await handleUserAuthentication(user.id);
+      }
     };
 
     getUser();
@@ -33,12 +42,19 @@ export function Header({ className }: HeaderProps) {
     // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user ?? null);
+    } = supabase.auth.onAuthStateChange(async (event: AuthChangeEvent, session: Session | null) => {
+      const newUser = session?.user ?? null;
+      setUser(newUser);
+      
+      // Handle authentication changes
+      if (event === 'SIGNED_IN' && newUser) {
+        console.log('User signed in, handling authentication:', newUser.id);
+        await handleUserAuthentication(newUser.id);
+      }
     });
 
     return () => subscription.unsubscribe();
-  }, [supabase.auth]);
+  }, []); // Remove supabase.auth dependency since it's now stable
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -166,7 +182,7 @@ export function Header({ className }: HeaderProps) {
                       <Button
                         variant="primary"
                         size="sm"
-                        className="font-semibold bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-primary-foreground shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-200 hover:scale-105 border-0 px-3 whitespace-nowrap"
+                        className="font-semibold bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-lg shadow-secondary/20 hover:shadow-xl hover:shadow-secondary/30 transition-all duration-200 hover:scale-105 border-0 px-3 whitespace-nowrap"
                       >
                         Get Started
                       </Button>
@@ -250,12 +266,8 @@ export function Header({ className }: HeaderProps) {
 
               {/* Theme Toggle Section */}
               <div className="py-3 border-t border-border/50 border-b border-border/50 mb-4">
-                <div className="flex items-center justify-between px-4 py-1">
-                  <div className="flex items-center gap-3">
-                    <span className="text-lg">🎨</span>
-                    <span className="text-base font-semibold text-card-foreground">Theme</span>
-                  </div>
-                  <ThemeToggleCompact />
+                <div className="flex items-center justify-center px-4 py-1">
+                  <ThemeToggleWithLabel />
                 </div>
               </div>
 
@@ -320,7 +332,7 @@ export function Header({ className }: HeaderProps) {
                         <Button
                           variant="primary"
                           size="lg"
-                          className="w-full justify-start font-semibold bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-primary-foreground shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-200 border-0 py-3 px-4 rounded-lg"
+                          className="w-full justify-start font-semibold bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-lg shadow-secondary/20 hover:shadow-xl hover:shadow-secondary/30 transition-all duration-200 border-0 py-3 px-4 rounded-lg"
                         >
                           <div className="flex items-center gap-3">
                             <span className="text-lg">🚀</span>

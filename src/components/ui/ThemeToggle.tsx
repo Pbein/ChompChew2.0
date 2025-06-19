@@ -3,6 +3,7 @@
 import { useTheme } from '@/components/providers/ThemeProvider'
 import { Sun, Moon, Monitor } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useEffect, useState } from 'react'
 
 export function ThemeToggle() {
   const { theme, setTheme, resolvedTheme } = useTheme()
@@ -50,47 +51,114 @@ export function ThemeToggle() {
 
 export function ThemeToggleCompact() {
   const { theme, setTheme, resolvedTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
 
-  const cycleTheme = () => {
-    const themes = ['light', 'dark', 'system'] as const
-    const currentIndex = themes.indexOf(theme)
-    const nextIndex = (currentIndex + 1) % themes.length
-    setTheme(themes[nextIndex])
+  // Fix hydration error by only rendering after client mount
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  const toggleTheme = () => {
+    // Simple toggle between light and dark (skip system for toggle simplicity)
+    if (theme === 'light' || (theme === 'system' && resolvedTheme === 'light')) {
+      setTheme('dark')
+    } else {
+      setTheme('light')
+    }
   }
 
-  const getIcon = () => {
-    if (theme === 'system') return Monitor
-    return resolvedTheme === 'dark' ? Moon : Sun
-  }
+  const isDark = theme === 'dark' || (theme === 'system' && resolvedTheme === 'dark')
 
-  const Icon = getIcon()
+  // Don't render anything until mounted on client
+  if (!mounted) {
+    return (
+      <div className="flex items-center gap-3">
+        <span className="text-sm font-medium text-foreground">Theme</span>
+        <div className="relative inline-flex h-6 w-11 items-center rounded-full bg-gray-200 border border-gray-300">
+          <span className="inline-block h-4 w-4 transform rounded-full bg-white shadow-md border border-gray-300 translate-x-1" />
+        </div>
+      </div>
+    )
+  }
 
   return (
-    <button
-      onClick={cycleTheme}
-      className={cn(
-        "relative flex items-center justify-center w-10 h-10 rounded-lg",
-        "bg-muted hover:bg-muted/80 border border-border shadow-sm",
-        "transition-all duration-200 hover:scale-105 active:scale-95",
-        "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-      )}
-      title={`Current: ${theme} theme (click to cycle)`}
-      aria-label={`Switch theme (currently ${theme})`}
-    >
-      <Icon className="w-5 h-5 text-foreground transition-transform duration-200" />
-      
-      {/* Animated background */}
-      <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-primary/5 to-secondary/5 opacity-0 hover:opacity-100 transition-opacity duration-200" />
-      
-      {/* Theme indicator dot */}
-      <div className="absolute -top-1 -right-1 w-3 h-3 rounded-full border-2 border-background shadow-sm">
-        <div className={cn(
-          "w-full h-full rounded-full transition-colors duration-200",
-          theme === 'light' && "bg-yellow-400",
-          theme === 'dark' && "bg-blue-600", 
-          theme === 'system' && "bg-gradient-to-br from-yellow-400 to-blue-600"
-        )} />
+    <div className="flex items-center gap-3">
+      <span className="text-sm font-medium text-foreground">
+        {isDark ? 'Dark Mode' : 'Light Mode'}
+      </span>
+      <button
+        onClick={toggleTheme}
+        className={cn(
+          "relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 border",
+          isDark ? "bg-blue-500 border-blue-600" : "bg-gray-200 border-gray-300"
+        )}
+        aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
+        title={`Currently ${isDark ? 'dark' : 'light'} mode - click to toggle`}
+      >
+        <span
+          className={cn(
+            "inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200 shadow-md border border-gray-300",
+            isDark ? "translate-x-6" : "translate-x-1"
+          )}
+        />
+      </button>
+    </div>
+  )
+}
+
+// Version with label for mobile menu
+export function ThemeToggleWithLabel() {
+  const { theme, setTheme, resolvedTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+
+  // Fix hydration error by only rendering after client mount
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  const toggleTheme = () => {
+    // Simple toggle between light and dark (skip system for toggle simplicity)
+    if (theme === 'light' || (theme === 'system' && resolvedTheme === 'light')) {
+      setTheme('dark')
+    } else {
+      setTheme('light')
+    }
+  }
+
+  const isDark = theme === 'dark' || (theme === 'system' && resolvedTheme === 'dark')
+
+  // Don't render anything until mounted on client
+  if (!mounted) {
+    return (
+      <div className="flex items-center gap-3">
+        <span className="text-base font-semibold text-card-foreground">Theme</span>
+        <div className="relative inline-flex h-6 w-11 items-center rounded-full bg-gray-200 border border-gray-300">
+          <span className="inline-block h-4 w-4 transform rounded-full bg-white shadow-md border border-gray-300 translate-x-1" />
+        </div>
       </div>
-    </button>
+    )
+  }
+
+  return (
+    <div className="flex items-center gap-3">
+      <span className="text-base font-semibold text-card-foreground">
+        {isDark ? 'Dark Mode' : 'Light Mode'}
+      </span>
+      <button
+        onClick={toggleTheme}
+        className={cn(
+          "relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 border",
+          isDark ? "bg-blue-500 border-blue-600" : "bg-gray-200 border-gray-300"
+        )}
+        aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
+      >
+        <span
+          className={cn(
+            "inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200 shadow-md border border-gray-300",
+            isDark ? "translate-x-6" : "translate-x-1"
+          )}
+        />
+      </button>
+    </div>
   )
 } 

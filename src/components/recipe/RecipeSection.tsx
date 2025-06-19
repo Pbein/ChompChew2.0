@@ -47,6 +47,9 @@ export function RecipeSection({ className }: RecipeSectionProps) {
     getUser()
   }, [])
 
+  // Load saved recipes when user changes - removed as this is now handled by authentication flow
+  // The handleUserAuthentication function in the Header component will handle loading saved recipes
+
   useEffect(() => {
     const load = async () => {
       setLoading(true)

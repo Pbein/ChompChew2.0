@@ -8,7 +8,7 @@ import { createClientComponentClient } from '@/lib/supabase';
 export default function SavedRecipesPage() {
   const [user, setUser] = useState<{ id: string } | null>(null);
   const userId = user?.id;
-  const { saved, loadSaved, loading } = useSavedRecipesStore();
+  const { saved, loading, toggleSave, handleUserAuthentication } = useSavedRecipesStore();
 
   // Get user session
   useEffect(() => {
@@ -16,13 +16,14 @@ export default function SavedRecipesPage() {
     const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser()
       setUser(user)
+      
+      // Ensure saved recipes are loaded for this page
+      if (user) {
+        await handleUserAuthentication(user.id);
+      }
     }
     getUser()
-  }, [])
-
-  useEffect(() => {
-    loadSaved(userId);
-  }, [userId, loadSaved]);
+  }, [handleUserAuthentication])
 
   if (loading) {
     return (
@@ -41,9 +42,9 @@ export default function SavedRecipesPage() {
       ) : (
         <RecipeGrid
           recipes={saved}
-          onSaveRecipe={() => {}}
-          onViewRecipe={(r) => {
-            window.location.href = `/recipe/${r.id}`;
+          onSaveRecipe={(recipe) => toggleSave(recipe, userId)}
+          onViewRecipe={(recipe) => {
+            window.location.href = `/recipe/${recipe.id}`;
           }}
           loading={false}
           emptyMessage="No saved recipes"

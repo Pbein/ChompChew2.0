@@ -68,15 +68,13 @@ export function RecipeGrid({
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-8 auto-rows-fr">
         {recipes.map((recipe) => (
           <div key={recipe.id} className="flex">
-            <a href={`/recipe/${recipe.id}`} className="w-full h-full">
-              <RecipeCard
-                recipe={recipe}
-                onSave={() => onSaveRecipe(recipe)}
-                onViewDetails={() => onViewRecipe(recipe)}
-                size={cardSize}
-                className="w-full h-full"
-              />
-            </a>
+            <RecipeCard
+              recipe={recipe}
+              onSave={() => onSaveRecipe(recipe)}
+              onViewDetails={() => onViewRecipe(recipe)}
+              size={cardSize}
+              className="w-full h-full"
+            />
           </div>
         ))}
       </div>
