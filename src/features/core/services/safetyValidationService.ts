@@ -36,6 +36,17 @@ export interface ValidationBlocker {
   medicalCondition?: string
 }
 
+const foodCategoryMap: Record<string, string[]> = {
+  dairy: ['cheese', 'milk', 'butter', 'yogurt', 'cream'],
+  meat: ['beef', 'pork', 'lamb', 'chicken', 'turkey'],
+  poultry: ['chicken', 'turkey', 'duck'],
+  'red meat': ['beef', 'lamb', 'pork'],
+  fish: ['salmon', 'tuna', 'cod'],
+  shellfish: ['shrimp', 'crab', 'lobster'],
+  nuts: ['almond', 'walnut', 'peanut', 'cashew'],
+  gluten: ['wheat', 'barley', 'rye'],
+};
+
 /**
  * Validates recipe safety against user's dietary preferences and medical conditions
  * This is a placeholder implementation - will be enhanced with full validation logic
@@ -134,14 +145,32 @@ export async function validateSearchConstraints(
   const issues: string[] = []
 
   // Check for conflicting preferences
-  const hasConflicts = userPreferences.embraceFoods.some((embraceFood: string) =>
-    userPreferences.avoidFoods.some((avoidFood: string) =>
-      embraceFood.toLowerCase().includes(avoidFood.toLowerCase())
-    )
-  )
+  const embraceFoods = userPreferences.embraceFoods.map(f => f.toLowerCase());
+  const avoidFoods = userPreferences.avoidFoods.map(f => f.toLowerCase());
 
-  if (hasConflicts) {
-    issues.push('Some foods in your "embrace" list conflict with your "avoid" list')
+  for (const embrace of embraceFoods) {
+    for (const avoid of avoidFoods) {
+      const embraceIsCategory = foodCategoryMap[embrace];
+      const avoidIsCategory = foodCategoryMap[avoid];
+
+      let conflict = false;
+      if (embrace.includes(avoid) || avoid.includes(embrace)) {
+        conflict = true;
+      } else if (embraceIsCategory && embraceIsCategory.includes(avoid)) {
+        conflict = true;
+      } else if (avoidIsCategory && avoidIsCategory.includes(embrace)) {
+        conflict = true;
+      }
+
+      if (conflict) {
+        const originalEmbrace = userPreferences.embraceFoods.find(f => f.toLowerCase() === embrace);
+        const originalAvoid = userPreferences.avoidFoods.find(f => f.toLowerCase() === avoid);
+        const message = `'${originalEmbrace}' in your "embrace" list conflicts with '${originalAvoid}' in your "avoid" list`;
+        if (!issues.includes(message)) {
+            issues.push(message);
+        }
+      }
+    }
   }
 
   // Check for medical condition conflicts

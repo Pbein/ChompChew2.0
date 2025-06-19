@@ -9,6 +9,10 @@ export default defineConfig({
     setupFiles: ['./tests/setup/test-setup.ts'],
     globals: true,
     css: true,
+    exclude: [
+      '**/node_modules/**',
+      '**/tests/e2e/**', // Exclude E2E tests (run with Playwright instead)
+    ],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],

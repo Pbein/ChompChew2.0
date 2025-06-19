@@ -355,6 +355,38 @@ const fallbackDetailRecipes: Record<string, DBRecipe> = {
       {"step": 5, "text": "Bake for 9-11 minutes until golden."}
     ]
   },
+  '081339ea-8008-466c-9a90-eb28f8f724b3': {
+    id: '081339ea-8008-466c-9a90-eb28f8f724b3',
+    title: 'Lemon Herb Roasted Chicken',
+    description: 'Juicy roasted chicken with fresh herbs and bright lemon flavors.',
+    image_url: 'https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=400&h=300&fit=crop',
+    prep_time: 20,
+    cook_time: 60,
+    total_time: 80,
+    servings: 4,
+    difficulty: 'medium',
+    cuisine_type: 'Mediterranean',
+    dietary_tags: ['high-protein', 'dairy-free', 'whole30'],
+    calories_per_serving: 425,
+    safety_validated: true,
+    rating_average: 4.7,
+    nutrition_info: {"protein": 42, "fat": 18, "carbs": 4, "fiber": 1},
+    ingredients: [
+      {"name": "whole chicken", "amount": "3-4 lbs"},
+      {"name": "lemons", "amount": "2"},
+      {"name": "fresh rosemary", "amount": "2 sprigs"},
+      {"name": "fresh thyme", "amount": "2 sprigs"},
+      {"name": "garlic", "amount": "4 cloves"},
+      {"name": "olive oil", "amount": "3 tbsp"}
+    ],
+    instructions: [
+      {"step": 1, "text": "Preheat oven to 425°F and pat chicken dry."},
+      {"step": 2, "text": "Stuff cavity with lemon halves and herb sprigs."},
+      {"step": 3, "text": "Rub skin with olive oil, salt, and minced garlic."},
+      {"step": 4, "text": "Roast for 60-70 minutes until internal temp reaches 165°F."},
+      {"step": 5, "text": "Let rest 10 minutes before carving and serving."}
+    ]
+  },
   '550e8400-e29b-41d4-a716-446655440012': {
     id: '550e8400-e29b-41d4-a716-446655440012',
     title: 'Greek Yogurt Parfait',
@@ -437,13 +469,7 @@ export async function fetchRecipes(limit = 12, filters?: Partial<SearchQuery>): 
 
 export async function fetchRecipe(id: string): Promise<DBRecipe | null> {
   try {
-    // First check if it's a fallback recipe ID
-    if (fallbackDetailRecipes[id]) {
-      console.log(`Using fallback recipe for ID: ${id}`)
-      return fallbackDetailRecipes[id]
-    }
-
-    // Try to fetch from database
+    // Try to fetch from database first
     const { data, error } = await supabase.from('recipes').select('*').eq('id', id).single()
     
     if (error) {
@@ -452,6 +478,7 @@ export async function fetchRecipe(id: string): Promise<DBRecipe | null> {
       
       // Check if we have a fallback recipe for this ID
       if (fallbackDetailRecipes[id]) {
+        console.log(`Using fallback recipe for ID: ${id}`)
         return fallbackDetailRecipes[id]
       }
       
@@ -461,15 +488,24 @@ export async function fetchRecipe(id: string): Promise<DBRecipe | null> {
 
     if (!data) {
       console.log(`No recipe found in database for ID: ${id}, checking fallback`)
-      return fallbackDetailRecipes[id] || null
+      if (fallbackDetailRecipes[id]) {
+        console.log(`Using fallback recipe for ID: ${id}`)
+        return fallbackDetailRecipes[id]
+      }
+      return null
     }
 
+    console.log(`Successfully fetched recipe from database for ID: ${id}`)
     return data as DBRecipe
   } catch (error) {
     console.error('fetchRecipe connection error:', error)
     console.log(`Connection error for ID: ${id}, using fallback if available`)
     
     // Return fallback recipe if available
-    return fallbackDetailRecipes[id] || null
+    if (fallbackDetailRecipes[id]) {
+      console.log(`Using fallback recipe for ID: ${id}`)
+      return fallbackDetailRecipes[id]
+    }
+    return null
   }
 } 

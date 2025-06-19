@@ -27,6 +27,40 @@ export function GenerateRecipeLoadingScreenTidbitsAndTips({
   // Combine all tidbits into one array for random selection
   const allTidbits = [...allFactTidbits, ...featuredRecipeTidbits]
 
+  // Get random index that's different from previous
+  const getRandomTidbitIndex = (): number => {
+    if (allTidbits.length <= 1) {
+      return 0
+    }
+    
+    let randomIndex: number
+    let attempts = 0
+    do {
+      randomIndex = Math.floor(Math.random() * allTidbits.length)
+      attempts++
+    } while (randomIndex === previousIndexRef.current && attempts < 10)
+    
+    return randomIndex
+  }
+
+  // Handle tidbit transitions with fade effect
+  const transitionToNextTidbit = () => {
+    // Start fade out
+    setFadeClass('opacity-0')
+    
+    setTimeout(() => {
+      // Get new random index
+      const newIndex = getRandomTidbitIndex()
+      
+      // Update references
+      previousIndexRef.current = currentTidbitIndex
+      setCurrentTidbitIndex(newIndex)
+      
+      // Fade back in
+      setFadeClass('opacity-100')
+    }, 300) // 300ms fade out duration
+  }
+
   // Effect to manage the loading state and tidbit rotation
   useEffect(() => {
     if (!isLoadingRecipe) {
@@ -47,40 +81,6 @@ export function GenerateRecipeLoadingScreenTidbitsAndTips({
     // Loading recipe - show component and start tidbits
     setIsVisible(true)
     
-    // Get random index that's different from previous - defined inside useEffect
-    const getRandomTidbitIndex = (): number => {
-      if (allTidbits.length <= 1) {
-        return 0
-      }
-      
-      let randomIndex: number
-      let attempts = 0
-      do {
-        randomIndex = Math.floor(Math.random() * allTidbits.length)
-        attempts++
-      } while (randomIndex === previousIndexRef.current && attempts < 10)
-      
-      return randomIndex
-    }
-
-    // Handle tidbit transitions with fade effect - defined inside useEffect
-    const transitionToNextTidbit = () => {
-      // Start fade out
-      setFadeClass('opacity-0')
-      
-      setTimeout(() => {
-        // Get new random index
-        const newIndex = getRandomTidbitIndex()
-        
-        // Update references
-        previousIndexRef.current = newIndex
-        setCurrentTidbitIndex(newIndex)
-        
-        // Fade back in
-        setFadeClass('opacity-100')
-      }, 300) // 300ms fade out duration
-    }
-    
     // Set initial random tidbit
     const initialIndex = getRandomTidbitIndex()
     setCurrentTidbitIndex(initialIndex)
@@ -89,7 +89,9 @@ export function GenerateRecipeLoadingScreenTidbitsAndTips({
 
     // Start interval for 9-second transitions
     intervalRef.current = setInterval(() => {
-      transitionToNextTidbit()
+      if (isLoadingRecipe) {
+        transitionToNextTidbit()
+      }
     }, 9000) // 9 seconds
 
     // Cleanup function
@@ -103,7 +105,7 @@ export function GenerateRecipeLoadingScreenTidbitsAndTips({
         minDisplayTimeRef.current = null
       }
     }
-  }, [isLoadingRecipe]) // Only depend on isLoadingRecipe - no function dependencies!
+  }, [isLoadingRecipe]) // Only depend on isLoadingRecipe
 
   // Don't render if not visible
   if (!isVisible) {
@@ -128,7 +130,7 @@ export function GenerateRecipeLoadingScreenTidbitsAndTips({
           Creating Your Recipe...
         </h2>
         <p className="text-gray-600 dark:text-gray-300">
-          While we craft your perfect recipe, here&apos;s something interesting to know!
+          While we craft your perfect recipe, here's something interesting to know!
         </p>
       </div>
 

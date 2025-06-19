@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+"\n# Test reports\nplaywright-report/\ntest-results/\n\n# Windows junk\nnul" 
+\n# Test reports\nplaywright-report/\ntest-results/\n\n# Windows junk\nnul
+-e "\n# Test reports\nplaywright-report/\ntest-results/\n\n# Windows junk\nnul" 

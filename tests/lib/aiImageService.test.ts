@@ -1,109 +1,127 @@
-/**
- * @jest-environment node
- */
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { extractIngredientsForImage } from '@/lib/aiImageService'
+// Mock dependencies at the module level with inline factories to prevent hoisting issues.
+vi.mock('@/lib/supabase-server', () => ({
+  supabaseServiceRole: {
+    storage: {
+      from: vi.fn(() => ({
+        upload: vi.fn(),
+        getPublicUrl: vi.fn(),
+      })),
+    },
+  },
+}));
 
-// Note: Full integration tests for generateRecipeImage require OpenAI API key
-// These tests focus on utility functions that can be tested in isolation
+vi.mock('@/lib/openai', () => ({
+  openai: {
+    responses: {
+      create: vi.fn(),
+    },
+  },
+}));
 
-describe('AI Image Service', () => {
+vi.mock('uuid', () => ({ v4: () => 'mock-uuid-1234' }));
+
+import { generateRecipeImage } from '@/lib/aiImageService';
+import { openai } from '@/lib/openai';
+import { supabaseServiceRole } from '@/lib/supabase-server';
+
+// --- Test Suite ---
+
+describe('generateRecipeImage', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-  })
+    // Reset mocks before each test to ensure isolation
+    vi.clearAllMocks();
+  });
 
-  describe('extractIngredientsForImage', () => {
-    it('should extract ingredients from array of strings', () => {
-      const recipe = {
-        ingredients: ['chicken breast', 'olive oil', 'garlic']
-      }
+  it('should successfully generate an image, upload it, and return the public URL', async () => {
+    // Arrange
+    const mockCreate = vi.mocked(openai.responses.create);
+    const mockUpload = vi.fn();
+    const mockGetPublicUrl = vi.fn();
+    
+    vi.mocked(supabaseServiceRole.storage.from).mockReturnValue({
+      upload: mockUpload,
+      getPublicUrl: mockGetPublicUrl,
+    } as any);
 
-      const result = extractIngredientsForImage(recipe)
+    mockCreate.mockResolvedValue({
+      output: [{ type: 'image_generation_call', status: 'completed', result: 'mock-base64-data' }],
+    } as any);
+    mockUpload.mockResolvedValue({ error: null, data: { path: 'mock-uuid-1234.png' } });
+    mockGetPublicUrl.mockReturnValue({ data: { publicUrl: 'https://test.com/image.png' } });
 
-      expect(result).toEqual(['chicken breast', 'olive oil', 'garlic'])
-    })
+    // Act
+    const result = await generateRecipeImage({ title: 'Test Recipe' });
 
-    it('should extract ingredients from array of objects with name property', () => {
-      const recipe = {
-        ingredients: [
-          { name: 'chicken breast', amount: '1 lb' },
-          { name: 'olive oil', amount: '2 tbsp' }
-        ]
-      }
+    // Assert
+    expect(mockCreate).toHaveBeenCalledTimes(1);
+    expect(mockUpload).toHaveBeenCalledWith('mock-uuid-1234.png', expect.any(Buffer), expect.any(Object));
+    expect(mockGetPublicUrl).toHaveBeenCalledWith('mock-uuid-1234.png');
+    expect(result).toBe('https://test.com/image.png');
+  });
 
-      const result = extractIngredientsForImage(recipe)
+  it('should fallback to Unsplash when image generation fails', async () => {
+    // Arrange
+    const mockCreate = vi.mocked(openai.responses.create);
+    mockCreate.mockResolvedValue({
+      output: [{ type: 'image_generation_call', status: 'failed', result: null }],
+    } as any);
 
-      expect(result).toEqual(['chicken breast', 'olive oil'])
-    })
+    // Act
+    const result = await generateRecipeImage({ title: 'Failed Recipe' });
 
-    it('should handle mixed ingredient formats', () => {
-      const recipe = {
-        ingredients: [
-          'salt',
-          { name: 'pepper', amount: '1 tsp' },
-          { ingredient: 'garlic', quantity: '3 cloves' }, // Different property name
-          123 // Non-string/object
-        ]
-      }
+    // Assert - Should fallback to Unsplash instead of throwing
+    expect(result).toContain('unsplash.com');
+    expect(result).toContain('failed'); // The fallback URL contains the error indicator
+  });
 
-      const result = extractIngredientsForImage(recipe)
+  it('should fallback to Unsplash when Supabase upload fails', async () => {
+    // Arrange
+    const mockCreate = vi.mocked(openai.responses.create);
+    const mockUpload = vi.fn();
+    const mockGetPublicUrl = vi.fn();
+    
+    vi.mocked(supabaseServiceRole.storage.from).mockReturnValue({
+      upload: mockUpload,
+      getPublicUrl: mockGetPublicUrl,
+    } as unknown);
 
-      expect(result).toEqual(['salt', 'pepper', '[object Object]', '123'])
-    })
+    mockCreate.mockResolvedValue({
+      output: [{ type: 'image_generation_call', status: 'completed', result: 'mock-base64-data' }],
+    } as unknown);
+    mockUpload.mockResolvedValue({ error: new Error('Upload failed'), data: null });
 
-    it('should return empty array when no ingredients', () => {
-      const recipe = {}
-      const result = extractIngredientsForImage(recipe)
-      expect(result).toEqual([])
-    })
+    // Act
+    const result = await generateRecipeImage({ title: 'Upload Fail Recipe' });
 
-    it('should return empty array when ingredients is not an array', () => {
-      const recipe = {
-        ingredients: 'chicken and rice'
-      }
+    // Assert - Should fallback to Unsplash instead of throwing
+    expect(result).toContain('unsplash.com');
+    expect(result).toContain('upload'); // The fallback URL contains the error indicator
+  });
 
-      const result = extractIngredientsForImage(recipe)
-      expect(result).toEqual([])
-    })
+  it('should fallback to Unsplash when getting public URL fails', async () => {
+    // Arrange
+    const mockCreate = vi.mocked(openai.responses.create);
+    const mockUpload = vi.fn();
+    const mockGetPublicUrl = vi.fn();
+    
+    vi.mocked(supabaseServiceRole.storage.from).mockReturnValue({
+      upload: mockUpload,
+      getPublicUrl: mockGetPublicUrl,
+    } as any);
 
-    it('should filter out falsy values', () => {
-      const recipe = {
-        ingredients: ['chicken', '', null, 'rice', undefined, 'vegetables']
-      }
+    mockCreate.mockResolvedValue({
+      output: [{ type: 'image_generation_call', status: 'completed', result: 'mock-base64-data' }],
+    } as any);
+    mockUpload.mockResolvedValue({ error: null, data: { path: 'mock-uuid-1234.png' } });
+    mockGetPublicUrl.mockReturnValue({ data: { publicUrl: null } }); // Simulate failure
 
-      const result = extractIngredientsForImage(recipe)
-      expect(result).toEqual(['chicken', 'null', 'rice', 'undefined', 'vegetables'])
-    })
+    // Act
+    const result = await generateRecipeImage({ title: 'Public URL Fail' });
 
-    it('should handle empty ingredients array', () => {
-      const recipe = {
-        ingredients: []
-      }
-
-      const result = extractIngredientsForImage(recipe)
-      expect(result).toEqual([])
-    })
-
-    it('should handle complex nested ingredient objects', () => {
-      const recipe = {
-        ingredients: [
-          { name: 'chicken breast', amount: '1 lb', notes: 'boneless' },
-          { name: 'garlic cloves', amount: '3', preparation: 'minced' },
-          { name: 'olive oil', amount: '2 tbsp', type: 'extra virgin' }
-        ]
-      }
-
-      const result = extractIngredientsForImage(recipe)
-      expect(result).toEqual(['chicken breast', 'garlic cloves', 'olive oil'])
-    })
-  })
-
-  describe('Image Generation Integration', () => {
-    it('should be tested in integration tests with proper OpenAI setup', () => {
-      // This is a placeholder to remind us that full image generation
-      // should be tested in integration tests with proper API setup
-      expect(true).toBe(true)
-    })
-  })
-}) 
+    // Assert - Should fallback to Unsplash instead of throwing
+    expect(result).toContain('unsplash.com');
+    expect(result).toContain('public'); // The fallback URL contains the error indicator
+  });
+}); 

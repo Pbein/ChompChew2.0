@@ -59,9 +59,10 @@ describe('Header Component', () => {
   it('should render core navigation links', () => {
     renderWithProviders(<Header />)
     
-    expect(screen.getByText('Dietary Needs')).toBeInTheDocument()
-    expect(screen.getByText('Saved Recipes')).toBeInTheDocument()
-    expect(screen.getByText('Generate Recipe')).toBeInTheDocument()
+    // Multiple instances exist due to responsive design (desktop and tablet layouts)
+    expect(screen.getAllByText('Dietary Needs')).toHaveLength(2)
+    expect(screen.getAllByText('Saved Recipes')).toHaveLength(2)
+    expect(screen.getAllByText('Generate Recipe')).toHaveLength(2)
   })
 
   it('should render user action buttons', () => {
@@ -94,9 +95,9 @@ describe('Header Component', () => {
   it('should have proper navigation structure for accessibility', () => {
     renderWithProviders(<Header />)
     
-    // Should have proper navigation landmark
-    const nav = screen.getByRole('navigation')
-    expect(nav).toBeInTheDocument()
+    // Should have proper navigation landmarks (there may be multiple for responsive design)
+    const navElements = screen.getAllByRole('navigation')
+    expect(navElements.length).toBeGreaterThan(0)
     
     // Should have proper link structure
     const homeLink = screen.getByRole('link', { name: /ChompChew/i })
