@@ -6,6 +6,8 @@
 
 import { openai } from './openai'
 import { getRecipeImageUrl } from './imageService'
+import { supabaseServiceRole } from './supabase-server'
+import { v4 as uuidv4 } from 'uuid'
 
 export interface RecipeImageParams {
   title: string
@@ -213,20 +215,42 @@ export async function generateRecipeImage(params: RecipeImageParams): Promise<st
     }
 
     console.log('🔧 [AI-IMAGE] Converting base64 to data URL...')
-    // Convert base64 image data to data URL for immediate use
-    const imageDataUrl = `data:image/png;base64,${imageCall.result}`
+    // Convert base64 image data to buffer for upload
+    const buffer = Buffer.from(imageCall.result, 'base64')
+    const filename = `${uuidv4()}.png`
     
-    console.log('✅ [AI-IMAGE] AI image generated successfully with gpt-image-1 model!')
-    console.log('📊 [AI-IMAGE] Image statistics:', {
-      base64Length: imageCall.result.length,
-      dataUrlLength: imageDataUrl.length,
-      estimatedSizeKB: Math.round(imageCall.result.length * 0.75 / 1024), // Base64 is ~75% efficient
-      format: 'PNG',
-      dimensions: '1024x1024'
-    })
-    console.log('🏁 [AI-IMAGE] ===== AI IMAGE GENERATION COMPLETED =====')
+    console.log('📦 [AI-IMAGE] Uploading image to Supabase Storage...', { filename, bucket: 'recipe-images' })
     
-    return imageDataUrl
+    const { data: uploadData, error: uploadError } = await supabaseServiceRole.storage
+      .from('recipe-images')
+      .upload(filename, buffer, {
+        contentType: 'image/png',
+        cacheControl: '31536000', // 1 year
+        upsert: true,
+      })
+
+    if (uploadError) {
+      console.error('❌ [AI-IMAGE] Supabase Storage upload failed:', uploadError)
+      throw new Error('Failed to upload generated image to storage.')
+    }
+    
+    console.log('✅ [AI-IMAGE] Image uploaded successfully:', uploadData.path)
+
+    // Get the public URL for the uploaded image
+    const { data: publicUrlData } = supabaseServiceRole.storage
+      .from('recipe-images')
+      .getPublicUrl(filename)
+
+    if (!publicUrlData || !publicUrlData.publicUrl) {
+      console.error('❌ [AI-IMAGE] Could not get public URL for image.')
+      throw new Error('Failed to get public URL for uploaded image.')
+    }
+
+    const permanentUrl = publicUrlData.publicUrl
+    console.log('🔗 [AI-IMAGE] Permanent image URL:', permanentUrl)
+    console.log('🏁 [AI-IMAGE] ===== AI IMAGE GENERATION AND UPLOAD COMPLETED =====')
+    
+    return permanentUrl
     
   } catch (error) {
     console.error('💥 [AI-IMAGE] ===== AI IMAGE GENERATION FAILED =====')

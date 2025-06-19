@@ -32,7 +32,7 @@ export default function GenerateRecipePage() {
       hasGeneratedRecipe: !!generatedRecipe,
       recipeInputLength: recipeInput.length
     })
-  }, [isGenerating, generatedRecipe])
+  }, [isGenerating, generatedRecipe, showLoadingTips, recipeInput.length])
 
   const supabase = createClientComponentClient()
 

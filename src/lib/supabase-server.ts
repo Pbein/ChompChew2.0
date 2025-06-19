@@ -1,4 +1,5 @@
 import { createServerClient } from '@supabase/ssr'
+import { createClient } from '@supabase/supabase-js'
 import { cookies } from 'next/headers'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
@@ -50,4 +51,18 @@ export const createRouteHandlerClient = async () => {
       },
     },
   })
-} 
+}
+
+// Service Role Supabase client (for server-side operations with admin privileges)
+const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+
+export const supabaseServiceRole = createClient(
+  supabaseUrl,
+  supabaseServiceRoleKey,
+  {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  }
+) 

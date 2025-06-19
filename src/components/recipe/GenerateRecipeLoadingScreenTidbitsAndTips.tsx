@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { 
   allFactTidbits, 
   featuredRecipeTidbits,
@@ -46,7 +46,7 @@ export function GenerateRecipeLoadingScreenTidbitsAndTips({
   }, [isLoadingRecipe])
 
   // JavaScript function to get random index that's different from previous
-  const getRandomTidbitIndex = (): number => {
+  const getRandomTidbitIndex = useCallback((): number => {
     console.log('🎲 [LOADING-SCREEN] Getting random tidbit index...')
     console.log('🎲 [LOADING-SCREEN] Available tidbits:', allTidbits.length)
     console.log('🎲 [LOADING-SCREEN] Previous index:', previousIndexRef.current)
@@ -66,10 +66,10 @@ export function GenerateRecipeLoadingScreenTidbitsAndTips({
     
     console.log('🎯 [LOADING-SCREEN] Final selected index:', randomIndex)
     return randomIndex
-  }
+  }, [allTidbits.length])
 
   // Handle tidbit transitions with fade effect
-  const transitionToNextTidbit = () => {
+  const transitionToNextTidbit = useCallback(() => {
     console.log('🔄 [LOADING-SCREEN] ===== STARTING TIDBIT TRANSITION =====')
     console.log('🔄 [LOADING-SCREEN] Current tidbit index before transition:', currentTidbitIndex)
     console.log('🔄 [LOADING-SCREEN] Previous index ref:', previousIndexRef.current)
@@ -95,7 +95,7 @@ export function GenerateRecipeLoadingScreenTidbitsAndTips({
       
       console.log('🔄 [LOADING-SCREEN] ===== TIDBIT TRANSITION COMPLETE =====')
     }, 300) // 300ms fade out duration
-  }
+  }, [currentTidbitIndex, getRandomTidbitIndex])
 
   // Effect to manage the loading state and tidbit rotation
   useEffect(() => {
@@ -163,7 +163,7 @@ export function GenerateRecipeLoadingScreenTidbitsAndTips({
         minDisplayTimeRef.current = null
       }
     }
-  }, [isLoadingRecipe, hasBeenVisible])
+  }, [isLoadingRecipe, hasBeenVisible, getRandomTidbitIndex, isVisible, transitionToNextTidbit])
 
   // Don't render if not visible
   console.log('👁️ [LOADING-SCREEN] ===== RENDER CHECK =====')
