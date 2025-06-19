@@ -58,7 +58,7 @@ export default function HomePage() {
                 {/* Search Button */}
                 <button
                   onClick={handleSearch}
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground p-2 rounded-full transition-all duration-200 hover:scale-105"
+                  className="bg-accent hover:bg-accent/90 text-accent-foreground p-2 rounded-full transition-all duration-200 hover:scale-105"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />

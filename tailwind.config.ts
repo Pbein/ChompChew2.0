@@ -29,6 +29,10 @@ const config: Config = {
           DEFAULT: 'hsl(var(--accent))',
           foreground: 'hsl(var(--accent-foreground))',
         },
+        dietary: {
+          DEFAULT: 'hsl(var(--dietary))',
+          foreground: 'hsl(var(--dietary-foreground))',
+        },
         muted: {
           DEFAULT: 'hsl(var(--muted))',
           foreground: 'hsl(var(--muted-foreground))',
@@ -57,6 +61,46 @@ const config: Config = {
         easy: 'hsl(var(--easy))',
         medium: 'hsl(var(--medium))',
         hard: 'hsl(var(--hard))',
+        
+        // Extended brand color scales for cohesive design
+        cream: {
+          50: '#FFEFD6',   // softCream base
+          100: '#FFE4B3',
+          200: '#FFD890',
+          300: '#FFCC6D',
+          400: '#FFC04A',
+          500: '#FFB427',
+          600: '#CC9020',
+          700: '#996C18',
+          800: '#664810',
+          900: '#332408'
+        },
+        
+        citrus: {
+          50: '#FFF4ED',
+          100: '#FFE4D1',
+          200: '#FFC8A3',
+          300: '#FFAC75',
+          400: '#FF9240',   // citrusOrange base
+          500: '#FF7700',
+          600: '#CC5F00',
+          700: '#994700',
+          800: '#662F00',
+          900: '#331800'
+        },
+        
+        fresh: {
+          50: '#E8F5E8',
+          100: '#C8E6C9',
+          200: '#A5D6A7',
+          300: '#81C784',
+          400: '#66BB6A',
+          500: '#4CAF50',   // freshGreen base
+          600: '#43A047',
+          700: '#388E3C',
+          800: '#2E7D32',
+          900: '#1B5E20'
+        },
       },
       fontFamily: {
         sans: ['var(--font-geist-sans)', ...defaultTheme.fontFamily.sans],

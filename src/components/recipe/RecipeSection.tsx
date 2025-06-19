@@ -128,10 +128,16 @@ export function RecipeSection({ className }: RecipeSectionProps) {
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-            Discover Recipes You Can Actually Eat
+          <h2 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+            <span className="bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-200 bg-clip-text text-transparent">
+              Discover Recipes You Can 
+            </span>
+            <br />
+            <span className="bg-gradient-to-r from-accent to-accent/80 bg-clip-text text-transparent">
+              Actually Eat
+            </span>
           </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto leading-relaxed font-medium">
             Browse our curated collection of safe, delicious recipes tailored to your dietary needs and preferences.
           </p>
         </div>

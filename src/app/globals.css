@@ -12,8 +12,12 @@
   --primary-foreground: 0 0% 100%;
   --secondary: 140 30% 40%;      /* Fresh green - healthy, natural */
   --secondary-foreground: 0 0% 100%;
-  --accent: 36 83% 67%;         /* Warm yellow - comfort, warmth */
-  --accent-foreground: 0 0% 10%;
+  --accent: 122 39% 49%;         /* Fresh green - #4CAF50 for brand elements */
+  --accent-foreground: 0 0% 100%;
+  
+  /* Dietary tag color */
+  --dietary: 221 83% 53%;        /* Blue for dietary tags */
+  --dietary-foreground: 0 0% 100%;
   
   /* Hero gradient - warm to cool transition */
   --hero-gradient-start: 14 100% 60%;
@@ -84,26 +88,53 @@
 }
 
 .dark {
-  /* Dark theme colors */
-  --background: 0 0% 4%;
-  --foreground: 0 0% 98%;
+  /* Dark theme colors - New cohesive system */
+  --background: 220 13% 4%;          /* #0A0A0B - Deep dark background */
+  --foreground: 210 17% 97%;         /* #F8F9FA - High contrast text */
   
-  /* Adjust brand colors for dark mode */
-  --primary: 14 100% 65%;        /* Slightly lighter orange */
-  --secondary: 140 35% 45%;      /* Slightly lighter green */
-  --accent: 36 83% 67%;         /* Keep warm yellow */
+  /* Brand colors adapted for dark mode */
+  --primary: 25 100% 62%;            /* #FF9240 - citrusOrange for focus/primary actions */
+  --primary-foreground: 220 13% 4%;  /* Dark text on orange */
+  --secondary: 122 39% 49%;          /* #4CAF50 - freshGreen for secondary actions */
+  --secondary-foreground: 0 0% 100%; /* White text on green */
+  --accent: 122 39% 49%;             /* #4CAF50 - freshGreen accent */
+  --accent-foreground: 0 0% 100%;    /* White text on green accent */
   
-  /* Dark neutral colors */
-  --muted: 0 0% 10%;
-  --muted-foreground: 0 0% 63%;
-  --border: 0 0% 15%;
-  --input: 0 0% 10%;
+  /* Dietary tag color for dark mode */
+  --dietary: 200 95% 65%;            /* Light blue for dietary tags in dark mode */
+  --dietary-foreground: 220 13% 4%;  /* Dark text on light blue */
   
-  /* Dark card backgrounds */
-  --card: 0 0% 4%;
-  --card-foreground: 0 0% 98%;
-  --popover: 0 0% 4%;
-  --popover-foreground: 0 0% 98%;
+  /* Surface and neutral colors */
+  --muted: 220 7% 8%;                /* #141517 - Surface/card background */
+  --muted-foreground: 220 5% 65%;    /* #A0A4A8 - Secondary text */
+  --border: 220 8% 18%;              /* #2A2D31 - Border color */
+  --input: 220 7% 8%;                /* Same as muted for inputs */
+  --ring: 25 100% 62%;               /* Orange focus ring */
+  
+  /* Card backgrounds */
+  --card: 220 7% 8%;                 /* #141517 - Card surface */
+  --card-foreground: 210 17% 97%;    /* High contrast text on cards */
+  --popover: 220 7% 8%;              /* Same as card */
+  --popover-foreground: 210 17% 97%; /* High contrast text */
+  
+  /* Status colors for dark mode */
+  --success: 122 39% 49%;            /* Fresh green */
+  --warning: 45 100% 60%;            /* Warm amber */
+  --error: 0 83% 68%;                /* #FF6B6B - Soft red for dark mode */
+  --info: 220 100% 66%;              /* Cool blue */
+  
+  /* Food category colors adjusted for dark mode */
+  --vegetarian: 122 39% 49%;         /* Green */
+  --vegan: 122 44% 44%;              /* Darker green */
+  --gluten-free: 258 80% 70%;        /* Lighter purple for dark mode */
+  --dairy-free: 188 85% 50%;         /* Cyan */
+  --keto: 25 100% 62%;               /* Orange */
+  --paleo: 84 71% 50%;               /* Lime */
+  
+  /* Difficulty colors for dark mode */
+  --easy: 122 39% 49%;               /* Green */
+  --medium: 45 100% 60%;             /* Amber */
+  --hard: 0 83% 68%;                 /* Soft red */
 }
 
 /* Base styles */

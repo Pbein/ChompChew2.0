@@ -61,10 +61,10 @@ export function CategoryScroller({
       {canScrollLeft && (
         <button
           onClick={() => scroll('left')}
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-lg rounded-full p-2 hover:shadow-xl transition-all duration-200 border border-gray-200"
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-card shadow-lg rounded-full p-2 hover:shadow-xl transition-all duration-200 border border-border"
           aria-label="Scroll left"
         >
-          <ChevronLeft className="w-4 h-4 text-gray-600" />
+          <ChevronLeft className="w-4 h-4 text-muted-foreground" />
         </button>
       )}
 
@@ -72,19 +72,19 @@ export function CategoryScroller({
       {canScrollRight && (
         <button
           onClick={() => scroll('right')}
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-lg rounded-full p-2 hover:shadow-xl transition-all duration-200 border border-gray-200"
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-card shadow-lg rounded-full p-2 hover:shadow-xl transition-all duration-200 border border-border"
           aria-label="Scroll right"
         >
-          <ChevronRight className="w-4 h-4 text-gray-600" />
+          <ChevronRight className="w-4 h-4 text-muted-foreground" />
         </button>
       )}
 
       {/* Fade Gradients */}
       {canScrollLeft && (
-        <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+        <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
       )}
       {canScrollRight && (
-        <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
       )}
 
       {/* Scrollable Categories */}
@@ -100,8 +100,8 @@ export function CategoryScroller({
             className={`
               flex-shrink-0 flex flex-col items-center p-4 rounded-2xl transition-all duration-300 min-w-[120px] group
               ${activeCategory === category.id 
-                ? 'bg-emerald-600 text-white shadow-lg transform scale-105' 
-                : 'bg-white text-gray-700 hover:bg-gray-50 hover:shadow-md border border-gray-200'
+                ? 'bg-secondary text-secondary-foreground shadow-lg transform scale-105' 
+                : 'bg-card text-card-foreground hover:bg-card/80 hover:shadow-md border border-border dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted/80 dark:hover:shadow dark:hover:ring-1 dark:hover:ring-secondary/60'
               }
             `}
           >
@@ -111,12 +111,16 @@ export function CategoryScroller({
               {category.emoji}
             </div>
             <div className={`text-sm font-semibold mb-1 text-center leading-tight ${
-              activeCategory === category.id ? 'text-white' : 'text-gray-900'
+              activeCategory === category.id 
+                ? 'text-secondary-foreground' 
+                : 'text-foreground dark:text-muted-foreground'
             }`}>
               {category.name}
             </div>
             <div className={`text-xs ${
-              activeCategory === category.id ? 'text-emerald-100' : 'text-gray-500'
+              activeCategory === category.id 
+                ? 'text-secondary-foreground/80' 
+                : 'text-muted-foreground'
             }`}>
               {category.count} recipes
             </div>

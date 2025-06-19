@@ -1,95 +1,101 @@
-'use client'
+"use client";
 
-import React, { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/Button'
-import { createClientComponentClient } from '@/lib/supabase'
-import { ThemeToggleCompact } from '@/components/ui/ThemeToggle'
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/Button";
+import { createClientComponentClient } from "@/lib/supabase";
+import { ThemeToggleCompact } from "@/components/ui/ThemeToggle";
 
 interface HeaderProps {
-  className?: string
+  className?: string;
 }
 
 export function Header({ className }: HeaderProps) {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [user, setUser] = useState<{ id: string; email?: string } | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState<{ id: string; email?: string } | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const supabase = createClientComponentClient()
+  const supabase = createClientComponentClient();
 
   // Check authentication status
   useEffect(() => {
     const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      setUser(user)
-      setLoading(false)
-    }
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setUser(user);
+      setLoading(false);
+    };
 
-    getUser()
+    getUser();
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user ?? null)
-    })
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null);
+    });
 
-    return () => subscription.unsubscribe()
-  }, [supabase.auth])
+    return () => subscription.unsubscribe();
+  }, [supabase.auth]);
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut()
-    setIsMobileMenuOpen(false)
-  }
+    await supabase.auth.signOut();
+    setIsMobileMenuOpen(false);
+  };
 
   const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen)
-  }
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
 
   return (
-    <header className={cn(
-      "sticky top-0 z-50 w-full border-b border-border bg-gradient-to-r from-primary/10 via-background to-secondary/10 backdrop-blur-md supports-[backdrop-filter]:bg-gradient-to-r supports-[backdrop-filter]:from-primary/5 supports-[backdrop-filter]:via-background/90 supports-[backdrop-filter]:to-secondary/5 shadow-lg shadow-muted/20",
-      className
-    )}>
+    <header
+      className={cn(
+        "sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur-md supports-[backdrop-filter]:bg-background/90 shadow-sm",
+        className
+      )}
+    >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo - Left Side */}
-          <Link 
-            href="/" 
+          <Link
+            href="/"
             className="flex items-center space-x-3 hover:opacity-90 transition-all duration-200 group"
           >
-            <div className="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center shadow-lg shadow-primary/20 group-hover:shadow-xl group-hover:shadow-primary/30 transition-all duration-200 group-hover:scale-105">
-              <span className="text-primary-foreground font-bold text-lg">🍴</span>
+            <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center shadow-lg shadow-accent/20 group-hover:shadow-xl group-hover:shadow-accent/30 transition-all duration-200 group-hover:scale-105">
+              <span className="text-white font-bold text-lg">🍴</span>
             </div>
-            <span className="font-bold text-xl bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent drop-shadow-sm">
+            <span className="font-bold text-xl text-accent drop-shadow-sm">
               ChompChew
             </span>
           </Link>
 
           {/* Center Navigation - Core User Journey */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link 
-              href="/generate-recipe" 
-              className="text-sm font-semibold text-foreground hover:text-primary transition-colors duration-200 relative group flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-muted/60 hover:shadow-sm"
+            <Link
+              href="/generate-recipe"
+              className="text-sm font-semibold text-foreground hover:text-secondary transition-colors duration-200 relative group flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-muted/60 hover:shadow-sm"
             >
               <span>✨</span>
               <span>Generate Recipe</span>
-              <span className="absolute -bottom-1 left-3 w-0 h-0.5 bg-gradient-to-r from-primary to-secondary transition-all duration-200 group-hover:w-[calc(100%-24px)] rounded-full"></span>
+              <span className="absolute -bottom-1 left-3 w-0 h-0.5 bg-secondary transition-all duration-200 group-hover:w-[calc(100%-24px)] rounded-full"></span>
             </Link>
-            <Link 
-              href="/saved-recipes" 
-              className="text-sm font-semibold text-foreground hover:text-primary transition-colors duration-200 relative group flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-muted/60 hover:shadow-sm"
+            <Link
+              href="/saved-recipes"
+              className="text-sm font-semibold text-foreground hover:text-secondary transition-colors duration-200 relative group flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-muted/60 hover:shadow-sm"
             >
               <span>💾</span>
               <span>Saved Recipes</span>
-              <span className="absolute -bottom-1 left-3 w-0 h-0.5 bg-gradient-to-r from-primary to-secondary transition-all duration-200 group-hover:w-[calc(100%-24px)] rounded-full"></span>
+              <span className="absolute -bottom-1 left-3 w-0 h-0.5 bg-secondary transition-all duration-200 group-hover:w-[calc(100%-24px)] rounded-full"></span>
             </Link>
-            <Link 
-              href="/dietary-needs" 
-              className="text-sm font-semibold text-foreground hover:text-primary transition-colors duration-200 relative group flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-muted/60 hover:shadow-sm"
+            <Link
+              href="/dietary-needs"
+              className="text-sm font-semibold text-foreground hover:text-secondary transition-colors duration-200 relative group flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-muted/60 hover:shadow-sm"
             >
               <span>🛡️</span>
               <span>Dietary Needs</span>
-              <span className="absolute -bottom-1 left-3 w-0 h-0.5 bg-gradient-to-r from-primary to-secondary transition-all duration-200 group-hover:w-[calc(100%-24px)] rounded-full"></span>
+              <span className="absolute -bottom-1 left-3 w-0 h-0.5 bg-secondary transition-all duration-200 group-hover:w-[calc(100%-24px)] rounded-full"></span>
             </Link>
           </nav>
 
@@ -101,20 +107,20 @@ export function Header({ className }: HeaderProps) {
                 {user ? (
                   // Authenticated user options
                   <>
-            <Link href="/profile">
-                                    <Button
+                    <Link href="/profile">
+                      <Button
                         variant="ghost"
                         size="md"
-                        className="font-semibold hover:bg-muted/60 hover:shadow-sm transition-all duration-200 text-foreground hover:text-primary"
+                        className="text-sm font-semibold text-foreground hover:text-secondary transition-colors duration-200 relative group flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-muted/60 hover:shadow-sm"
                       >
                         Profile
                       </Button>
-            </Link>
+                    </Link>
                     <Button
                       variant="ghost"
                       size="md"
                       onClick={handleSignOut}
-                      className="font-semibold hover:bg-muted/60 hover:shadow-sm transition-all duration-200 text-foreground hover:text-primary"
+                      className="text-sm font-semibold text-foreground hover:text-secondary transition-colors duration-200 relative group flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-muted/60 hover:shadow-sm"
                     >
                       Sign Out
                     </Button>
@@ -131,15 +137,15 @@ export function Header({ className }: HeaderProps) {
                         Sign In
                       </Button>
                     </Link>
-            <Link href="/auth/signup">
-              <Button
-                variant="primary"
-                size="md"
-                className="font-semibold bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-primary-foreground shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-200 hover:scale-105 border-0"
-              >
-                Get Started
-              </Button>
-            </Link>
+                    <Link href="/auth/signup">
+                      <Button
+                        variant="primary"
+                        size="md"
+                        className="font-semibold bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-primary-foreground shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-200 hover:scale-105 border-0"
+                      >
+                        Get Started
+                      </Button>
+                    </Link>
                   </>
                 )}
               </>
@@ -157,18 +163,24 @@ export function Header({ className }: HeaderProps) {
             aria-expanded={isMobileMenuOpen}
           >
             <div className="w-6 h-6 flex flex-col justify-center items-center">
-              <span className={cn(
-                "block w-5 h-0.5 bg-foreground transition-all duration-300 rounded-full",
-                isMobileMenuOpen ? "rotate-45 translate-y-1.5" : ""
-              )} />
-              <span className={cn(
-                "block w-5 h-0.5 bg-foreground mt-1.5 transition-all duration-300 rounded-full",
-                isMobileMenuOpen ? "opacity-0" : ""
-              )} />
-              <span className={cn(
-                "block w-5 h-0.5 bg-foreground mt-1.5 transition-all duration-300 rounded-full",
-                isMobileMenuOpen ? "-rotate-45 -translate-y-1.5" : ""
-              )} />
+              <span
+                className={cn(
+                  "block w-5 h-0.5 bg-foreground transition-all duration-300 rounded-full",
+                  isMobileMenuOpen ? "rotate-45 translate-y-1.5" : ""
+                )}
+              />
+              <span
+                className={cn(
+                  "block w-5 h-0.5 bg-foreground mt-1.5 transition-all duration-300 rounded-full",
+                  isMobileMenuOpen ? "opacity-0" : ""
+                )}
+              />
+              <span
+                className={cn(
+                  "block w-5 h-0.5 bg-foreground mt-1.5 transition-all duration-300 rounded-full",
+                  isMobileMenuOpen ? "-rotate-45 -translate-y-1.5" : ""
+                )}
+              />
             </div>
           </button>
         </div>
@@ -208,30 +220,35 @@ export function Header({ className }: HeaderProps) {
                   <span>Dietary Needs</span>
                 </div>
               </Link>
-              
+
               {/* Theme Toggle */}
               <div className="pt-4 border-t border-border">
                 <div className="flex items-center justify-between px-4 py-3">
-                  <span className="text-base font-semibold text-foreground">Theme</span>
+                  <span className="text-base font-semibold text-foreground">
+                    Theme
+                  </span>
                   <ThemeToggleCompact />
                 </div>
               </div>
 
               {/* Auth Buttons */}
               {!loading && (
-              <div className="pt-4 space-y-3 border-t border-border">
+                <div className="pt-4 space-y-3 border-t border-border">
                   {user ? (
                     // Authenticated user options
                     <>
-                <Link href="/profile" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Button
-                    variant="ghost"
-                    size="lg"
-                    className="w-full justify-start font-semibold text-foreground hover:text-primary hover:bg-muted/60"
-                  >
-                    Profile
-                  </Button>
-                </Link>
+                      <Link
+                        href="/profile"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        <Button
+                          variant="ghost"
+                          size="lg"
+                          className="w-full justify-start font-semibold text-foreground hover:text-primary hover:bg-muted/60"
+                        >
+                          Profile
+                        </Button>
+                      </Link>
                       <Button
                         variant="ghost"
                         size="lg"
@@ -244,7 +261,10 @@ export function Header({ className }: HeaderProps) {
                   ) : (
                     // Unauthenticated user options
                     <>
-                      <Link href="/auth/signin" onClick={() => setIsMobileMenuOpen(false)}>
+                      <Link
+                        href="/auth/signin"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
                         <Button
                           variant="ghost"
                           size="lg"
@@ -253,23 +273,26 @@ export function Header({ className }: HeaderProps) {
                           Sign In
                         </Button>
                       </Link>
-                <Link href="/auth/signup" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Button
-                    variant="primary"
-                    size="lg"
-                    className="w-full justify-start font-semibold bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-primary-foreground shadow-lg shadow-primary/20"
-                  >
-                    Get Started
-                  </Button>
-                </Link>
+                      <Link
+                        href="/auth/signup"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        <Button
+                          variant="primary"
+                          size="lg"
+                          className="w-full justify-start font-semibold bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-primary-foreground shadow-lg shadow-primary/20"
+                        >
+                          Get Started
+                        </Button>
+                      </Link>
                     </>
                   )}
-              </div>
+                </div>
               )}
             </div>
           </div>
         )}
       </div>
     </header>
-  )
-} 
+  );
+}

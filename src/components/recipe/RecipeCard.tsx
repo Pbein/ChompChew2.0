@@ -53,7 +53,7 @@ export function RecipeCard({
     <div
       data-testid="recipe-card"
       className={cn(
-        "bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden",
+        "bg-card rounded-2xl shadow-lg border border-border overflow-hidden",
         "transition-all duration-300 ease-out hover:shadow-xl hover:-translate-y-1",
         "cursor-pointer group",
         sizeClasses[size],
@@ -63,7 +63,7 @@ export function RecipeCard({
     >
       {/* Recipe Image */}
       <div className={cn(
-        "relative w-full bg-gray-100 overflow-hidden",
+        "relative w-full bg-muted overflow-hidden",
         imageHeights[size]
       )}>
         {recipe.image ? (
@@ -78,9 +78,9 @@ export function RecipeCard({
         ) : (
           <div 
             data-testid="recipe-image"
-            className="w-full h-full bg-gradient-to-br from-emerald-100 to-teal-100 flex items-center justify-center"
+            className="w-full h-full bg-gradient-to-br from-muted to-muted/60 flex items-center justify-center"
           >
-            <svg className="w-12 h-12 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-12 h-12 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
             </svg>
           </div>
@@ -89,9 +89,9 @@ export function RecipeCard({
         {/* Safety Badge */}
         {recipe.safetyValidated && (
           <div className="absolute top-3 left-3">
-            <span className="px-2 py-1 text-xs font-bold bg-green-500 text-white rounded-full shadow-md">
-              ✓ SAFE
-            </span>
+                      <span className="px-2 py-1 text-xs font-bold bg-success text-white rounded-full shadow-md">
+            ✓ SAFE
+          </span>
           </div>
         )}
 
@@ -140,13 +140,13 @@ export function RecipeCard({
       <div className="p-4 space-y-3">
         <h3 
           data-testid="recipe-title"
-          className="text-lg font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-emerald-700 transition-colors"
+          className="text-lg font-semibold text-foreground line-clamp-2 group-hover:text-accent transition-colors"
         >
           {recipe.title}
         </h3>
         
         {/* Recipe Meta */}
-        <div className="flex items-center justify-between text-sm text-gray-800 dark:text-gray-200">
+        <div className="flex items-center justify-between text-sm text-muted-foreground">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-1" data-testid="recipe-prep-time">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -162,7 +162,7 @@ export function RecipeCard({
             </div>
             {recipe.calories && (
               <div className="flex items-center gap-1">
-                <span className="text-emerald-600 font-medium">{recipe.calories} cal</span>
+                <span className="text-accent font-medium">{recipe.calories} cal</span>
               </div>
             )}
           </div>
@@ -171,9 +171,9 @@ export function RecipeCard({
             data-testid="recipe-difficulty"
             className={cn(
               "px-2 py-1 rounded-full text-xs font-medium",
-              recipe.difficulty === 'easy' && "bg-green-100 text-green-700",
-              recipe.difficulty === 'medium' && "bg-yellow-100 text-yellow-700",
-              recipe.difficulty === 'hard' && "bg-red-100 text-red-700"
+              recipe.difficulty === 'easy' && "bg-success/20 text-success",
+              recipe.difficulty === 'medium' && "bg-warning/20 text-warning",
+              recipe.difficulty === 'hard' && "bg-error/20 text-error"
             )}
           >
             {recipe.difficulty}
@@ -186,13 +186,13 @@ export function RecipeCard({
             {recipe.dietaryCompliance.slice(0, 3).map((tag) => (
               <span
                 key={tag}
-                className="px-2 py-1 text-xs font-medium bg-emerald-50 text-emerald-700 rounded-full"
+                className="px-2 py-1 text-xs font-medium bg-dietary/20 text-dietary rounded-full"
               >
                 {tag}
               </span>
             ))}
             {recipe.dietaryCompliance.length > 3 && (
-              <span className="px-2 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-full">
+              <span className="px-2 py-1 text-xs font-medium bg-muted text-muted-foreground rounded-full">
                 +{recipe.dietaryCompliance.length - 3}
               </span>
             )}
