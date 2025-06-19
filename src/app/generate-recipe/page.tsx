@@ -128,34 +128,17 @@ export default function GenerateRecipePage() {
       formData.set('allergens', JSON.stringify(allergens))
       
       console.log('🚀 [MAIN-PAGE] Calling server action...')
-      const result = await generateRecipeAction(formData)
+      await generateRecipeAction(formData)
       
-      if (!result.success) {
-        console.error('❌ [MAIN-PAGE] Server action failed:', result.error)
-        console.log('🔄 [MAIN-PAGE] Setting isGenerating to FALSE (error case)')
-        setIsGenerating(false) // This will hide loading tips
-        // TODO: Show user-friendly error message in UI
-        return
-      }
-
-      console.log('✅ [MAIN-PAGE] Recipe generation successful!')
-      console.log('📄 [MAIN-PAGE] Received markdown length:', result.recipeMarkdown?.length || 0)
-      console.log('🖼️ [MAIN-PAGE] Image URL:', result.imageUrl)
-      console.log('🍳 [MAIN-PAGE] Recipe preview:', result.recipeMarkdown?.substring(0, 100) + '...')
-      
-      setGeneratedRecipe(result.recipeMarkdown || '')
-      setGeneratedImageUrl(result.imageUrl || null)
+      // Server action redirects to recipe page, so if we reach here something went wrong
+      console.log('⚠️ [MAIN-PAGE] Server action returned without redirect - unexpected')
+      setIsGenerating(false)
       
     } catch (error) {
-      console.error('❌ [MAIN-PAGE] Frontend error with server action:', error)
+      console.error('❌ [MAIN-PAGE] Error with server action:', error)
       console.log('🔄 [MAIN-PAGE] Setting isGenerating to FALSE (catch case)')
       setIsGenerating(false) // This will hide loading tips
       // TODO: Show user-friendly error message in UI
-    } finally {
-      console.log('🏁 [MAIN-PAGE] Recipe generation process completed')
-      console.log('🔄 [MAIN-PAGE] Setting isGenerating to FALSE (finally case)')
-      setIsGenerating(false) // This will hide loading tips
-      console.log('🎯 [MAIN-PAGE] ===== RECIPE GENERATION ENDED =====')
     }
   }
 
