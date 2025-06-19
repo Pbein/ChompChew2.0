@@ -4,10 +4,12 @@ import React, { useState, useEffect } from 'react'
 import { createClientComponentClient } from '@/lib/supabase'
 import { Button } from '@/components/ui/Button'
 import Link from 'next/link'
-import { User, canGenerateRecipes, getUserRoleDisplay } from '@/lib/auth-utils'
+import { getUserRoleDisplay, canGenerateRecipes } from '@/lib/auth-utils'
 import { generateRecipeAction } from './actions'
 import Image from 'next/image'
 import { GenerateRecipeLoadingScreenTidbitsAndTips } from '@/components/recipe/GenerateRecipeLoadingScreenTidbitsAndTips'
+import type { User } from '@/lib/auth-utils';
+import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
 
 export default function GenerateRecipePage() {
   const [user, setUser] = useState<User | null>(null)
@@ -87,7 +89,7 @@ export default function GenerateRecipePage() {
     getUser()
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event: AuthChangeEvent, session: Session | null) => {
       if (session?.user) {
         // Reload user with role information
         getUser()

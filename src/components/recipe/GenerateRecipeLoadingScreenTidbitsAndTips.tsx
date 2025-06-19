@@ -130,7 +130,7 @@ export function GenerateRecipeLoadingScreenTidbitsAndTips({
           Creating Your Recipe...
         </h2>
         <p className="text-gray-600 dark:text-gray-300">
-          While we craft your perfect recipe, here's something interesting to know!
+          While we craft your perfect recipe, here&apos;s something interesting to know!
         </p>
       </div>
 

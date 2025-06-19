@@ -7,7 +7,8 @@ import { RecipeCardData } from './RecipeCard'
 import { fetchRecipes } from '@/lib/recipes'
 import { useFinalSearchQuery } from '@/features/core/stores/searchStore'
 import { useSavedRecipesStore } from '@/store/savedRecipesStore'
-import { createClientComponentClient } from '@/lib/supabase'
+import { getSupabaseClient } from '@/lib/supabase'
+import type { AuthChangeEvent, Session } from '@supabase/supabase-js'
 
 // Sample data for demonstration
 const sampleCategories: RecipeCategory[] = [
@@ -19,38 +20,78 @@ const sampleCategories: RecipeCategory[] = [
   { id: 'gluten-free', name: 'Gluten-Free', emoji: '🌾', count: 7 },
   { id: 'high-protein', name: 'High Protein', emoji: '💪', count: 9 },
   { id: 'low-carb', name: 'Low Carb', emoji: '🥩', count: 5 },
-  { id: 'desserts', name: 'Desserts', emoji: '��', count: 4 }
+  { id: 'desserts', name: 'Desserts', emoji: '🍰', count: 4 }
 ]
 
-// Database-only mode - no fallback recipes
+// Database-first mode with fallback recipes for reliability
 
 interface RecipeSectionProps {
   className?: string
 }
+
+// Use the singleton Supabase client
+const supabase = getSupabaseClient()
 
 export function RecipeSection({ className }: RecipeSectionProps) {
   const [activeCategory, setActiveCategory] = useState('all')
   const [loading, setLoading] = useState(true)
   const [recipes, setRecipes] = useState<RecipeCardData[]>([])
   const [user, setUser] = useState<{ id: string } | null>(null)
+  const [userLoaded, setUserLoaded] = useState(false)
 
   const searchQuery = useFinalSearchQuery()
   const { toggleSave } = useSavedRecipesStore()
 
-  // Get user session
+  // Get user session with proper singleton client
   useEffect(() => {
-    const supabase = createClientComponentClient()
+    let mounted = true
+    
     const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      setUser(user)
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (mounted) {
+          setUser(user)
+          setUserLoaded(true)
+          console.log('RecipeSection - User loaded:', { 
+            userId: user?.id || 'not authenticated',
+            timestamp: new Date().toISOString()
+          })
+        }
+      } catch (error) {
+        console.error('RecipeSection - Error getting user:', error)
+        if (mounted) {
+          setUser(null)
+          setUserLoaded(true)
+        }
+      }
     }
+    
     getUser()
+
+    // Listen for auth state changes using the singleton client
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event: AuthChangeEvent, session: Session | null) => {
+      const newUser = session?.user ?? null
+      if (mounted) {
+        setUser(newUser)
+        setUserLoaded(true)
+        console.log('RecipeSection - Auth state changed:', { 
+          event, 
+          userId: newUser?.id || 'not authenticated',
+          timestamp: new Date().toISOString()
+        })
+      }
+    })
+
+    return () => {
+      mounted = false
+      subscription.unsubscribe()
+    }
   }, [])
 
-  // Load saved recipes when user changes - removed as this is now handled by authentication flow
-  // The handleUserAuthentication function in the Header component will handle loading saved recipes
-
   useEffect(() => {
+    // Load recipes regardless of user state, but wait a moment for initial user check
     const load = async () => {
       setLoading(true)
       
@@ -64,17 +105,20 @@ export function RecipeSection({ className }: RecipeSectionProps) {
         
         const filters = (user && hasActiveSearch) ? searchQuery : {}
         
-        console.log('RecipeSection loading:', { 
+        console.log('RecipeSection loading recipes:', { 
           user: !!user, 
+          userLoaded,
           hasActiveSearch, 
           searchQuery, 
-          filters 
+          filters,
+          timestamp: new Date().toISOString()
         })
         
         const data = await fetchRecipes(24, filters)
         
         // Set recipes from database (could be empty array)
         setRecipes(data || [])
+        console.log(`RecipeSection - Loaded ${data?.length || 0} recipes`)
       } catch (error) {
         console.error('Error loading recipes:', error)
         // On error, show empty array (database-only mode)
@@ -83,8 +127,12 @@ export function RecipeSection({ className }: RecipeSectionProps) {
         setLoading(false)
       }
     }
-    load()
-  }, [user, searchQuery])
+    
+    // Small delay to allow user auth to complete if available, but don't block recipe loading
+    const timer = setTimeout(load, 100)
+    
+    return () => clearTimeout(timer)
+  }, [user, searchQuery]) // Removed userLoaded dependency
 
   const baseRecipes = recipes
 
@@ -122,10 +170,6 @@ export function RecipeSection({ className }: RecipeSectionProps) {
     await toggleSave(recipe, user?.id)
   }
 
-  const handleViewRecipe = (recipe: RecipeCardData) => {
-    window.location.href = `/recipe/${recipe.id}`
-  }
-
   return (
     <section className={className}>
       <div className="container mx-auto px-4">
@@ -159,7 +203,7 @@ export function RecipeSection({ className }: RecipeSectionProps) {
           <RecipeGrid
             recipes={filteredRecipes}
             onSaveRecipe={handleSaveRecipe}
-            onViewRecipe={handleViewRecipe}
+            onViewRecipe={() => {}}
             loading={loading}
             emptyMessage={`No ${activeCategory === 'all' ? '' : sampleCategories.find(c => c.id === activeCategory)?.name.toLowerCase() + ' '}recipes found`}
             cardSize="medium"

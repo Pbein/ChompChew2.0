@@ -68,8 +68,8 @@ describe('Header Component', () => {
   it('should render user action buttons', () => {
     renderWithProviders(<Header />)
     
-    // Should show theme toggle button
-    expect(screen.getByLabelText(/Switch theme/)).toBeInTheDocument()
+    // Should show theme toggle button (updated to match current implementation)
+    expect(screen.getByLabelText(/Switch to dark mode/)).toBeInTheDocument()
   })
 
   it('should have mobile menu toggle button', () => {

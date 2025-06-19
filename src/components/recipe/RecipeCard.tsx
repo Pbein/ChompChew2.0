@@ -2,6 +2,7 @@
 
 import React from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { useSavedRecipesStore } from '@/store/savedRecipesStore'
 
@@ -50,10 +51,11 @@ export function RecipeCard({
   const saved = isSaved(recipe.id)
 
   return (
-    <div
+    <Link
+      href={`/recipe/${recipe.id}`}
       data-testid="recipe-card"
       className={cn(
-        "bg-card rounded-2xl shadow-lg border border-border overflow-hidden",
+        "block bg-card rounded-2xl shadow-lg border border-border overflow-hidden",
         "transition-all duration-300 ease-out hover:shadow-xl hover:-translate-y-1",
         "cursor-pointer group",
         sizeClasses[size],
@@ -101,6 +103,7 @@ export function RecipeCard({
         ) && (
           <button
             onClick={(e) => {
+              e.preventDefault() // Prevent navigation when clicking save button
               e.stopPropagation()
               if (onSave) {
                 onSave(recipe)
@@ -199,6 +202,6 @@ export function RecipeCard({
           </div>
         )}
       </div>
-    </div>
+    </Link>
   )
 } 

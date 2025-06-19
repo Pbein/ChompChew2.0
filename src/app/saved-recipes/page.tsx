@@ -3,29 +3,48 @@
 import { useEffect, useState } from 'react';
 import { useSavedRecipesStore } from '@/store/savedRecipesStore';
 import { RecipeGrid } from '@/components/recipe/RecipeGrid';
-import { createClientComponentClient } from '@/lib/supabase';
+import { getSupabaseClient } from '@/lib/supabase';
 
 export default function SavedRecipesPage() {
   const [user, setUser] = useState<{ id: string } | null>(null);
+  const [userLoaded, setUserLoaded] = useState(false);
   const userId = user?.id;
   const { saved, loading, toggleSave, handleUserAuthentication } = useSavedRecipesStore();
 
-  // Get user session
+  // Get user session using singleton client
   useEffect(() => {
-    const supabase = createClientComponentClient()
+    const supabase = getSupabaseClient()
+    let mounted = true
+    
     const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      setUser(user)
-      
-      // Ensure saved recipes are loaded for this page
-      if (user) {
-        await handleUserAuthentication(user.id);
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (mounted) {
+          setUser(user)
+          setUserLoaded(true)
+          
+          // Ensure saved recipes are loaded for this page
+          if (user) {
+            await handleUserAuthentication(user.id);
+          }
+        }
+      } catch (error) {
+        console.error('SavedRecipesPage - Error getting user:', error)
+        if (mounted) {
+          setUser(null)
+          setUserLoaded(true)
+        }
       }
     }
+    
     getUser()
+    
+    return () => {
+      mounted = false
+    }
   }, [handleUserAuthentication])
 
-  if (loading) {
+  if (loading || !userLoaded) {
     return (
       <div className="max-w-3xl mx-auto py-20 text-center text-gray-600">Loading your cookbook...</div>
     );

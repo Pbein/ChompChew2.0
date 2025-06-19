@@ -186,8 +186,8 @@ describe('Recipe Fetching', () => {
 
       const result = await fetchRecipes()
 
-      // In database-only mode, should return empty array on error
-      expect(result.length).toBe(0)
+      // Should return fallback recipes when database fails
+      expect(result.length).toBeGreaterThan(0)
       expect(consoleSpy).toHaveBeenCalledWith('fetchRecipes database error:', mockError)
 
       consoleSpy.mockRestore()

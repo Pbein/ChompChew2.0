@@ -432,6 +432,12 @@ const mapDbRecipe = (r: DBRecipe): RecipeCardData => ({
   rating: r.rating_average ?? undefined
 })
 
+// Create fallback recipe cards from the detail recipes for main listing
+const getFallbackRecipes = (limit: number = 12): RecipeCardData[] => {
+  const recipes = Object.values(fallbackDetailRecipes).slice(0, limit)
+  return recipes.map(mapDbRecipe)
+}
+
 export async function fetchRecipes(limit = 12, filters?: Partial<SearchQuery>): Promise<RecipeCardData[]> {
   try {
     let query = supabase.from('recipes').select('*').limit(limit)
@@ -449,21 +455,21 @@ export async function fetchRecipes(limit = 12, filters?: Partial<SearchQuery>): 
 
     if (error) {
       console.error('fetchRecipes database error:', error)
-      console.log('Database error occurred, returning empty array')
-      return []
+      console.log('Database error occurred, returning fallback recipes')
+      return getFallbackRecipes(limit)
     }
 
     if (!data || data.length === 0) {
-      console.log('No recipes found in database, returning empty array')
-      return []
+      console.log('No recipes found in database, returning fallback recipes')
+      return getFallbackRecipes(limit)
     }
 
     console.log(`Found ${data.length} recipes in database`)
     return (data as DBRecipe[]).map(mapDbRecipe)
   } catch (error) {
     console.error('fetchRecipes error:', error)
-    console.log('Connection error occurred, returning empty array')
-    return []
+    console.log('Connection error occurred, returning fallback recipes')
+    return getFallbackRecipes(limit)
   }
 }
 

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
-import { createClientComponentClient } from "@/lib/supabase";
+import { getSupabaseClient } from "@/lib/supabase";
 import { ThemeToggleCompact, ThemeToggleWithLabel } from "@/components/ui/ThemeToggle";
 import { useSavedRecipesStore } from "@/store/savedRecipesStore";
 import type { AuthChangeEvent, Session } from "@supabase/supabase-js";
@@ -14,7 +14,7 @@ interface HeaderProps {
 }
 
 // Get singleton Supabase client outside component to prevent re-creation
-const supabase = createClientComponentClient();
+  const supabase = getSupabaseClient();
 
 export function Header({ className }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

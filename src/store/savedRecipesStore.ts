@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { createClientComponentClient } from '@/lib/supabase'
+import { getSupabaseClient } from '@/lib/supabase'
 import { RecipeCardData } from '@/components/recipe/RecipeCard'
 
 interface SavedRecipesState {
@@ -13,8 +13,8 @@ interface SavedRecipesState {
   handleUserAuthentication: (userId: string) => Promise<void>
 }
 
-// Use a single Supabase client instance for the entire store
-const supabase = createClientComponentClient()
+// Use the singleton Supabase client instance for the entire store
+const supabase = getSupabaseClient()
 
 export const useSavedRecipesStore = create<SavedRecipesState>((set, get) => ({
   saved: [],
