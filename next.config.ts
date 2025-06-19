@@ -5,26 +5,25 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
+        hostname: 'oaidalleapiprodscus.blob.core.windows.net',
+        port: '',
+        pathname: '/private/**',
+      },
+      {
+        protocol: 'https',
         hostname: 'images.unsplash.com',
         port: '',
         pathname: '/**',
       },
-      // Add other common domains that might be used for recipe images
       {
         protocol: 'https',
-        hostname: 'unsplash.com',
+        hostname: 'bqewvjvnglwatlrnogvh.supabase.co',
         port: '',
-        pathname: '/**',
+        pathname: '/storage/v1/object/public/recipe-images/**',
       },
-      // OpenAI DALL-E generated images
-      {
-        protocol: 'https',
-        hostname: 'oaidalleapiprodscus.blob.core.windows.net',
-        port: '',
-        pathname: '/**',
-      }
     ],
   },
+  serverExternalPackages: ['@supabase/supabase-js'],
 };
 
 export default nextConfig;
