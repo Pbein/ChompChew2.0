@@ -21,10 +21,48 @@ export default async function RecipePage({ params }: RecipePageProps) {
   
   if (!recipe) return notFound()
 
-  // Access properties with proper fallbacks
+  // Access properties with proper fallbacks and data normalization
   const nutrition = recipe.nutrition_info as Record<string, number> | null
-  const instructions = recipe.instructions as { step: number; text: string }[] | undefined
-  const ingredients = recipe.ingredients as { name: string; amount: string }[] | undefined
+  
+  // Handle different instruction formats from database
+  let instructions: { step: number; text: string }[] | undefined
+  if (recipe.instructions) {
+    if (Array.isArray(recipe.instructions)) {
+      // Check if it's already in the correct format
+      if (recipe.instructions.length > 0 && typeof recipe.instructions[0] === 'object' && 'text' in recipe.instructions[0]) {
+        instructions = recipe.instructions as { step: number; text: string }[]
+      } else if (recipe.instructions.length > 0 && typeof recipe.instructions[0] === 'string') {
+        // Convert string array to object format
+        instructions = (recipe.instructions as unknown as string[]).map((text, index) => ({
+          step: index + 1,
+          text: text
+        }))
+      }
+    }
+  }
+  
+  // Handle ingredients - might be string array or object array
+  let ingredients: { name: string; amount: string }[] | undefined
+  if (recipe.ingredients) {
+    if (Array.isArray(recipe.ingredients) && recipe.ingredients.length > 0) {
+      if (typeof recipe.ingredients[0] === 'object' && 'name' in recipe.ingredients[0]) {
+        ingredients = recipe.ingredients as { name: string; amount: string }[]
+      } else if (typeof recipe.ingredients[0] === 'string') {
+        // Convert string array to object format
+        ingredients = (recipe.ingredients as unknown as string[]).map((item) => {
+          // Try to split amount and name (e.g., "1 cup flour" -> {amount: "1 cup", name: "flour"})
+          const parts = item.split(' ')
+          if (parts.length >= 3) {
+            const amount = parts.slice(0, 2).join(' ')
+            const name = parts.slice(2).join(' ')
+            return { amount, name }
+          } else {
+            return { amount: '', name: item }
+          }
+        })
+      }
+    }
+  }
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10 space-y-10">
@@ -35,8 +73,18 @@ export default async function RecipePage({ params }: RecipePageProps) {
       )}
 
       {recipe.image_url && (
-        <div className="relative w-full h-64 rounded-xl overflow-hidden shadow">
-          <Image src={recipe.image_url} alt={recipe.title} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px" className="object-cover" />
+        <div className="relative w-full aspect-[16/9] rounded-xl overflow-hidden shadow bg-gray-100">
+          <Image 
+            src={recipe.image_url} 
+            alt={recipe.title} 
+            fill 
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px" 
+            className="object-cover"
+            onError={(e) => {
+              // Fallback to a default image if the image fails to load
+              e.currentTarget.src = 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop&q=80'
+            }}
+          />
         </div>
       )}
 
