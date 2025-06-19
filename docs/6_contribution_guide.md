@@ -6,75 +6,42 @@ We welcome contributions from the community! Whether you're fixing a bug, adding
 
 Please note that this project is released with a Contributor Code of Conduct. By participating in this project you agree to abide by its terms.
 
-## How to Contribute
+## 🚀 Getting Started
 
-### 1. Find an Issue
+1.  **Fork the repository**: Create your own fork of the ChompChew repository to your GitHub account.
+2.  **Clone the fork**: Clone your forked repository to your local machine.
+    ```bash
+    git clone https://github.com/your-username/chompchew.git
+    ```
+3.  **Install dependencies**:
+    ```bash
+    npm install
+    ```
+4.  **Set up environment variables**: Copy the `.env.example` file to a new file named `.env.local` and fill in the required Supabase and OpenAI API keys.
 
-The best way to start is by looking at our open issues. Look for issues tagged `good first issue` or `help wanted`.
+## 📝 Making Changes
 
-### 2. Fork & Clone
+1.  **Create a new branch**: Always create a new branch for your changes.
+    ```bash
+    git checkout -b feature/my-awesome-feature
+    ```
+2.  **Write code**: Make your changes, following the existing code style.
+3.  **Write tests**: If you are adding a new feature or fixing a bug, please add corresponding tests. Our goal is to maintain and increase our >90% test coverage.
 
-Fork the repository to your own GitHub account and then clone it to your local machine.
+## ✅ Submitting a Pull Request
 
-```bash
-git clone https://github.com/YOUR_USERNAME/ChompChew2.0.git
-cd ChompChew2.0
-```
+1.  **Push your changes**: Push your branch to your forked repository.
+    ```bash
+    git push origin feature/my-awesome-feature
+    ```
+2.  **Open a Pull Request**: Open a pull request from your forked repository to the `main` branch of the original ChompChew repository.
+3.  **Pass CI Checks**: Once you open a pull request, our **Continuous Integration (CI) pipeline** will automatically run. It will perform the following checks:
+    -   Lint the code for style issues.
+    -   Build the project to check for TypeScript errors.
+    -   Run the entire test suite.
 
-### 3. Create a Branch
+    **The CI checks must pass before your pull request can be reviewed and merged.** You will see a green checkmark next to your pull request if it passes, or a red X if it fails. You can click the "Details" link to see the logs and fix any issues.
 
-Create a new branch for your feature or bug fix. Use a descriptive name.
+4.  **Code Review**: Once the CI checks pass, a core contributor will review your code. Please be prepared to make changes based on the feedback.
 
-```bash
-# For a new feature
-git checkout -b feature/name-of-your-feature
-
-# For a bug fix
-git checkout -b fix/description-of-your-fix
-```
-
-### 4. Make Your Changes
-
-Make your changes to the codebase. Ensure you follow the existing code style and conventions.
-
-### 5. Run Tests
-
-Before submitting your changes, make sure all tests pass. This is crucial to maintain the quality of the application.
-
-```bash
-# Run all unit and integration tests
-npm test
-
-# If you added E2E tests, run them as well
-npm run test:e2e
-```
-
-Please refer to our **[Testing Strategy](./4_testing_strategy.md)** for details on how to write new tests for your feature.
-
-### 6. Commit Your Changes
-
-Commit your changes with a clear and descriptive commit message, following the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification.
-
--   `feat:` for a new feature.
--   `fix:` for a bug fix.
--   `docs:` for documentation changes.
--   `test:` for adding or improving tests.
--   `refactor:` for code changes that neither fix a bug nor add a feature.
--   `chore:` for build process or auxiliary tool changes.
-
-**Example:**
-```bash
-git commit -m "feat: add ability to save recipes to favorites"
-```
-
-### 7. Push and Create a Pull Request
-
-Push your branch to your fork and then open a pull request against the `main` branch of the original repository.
-
-```bash
-git push origin feature/name-of-your-feature
-```
-
-In your pull request description, please explain the changes you made and link to any relevant issues.
-
-Thank you for your contribution! 
+Thank you for helping us make Ch-Ch-ChompChew better! 

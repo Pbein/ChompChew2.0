@@ -321,35 +321,33 @@ export const useSavedRecipesStore = create<SavedRecipesState>((set, get) => ({
 
   handleUserAuthentication: async (userId: string) => {
     try {
-      // Check if user has existing recipes in database
-      const { data, error } = await supabase
-        .from('user_favorites')
-        .select('id')
-        .eq('user_id', userId)
-        .limit(1)
+      const ls = localStorage.getItem('guest_favorites')
+      if (!ls || JSON.parse(ls).length === 0) {
+        return // No guest recipes to handle
+      }
 
-      if (error) {
-        console.error('Error checking existing user recipes:', error)
+      // Check if the user has any existing saved recipes
+      const { count, error: countError } = await supabase
+        .from('user_favorites')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', userId)
+
+      if (countError) {
+        console.error('Error checking for existing user favorites:', countError)
         return
       }
 
-      const hasExistingRecipes = data && data.length > 0
+      const hasExistingFavorites = count !== null && count > 0
 
-      if (hasExistingRecipes) {
-        // User has existing recipes = likely sign in scenario
-        // Clear localStorage to prevent confusion when they log out later
-        console.log('Existing user sign in detected - clearing localStorage')
+      // If the user already has favorites, clear local storage to avoid confusion
+      if (hasExistingFavorites) {
+        console.log('Existing user detected. Clearing localStorage recipes.')
         get().clearLocalStorage()
       } else {
-        // User has no recipes = likely sign up scenario  
-        // Migrate localStorage recipes to their new account
-        console.log('New user sign up detected - migrating localStorage recipes')
+        // If the user is new (no favorites), migrate local storage recipes
+        console.log('New user detected. Migrating localStorage recipes.')
         await get().migrateLocalStorageToDatabase(userId)
       }
-
-      // Load saved recipes for the user
-      await get().loadSaved(userId)
-
     } catch (error) {
       console.error('Error handling user authentication:', error)
     }

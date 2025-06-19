@@ -228,7 +228,10 @@ export function Header({ className }: HeaderProps) {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden relative z-50 border-t border-border bg-card/98 backdrop-blur-sm animate-in slide-in-from-top-2 duration-200 shadow-xl shadow-black/10 mb-6">
+          <div
+            data-testid="mobile-menu"
+            className="lg:hidden relative z-50 border-t border-border bg-card/98 backdrop-blur-sm animate-in slide-in-from-top-2 duration-200 shadow-xl shadow-black/10 mb-6"
+          >
             <div className="px-4 pt-4 pb-6 space-y-1 max-h-[60vh] overflow-y-auto">
               {/* Core Navigation */}
               <div className="space-y-1 mb-4">

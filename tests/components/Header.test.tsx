@@ -1,107 +1,103 @@
-import { render, screen, fireEvent } from '@testing-library/react'
-import { describe, it, expect, vi } from 'vitest'
+import { render, screen, fireEvent, within } from '@testing-library/react'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { Header } from '@/components/layout/Header'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
+import { act } from 'react'
+import { supabase } from '@/lib/supabase'
+import { UserResponse } from '@supabase/supabase-js'
 
-// Mock window.matchMedia
-Object.defineProperty(window, 'matchMedia', {
-  writable: true,
-  value: vi.fn().mockImplementation(query => ({
-    matches: false,
-    media: query,
-    onchange: null,
-    addListener: vi.fn(), // deprecated
-    removeListener: vi.fn(), // deprecated
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-    dispatchEvent: vi.fn(),
-  })),
-})
-
-// Mock next/navigation
-vi.mock('next/navigation', () => ({
-  useRouter: () => ({
-    push: vi.fn(),
-    back: vi.fn(),
-    forward: vi.fn(),
-    refresh: vi.fn(),
-  }),
-  usePathname: () => '/',
-}))
-
-// Mock Supabase
-vi.mock('@/lib/supabase-client', () => ({
+// Mock the entire supabase library
+vi.mock('@/lib/supabase', () => ({
   supabase: {
     auth: {
-      getUser: vi.fn().mockResolvedValue({ data: { user: null } }),
-      signOut: vi.fn(),
+      getUser: vi.fn(),
     },
   },
 }))
 
-// Helper function to render with providers
-const renderWithProviders = (component: React.ReactElement) => {
-  return render(
-    <ThemeProvider>
-      {component}
-    </ThemeProvider>
-  )
-}
-
 describe('Header Component', () => {
-  it('should render the ChompChew logo', () => {
-    renderWithProviders(<Header />)
-    
-    const logo = screen.getByText('ChompChew')
-    expect(logo).toBeInTheDocument()
+  beforeEach(() => {
+    // Reset any mocks before each test
+    vi.clearAllMocks()
+    // Mock user as unauthenticated by default
+    vi.mocked(supabase.auth.getUser).mockResolvedValue({
+      data: { user: null },
+      error: null,
+    } as UserResponse)
   })
 
-  it('should render core navigation links', () => {
-    renderWithProviders(<Header />)
-    
-    // Multiple instances exist due to responsive design (desktop and tablet layouts)
-    expect(screen.getAllByText('Dietary Needs')).toHaveLength(2)
-    expect(screen.getAllByText('Saved Recipes')).toHaveLength(2)
-    expect(screen.getAllByText('Generate Recipe')).toHaveLength(2)
-  })
-
-  it('should render user action buttons', () => {
-    renderWithProviders(<Header />)
-    
-    // Should show theme toggle button (updated to match current implementation)
-    expect(screen.getByLabelText(/Switch to dark mode/)).toBeInTheDocument()
-  })
-
-  it('should have mobile menu toggle button', () => {
-    renderWithProviders(<Header />)
-    
-    // Look for mobile menu button (hamburger icon)
-    const mobileMenuButton = screen.getByLabelText('Toggle mobile menu')
-    expect(mobileMenuButton).toBeInTheDocument()
-  })
-
-  it('should have mobile menu functionality', () => {
-    renderWithProviders(<Header />)
-    
-    const mobileMenuButton = screen.getByLabelText('Toggle mobile menu')
-    
-    // Click to open mobile menu
-    fireEvent.click(mobileMenuButton)
-    
-    // Verify the button exists and is clickable
-    expect(mobileMenuButton).toBeInTheDocument()
-  })
-
-  it('should have proper navigation structure for accessibility', () => {
-    renderWithProviders(<Header />)
-    
-    // Should have proper navigation landmarks (there may be multiple for responsive design)
-    const navElements = screen.getAllByRole('navigation')
-    expect(navElements.length).toBeGreaterThan(0)
-    
-    // Should have proper link structure
-    const homeLink = screen.getByRole('link', { name: /ChompChew/i })
+  it('renders the logo and brand name', () => {
+    renderHeader()
+    const homeLink = screen.getByRole('link', { name: /chompchew/i })
     expect(homeLink).toBeInTheDocument()
     expect(homeLink).toHaveAttribute('href', '/')
   })
-}) 
+
+  it('toggles the menu when the hamburger button is clicked on mobile', () => {
+    renderHeader()
+    const menuButton = screen.getByLabelText('Toggle mobile menu')
+    fireEvent.click(menuButton)
+
+    const mobileMenu = screen.getByTestId('mobile-menu')
+    const linkInMenu = within(mobileMenu).getByRole('link', {
+      name: /generate recipe/i,
+    })
+    expect(linkInMenu).toBeVisible()
+  })
+
+  describe('Theme Toggling', () => {
+    it('renders the theme toggle button', () => {
+      renderHeader()
+      expect(
+        screen.getByRole('button', { name: /switch to dark mode/i }),
+      ).toBeInTheDocument()
+    })
+
+    it('switches to dark mode when clicked', async () => {
+      renderHeader()
+      const toggleButton = screen.getByRole('button', {
+        name: /switch to dark mode/i,
+      })
+      await act(async () => {
+        fireEvent.click(toggleButton)
+      })
+
+      expect(
+        screen.getByRole('button', { name: /switch to light mode/i }),
+      ).toBeInTheDocument()
+      expect(document.documentElement.classList.contains('dark')).toBe(true)
+    })
+
+    it('switches back to light mode when clicked again', async () => {
+      renderHeader()
+      const toggleButton = screen.getByRole('button', {
+        name: /switch to dark mode/i,
+      })
+
+      await act(async () => {
+        fireEvent.click(toggleButton)
+      })
+
+      const switchToLightButton = screen.getByRole('button', {
+        name: /switch to light mode/i,
+      })
+
+      await act(async () => {
+        fireEvent.click(switchToLightButton)
+      })
+
+      expect(
+        screen.getByRole('button', { name: /switch to dark mode/i }),
+      ).toBeInTheDocument()
+      expect(document.documentElement.classList.contains('dark')).toBe(false)
+    })
+  })
+})
+
+const renderHeader = () => {
+  return render(
+    <ThemeProvider>
+      <Header />
+    </ThemeProvider>,
+  )
+} 

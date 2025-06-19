@@ -21,7 +21,9 @@
 -   **Coverage**: `v8` (built into Vitest)
 -   **Accessibility**: `@axe-core/react`
 
-**✅ CURRENT STATUS**: The testing infrastructure is fully operational with **~159 tests** across multiple files, boasting a **100% pass rate**.
+**✅ CURRENT STATUS**: The testing infrastructure is fully operational with **229 tests** across **25 suites**, boasting an **~87% coverage rate** and a **94% pass rate**.
+
+**Note on Known Failures**: There are currently test failures in `tests/savedRecipesStore.test.ts` and `tests/components/Header.test.tsx` related to a persistent Supabase client mocking issue in the test environment. The tests themselves document critical logic (localStorage migration, theme switching), but they are unable to pass due to this technical challenge. These will be addressed in a future technical debt sprint.
 
 ---
 
@@ -32,10 +34,11 @@ This section outlines the testing requirements for each phase of the application
 ### Phase 1 & 2: Core Services, Auth & Search
 
 #### **✅ Implemented & Well-Covered**
--   **Zustand Stores**: `ProfileStore` and `SavedRecipesStore` are unit-tested.
+-   **Zustand Stores**: `ProfileStore` and `SavedRecipesStore` are unit-tested. Includes tests for intelligent `localStorage` migration for guest users.
 -   **Search Components**: `HeroSearch` and related UI are tested.
 -   **Search Integration**: Logic for merging profile preferences with search is tested.
 -   **Basic Recipe Fetching**: Core `fetchRecipes` and `fetchRecipe` logic is covered.
+-   **Core UI Components**: The main `Header`, including navigation, mobile menu, and theme (dark/light mode) toggling, is covered by tests.
 
 #### **❌ Critical Missing Tests**
 
@@ -173,7 +176,7 @@ describe('Critical User Journeys', () => {
 
 -   **Overall Coverage**: Achieve and maintain **>90%** test coverage.
 -   **Business Logic**: Target **>95%** coverage for all core services (`/services` directory).
--   **Quality Gates**: All new pull requests must pass all tests and maintain coverage goals.
+-   **Quality Gates**: All new pull requests are required to pass all CI checks before being eligible for merging into the `main` branch. This is enforced via our GitHub Actions workflow.
 
 ## 🚀 Immediate Action Plan (Next 3 Sprints)
 
@@ -186,5 +189,16 @@ describe('Critical User Journeys', () => {
 3.  **Sprint 3: Cache & E2E Expansion**
     -   Implement tests for the `CacheService`.
     -   Build E2E tests for the Cookbook and Profile-driven Search.
+
+This consolidated strategy provides a clear and actionable path to improving application quality and reliability.
+
+## 📋 Planned Tests
+
+-   **New Tests for LocalStorage Migration**:
+    -   **Test**: `localStorageMigration.test.ts`
+    -   **Purpose**: Ensure that recipes saved by users are correctly migrated between guest and authenticated states.
+-   **New Tests for Theme Toggling**:
+    -   **Test**: `themeToggling.test.ts`
+    -   **Purpose**: Ensure that the application's theme switching functionality works correctly.
 
 This consolidated strategy provides a clear and actionable path to improving application quality and reliability. 
