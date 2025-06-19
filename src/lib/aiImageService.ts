@@ -109,45 +109,157 @@ function buildImagePrompt(params: RecipeImageParams): string {
 // directly into the main prompt to avoid common artifacts
 
 /**
- * Generate an AI image for a recipe using OpenAI DALL-E
+ * Generate an AI image for a recipe using OpenAI gpt-image-1 via Responses API
  * Uses research-backed prompts for professional food photography
  */
 export async function generateRecipeImage(params: RecipeImageParams): Promise<string> {
+  console.log('🚀 [AI-IMAGE] ===== STARTING AI IMAGE GENERATION =====')
+  console.log('🍳 [AI-IMAGE] Recipe params:', {
+    title: params.title,
+    ingredientCount: params.ingredients?.length || 0,
+    cuisineType: params.cuisineType,
+    hasDescription: !!params.description
+  })
+
   // Fallback to Unsplash if no OpenAI key
   if (!openai) {
-    console.log('⚠️ No OpenAI key found, falling back to Unsplash image')
-    return getRecipeImageUrl(params.title, params.cuisineType)
+    console.log('⚠️ [AI-IMAGE] No OpenAI key found, falling back to Unsplash image')
+    console.log('🔄 [AI-IMAGE] Using fallback image service...')
+    const fallbackUrl = getRecipeImageUrl(params.title, params.cuisineType)
+    console.log('📸 [AI-IMAGE] Fallback image URL:', fallbackUrl)
+    return fallbackUrl
   }
 
+  console.log('✅ [AI-IMAGE] OpenAI client available, proceeding with AI generation')
+
   try {
-    console.log('🎨 Generating AI image for recipe:', params.title)
+    console.log('🎨 [AI-IMAGE] Building image prompt for recipe:', params.title)
     
     const prompt = buildImagePrompt(params)
-    console.log('📝 Image prompt:', prompt)
+    console.log('📝 [AI-IMAGE] Generated prompt length:', prompt.length)
+    console.log('📝 [AI-IMAGE] Full prompt:', prompt)
     
-    const response = await openai.images.generate({
-      model: 'gpt-image-1', // Superior instruction following & world knowledge
-      prompt,
-      size: '1024x1024', // Recommended for web recipe cards
-      quality: 'medium', // Medium = best balance of speed & fidelity (per docs)
-      response_format: 'url', // Direct URL for easy CDN caching
-      n: 1,
+    console.log('🔧 [AI-IMAGE] Configuring Responses API call...')
+    const apiConfig = {
+      model: 'gpt-4.1-mini', // Model that supports image generation tools
+      input: prompt,
+      tools: [{
+        type: 'image_generation' as const,
+        size: '1024x1024' as const, // Recommended for web recipe cards
+        quality: 'medium' as const, // Medium = best balance of speed & fidelity
+        output_format: 'png' as const, // High quality format
+      }],
+    }
+    console.log('⚙️ [AI-IMAGE] API configuration:', apiConfig)
+    
+    console.log('🌐 [AI-IMAGE] Calling OpenAI Responses API...')
+    const startTime = Date.now()
+    
+    // Use the new Responses API with gpt-image-1 model
+    const response = await openai.responses.create(apiConfig)
+    
+    const duration = Date.now() - startTime
+    console.log('⏱️ [AI-IMAGE] API call completed in:', duration + 'ms')
+    
+    console.log('📨 [AI-IMAGE] Response received:', {
+      id: response.id,
+      outputCount: response.output?.length || 0,
+      outputTypes: response.output?.map(o => o.type) || [],
+      hasOutput: !!response.output
     })
 
-    const imageUrl = response.data?.[0]?.url
-    if (!imageUrl) {
-      throw new Error('No image URL returned from OpenAI')
+    if (!response.output || response.output.length === 0) {
+      throw new Error('No output received from OpenAI Responses API')
     }
 
-    console.log('✅ AI image generated successfully with research-backed styling')
-    return imageUrl
+    console.log('🔍 [AI-IMAGE] Analyzing response output...')
+    response.output.forEach((output, index) => {
+      console.log(`📋 [AI-IMAGE] Output ${index}:`, {
+        type: output.type,
+        hasResult: 'result' in output && !!output.result,
+        status: 'status' in output ? output.status : 'N/A'
+      })
+    })
+
+    // Extract image data from the response
+    const imageGenerationCalls = response.output?.filter(
+      (output) => output.type === 'image_generation_call'
+    )
+    
+    console.log('🖼️ [AI-IMAGE] Found image generation calls:', imageGenerationCalls?.length || 0)
+    
+    if (!imageGenerationCalls || imageGenerationCalls.length === 0) {
+      console.error('❌ [AI-IMAGE] No image generation calls found in response')
+      console.error('🔍 [AI-IMAGE] Available output types:', response.output?.map(o => o.type))
+      throw new Error('No image generation calls found in response')
+    }
+
+    const imageCall = imageGenerationCalls[0]
+    console.log('🎯 [AI-IMAGE] Processing first image generation call:', {
+      type: imageCall.type,
+      status: imageCall.status,
+      hasResult: !!imageCall.result,
+      resultLength: imageCall.result?.length || 0
+    })
+
+    if (imageCall.status !== 'completed') {
+      console.error('❌ [AI-IMAGE] Image generation not completed, status:', imageCall.status)
+      throw new Error(`Image generation failed with status: ${imageCall.status}`)
+    }
+
+    if (!imageCall.result) {
+      console.error('❌ [AI-IMAGE] No result data in completed image generation call')
+      throw new Error('No image data returned from completed generation')
+    }
+
+    console.log('🔧 [AI-IMAGE] Converting base64 to data URL...')
+    // Convert base64 image data to data URL for immediate use
+    const imageDataUrl = `data:image/png;base64,${imageCall.result}`
+    
+    console.log('✅ [AI-IMAGE] AI image generated successfully with gpt-image-1 model!')
+    console.log('📊 [AI-IMAGE] Image statistics:', {
+      base64Length: imageCall.result.length,
+      dataUrlLength: imageDataUrl.length,
+      estimatedSizeKB: Math.round(imageCall.result.length * 0.75 / 1024), // Base64 is ~75% efficient
+      format: 'PNG',
+      dimensions: '1024x1024'
+    })
+    console.log('🏁 [AI-IMAGE] ===== AI IMAGE GENERATION COMPLETED =====')
+    
+    return imageDataUrl
     
   } catch (error) {
-    console.error('❌ AI image generation failed:', error)
+    console.error('💥 [AI-IMAGE] ===== AI IMAGE GENERATION FAILED =====')
+    console.error('❌ [AI-IMAGE] Error type:', error instanceof Error ? error.constructor.name : 'Unknown')
+    console.error('❌ [AI-IMAGE] Error message:', error instanceof Error ? error.message : String(error))
+    console.error('❌ [AI-IMAGE] Full error details:', error)
+    
+    // Log additional context for debugging
+    if (error && typeof error === 'object' && 'response' in error) {
+      const errorWithResponse = error as { response?: { status?: unknown; data?: unknown } }
+      console.error('🌐 [AI-IMAGE] HTTP Response Status:', errorWithResponse.response?.status)
+      console.error('🌐 [AI-IMAGE] HTTP Response Data:', errorWithResponse.response?.data)
+    }
+    
+    if (error && typeof error === 'object' && 'code' in error) {
+      const errorWithCode = error as { code?: unknown }
+      console.error('🔢 [AI-IMAGE] Error Code:', errorWithCode.code)
+    }
     
     // Fallback to Unsplash on any error
-    console.log('🔄 Falling back to Unsplash image')
-    return getRecipeImageUrl(params.title, params.cuisineType)
+    console.log('🔄 [AI-IMAGE] Initiating fallback to Unsplash image...')
+    try {
+      const fallbackUrl = getRecipeImageUrl(params.title, params.cuisineType)
+      console.log('📸 [AI-IMAGE] Fallback image URL generated:', fallbackUrl)
+      console.log('✅ [AI-IMAGE] Fallback completed successfully')
+      return fallbackUrl
+    } catch (fallbackError) {
+      console.error('💥 [AI-IMAGE] Fallback also failed:', fallbackError)
+      // Return a default image URL as last resort
+      const defaultUrl = 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop&q=80'
+      console.log('🆘 [AI-IMAGE] Using default image URL:', defaultUrl)
+      return defaultUrl
+    }
   }
 }
 
