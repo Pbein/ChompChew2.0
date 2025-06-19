@@ -1,4 +1,5 @@
 import { openai, OPENAI_CONFIG } from '@/lib/openai'
+import { generateRecipeImage } from '@/lib/aiImageService'
 import { z } from 'zod'
 
 // Input validation schemas
@@ -51,6 +52,7 @@ export const GeneratedRecipeSchema = z.object({
   }),
   tags: z.array(z.string()).optional(),
   tips: z.array(z.string()).optional(),
+  imageUrl: z.string().optional(), // AI-generated image URL
 })
 
 export type GeneratedRecipe = z.infer<typeof GeneratedRecipeSchema>
@@ -238,19 +240,101 @@ export class RecipeGenerationService {
   }
 
   static async generateRecipe(input: RecipeGenerationInput): Promise<GeneratedRecipe> {
+    console.log('🏭 [RECIPE-SERVICE] ===== STARTING RECIPE GENERATION =====')
+    console.log('📋 [RECIPE-SERVICE] Input params:', {
+      ingredientCount: input.ingredients.length,
+      mainIngredients: input.ingredients.slice(0, 3),
+      difficulty: input.difficulty,
+      servings: input.servings,
+      cuisineType: input.cuisineType,
+      hasDietaryRestrictions: input.dietaryRestrictions?.length > 0,
+      hasAllergies: input.allergies?.length > 0
+    })
+
     // Validate input
+    console.log('🔍 [RECIPE-SERVICE] Validating input...')
     const validatedInput = RecipeGenerationInputSchema.parse(input)
+    console.log('✅ [RECIPE-SERVICE] Input validation passed')
     
     // Build prompt
+    console.log('📝 [RECIPE-SERVICE] Building recipe generation prompt...')
     const prompt = RecipePromptBuilder.buildRecipeGenerationPrompt(validatedInput)
+    console.log('📝 [RECIPE-SERVICE] Prompt length:', prompt.length)
     
-    // Call OpenAI
-    const response = await this.callOpenAI(prompt)
+    console.log('🚀 [RECIPE-SERVICE] Starting parallel generation (recipe text + image)...')
+    const startTime = Date.now()
     
+    // Generate recipe text and image in parallel for efficiency
+    const [response, imageUrl] = await Promise.all([
+      this.callOpenAI(prompt),
+      this.generateRecipeImageForInput(validatedInput)
+    ])
+    
+    const totalDuration = Date.now() - startTime
+    console.log('⏱️ [RECIPE-SERVICE] Parallel generation completed in:', totalDuration + 'ms')
+    
+    console.log('🧪 [RECIPE-SERVICE] Parsing and validating recipe response...')
     // Parse and validate response
     const recipe = this.parseAndValidateRecipe(response)
+    console.log('✅ [RECIPE-SERVICE] Recipe validation passed:', {
+      title: recipe.title,
+      ingredientCount: recipe.ingredients.length,
+      instructionCount: recipe.instructions.length,
+      hasNutrition: !!recipe.nutrition,
+      totalTime: recipe.metadata.totalTime
+    })
     
+    // Add the generated image URL
+    console.log('🖼️ [RECIPE-SERVICE] Adding image URL to recipe...')
+    recipe.imageUrl = imageUrl
+    console.log('📸 [RECIPE-SERVICE] Final image URL:', imageUrl ? 'AI-generated' : 'fallback/empty')
+    
+    console.log('🎉 [RECIPE-SERVICE] ===== RECIPE GENERATION COMPLETED =====')
     return recipe
+  }
+
+  private static async generateRecipeImageForInput(input: RecipeGenerationInput): Promise<string> {
+    console.log('🖼️ [RECIPE-SERVICE] ===== STARTING IMAGE GENERATION =====')
+    
+    try {
+      // Create a basic recipe title from ingredients for image generation
+      const mainIngredients = input.ingredients.slice(0, 3).join(' ')
+      const recipeTitle = input.inspiration || `${mainIngredients} ${input.mealType || 'dish'}`
+      
+      console.log('🎯 [RECIPE-SERVICE] Image generation params:', {
+        recipeTitle,
+        mainIngredients,
+        ingredientCount: input.ingredients.length,
+        cuisineType: input.cuisineType,
+        usingInspiration: !!input.inspiration
+      })
+      
+      console.log('🔄 [RECIPE-SERVICE] Calling generateRecipeImage function...')
+      const imageUrl = await generateRecipeImage({
+        title: recipeTitle,
+        ingredients: input.ingredients,
+        cuisineType: input.cuisineType
+      })
+      
+      console.log('✅ [RECIPE-SERVICE] Image generation completed:', {
+        success: !!imageUrl,
+        urlType: imageUrl.startsWith('data:') ? 'AI-generated (base64)' : 'fallback/external',
+        urlLength: imageUrl.length
+      })
+      
+      return imageUrl
+      
+    } catch (error) {
+      console.error('💥 [RECIPE-SERVICE] Image generation failed:', error)
+      console.error('🔍 [RECIPE-SERVICE] Error details:', {
+        errorType: error instanceof Error ? error.constructor.name : 'Unknown',
+        errorMessage: error instanceof Error ? error.message : String(error)
+      })
+      
+      // Return empty string if image generation fails - UI can handle fallback
+      console.log('🔄 [RECIPE-SERVICE] Returning empty string for fallback handling')
+      return ''
+    }
   }
 
   static async generateRecipeVariation(

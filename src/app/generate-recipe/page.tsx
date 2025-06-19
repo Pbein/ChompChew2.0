@@ -6,7 +6,8 @@ import { Button } from '@/components/ui/Button'
 import Link from 'next/link'
 import { User, canGenerateRecipes, getUserRoleDisplay } from '@/lib/auth-utils'
 import { generateRecipeAction } from './actions'
-import { useFormStatus } from 'react-dom'
+import Image from 'next/image'
+import { GenerateRecipeLoadingScreenTidbitsAndTips } from '@/components/recipe/GenerateRecipeLoadingScreenTidbitsAndTips'
 
 export default function GenerateRecipePage() {
   const [user, setUser] = useState<User | null>(null)
@@ -14,8 +15,24 @@ export default function GenerateRecipePage() {
   const [recipeInput, setRecipeInput] = useState('')
   const [isGenerating, setIsGenerating] = useState(false)
   const [generatedRecipe, setGeneratedRecipe] = useState<string | null>(null)
+  const [generatedImageUrl, setGeneratedImageUrl] = useState<string | null>(null)
   const [dietaryPreferences, setDietaryPreferences] = useState<string[]>([])
   const [allergens, setAllergens] = useState<string[]>([])
+
+  // 🎯 SIMPLE JAVASCRIPT APPROACH - just use isGenerating boolean!
+  const showLoadingTips = isGenerating
+
+  // Track state changes with simple logging
+  useEffect(() => {
+    console.log('🎚️ [MAIN-PAGE] isGenerating state changed to:', isGenerating)
+    console.log('🔧 [MAIN-PAGE] Simple showLoadingTips is now:', showLoadingTips)
+    console.log('📊 [MAIN-PAGE] Full state snapshot:', {
+      isGenerating,
+      showLoadingTips,
+      hasGeneratedRecipe: !!generatedRecipe,
+      recipeInputLength: recipeInput.length
+    })
+  }, [isGenerating, generatedRecipe])
 
   const supabase = createClientComponentClient()
 
@@ -87,44 +104,67 @@ export default function GenerateRecipePage() {
     return () => subscription.unsubscribe()
   }, [supabase])
 
-  const handleGenerateRecipe = async (formData: FormData) => {
-    console.log('🎯 Starting recipe generation with server action')
-    console.log('👤 User dietary context:', { dietaryPreferences, allergens })
-
-    setIsGenerating(true)
+  const handleGenerateRecipe = async () => {
+    console.log('🎯 [MAIN-PAGE] ===== STARTING RECIPE GENERATION =====')
+    console.log('🎯 [MAIN-PAGE] Starting recipe generation with button click')
+    console.log('👤 [MAIN-PAGE] User dietary context:', { dietaryPreferences, allergens })
+    console.log('📝 [MAIN-PAGE] Recipe input:', recipeInput)
+    console.log('🚦 [MAIN-PAGE] Current state before generation:', {
+      isGenerating,
+      showLoadingTips: isGenerating,
+      hasExistingRecipe: !!generatedRecipe
+    })
+    
+    // 🎯 Set state immediately (not in server action context)
+    console.log('🔄 [MAIN-PAGE] Setting isGenerating to TRUE (this will show loading tips)')
+    console.log('🎬 [MAIN-PAGE] Simple approach: isGenerating=true → showLoadingTips=true')
+    setIsGenerating(true) // This will show loading tips
     
     try {
-      // Add dietary context to form data
+      // Create form data
+      const formData = new FormData()
+      formData.set('prompt', recipeInput)
       formData.set('dietaryPreferences', JSON.stringify(dietaryPreferences))
       formData.set('allergens', JSON.stringify(allergens))
       
-      console.log('🚀 Calling server action...')
+      console.log('🚀 [MAIN-PAGE] Calling server action...')
       const result = await generateRecipeAction(formData)
       
       if (!result.success) {
-        console.error('❌ Server action failed:', result.error)
+        console.error('❌ [MAIN-PAGE] Server action failed:', result.error)
+        console.log('🔄 [MAIN-PAGE] Setting isGenerating to FALSE (error case)')
+        setIsGenerating(false) // This will hide loading tips
         // TODO: Show user-friendly error message in UI
         return
       }
 
-      console.log('✅ Recipe generation successful!')
-      console.log('📄 Received markdown length:', result.recipeMarkdown?.length || 0)
-      console.log('🍳 Recipe preview:', result.recipeMarkdown?.substring(0, 100) + '...')
+      console.log('✅ [MAIN-PAGE] Recipe generation successful!')
+      console.log('📄 [MAIN-PAGE] Received markdown length:', result.recipeMarkdown?.length || 0)
+      console.log('🖼️ [MAIN-PAGE] Image URL:', result.imageUrl)
+      console.log('🍳 [MAIN-PAGE] Recipe preview:', result.recipeMarkdown?.substring(0, 100) + '...')
       
       setGeneratedRecipe(result.recipeMarkdown || '')
+      setGeneratedImageUrl(result.imageUrl || null)
       
     } catch (error) {
-      console.error('❌ Frontend error with server action:', error)
+      console.error('❌ [MAIN-PAGE] Frontend error with server action:', error)
+      console.log('🔄 [MAIN-PAGE] Setting isGenerating to FALSE (catch case)')
+      setIsGenerating(false) // This will hide loading tips
       // TODO: Show user-friendly error message in UI
     } finally {
-      console.log('🏁 Recipe generation process completed')
-      setIsGenerating(false)
+      console.log('🏁 [MAIN-PAGE] Recipe generation process completed')
+      console.log('🔄 [MAIN-PAGE] Setting isGenerating to FALSE (finally case)')
+      setIsGenerating(false) // This will hide loading tips
+      console.log('🎯 [MAIN-PAGE] ===== RECIPE GENERATION ENDED =====')
     }
   }
+
+
 
   const handleReset = () => {
     setRecipeInput('')
     setGeneratedRecipe(null)
+    setGeneratedImageUrl(null)
   }
 
   if (loading) {
@@ -244,61 +284,25 @@ export default function GenerateRecipePage() {
             </p>
           </div>
 
-          {/* Input Form */}
+          {/* 🎯 SIMPLE CONDITIONAL RENDERING */}
           {!generatedRecipe && (
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl shadow-emerald-100/20 dark:shadow-gray-900/20 p-8 border border-emerald-100 dark:border-gray-700 mb-8">
-              <form action={handleGenerateRecipe} className="space-y-6">
-                <div>
-                  <label htmlFor="recipe-input" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    What would you like to cook?
-                  </label>
-                  <input
-                    id="recipe-input"
-                    name="prompt"
-                    type="text"
-                    value={recipeInput}
-                    onChange={(e) => setRecipeInput(e.target.value)}
-                    placeholder="e.g., chicken burrito, chocolate chip cookies, vegetarian pasta..."
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors duration-200 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
-                    disabled={isGenerating}
-                    required
-                  />
-                </div>
-                
-                {/* Show detected dietary preferences & allergens */}
-                {(dietaryPreferences.length > 0 || allergens.length > 0) && (
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    {dietaryPreferences.length > 0 && (
-                      <div>
-                        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Your Dietary Preferences</h3>
-                        <ul className="flex flex-wrap gap-2">
-                          {dietaryPreferences.map((pref) => (
-                            <li key={pref} className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-medium dark:bg-emerald-700/20 dark:text-emerald-300">
-                              {pref}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-
-                    {allergens.length > 0 && (
-                      <div>
-                        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Allergens to Avoid</h3>
-                        <ul className="flex flex-wrap gap-2">
-                          {allergens.map((allergy) => (
-                            <li key={allergy} className="px-3 py-1 rounded-full bg-rose-100 text-rose-800 text-xs font-medium dark:bg-rose-700/20 dark:text-rose-300">
-                              {allergy}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
-                )}
-                
-                <SubmitButton disabled={!recipeInput.trim() || isGenerating} />
-              </form>
-            </div>
+            <>
+              {showLoadingTips ? (
+                <GenerateRecipeLoadingScreenTidbitsAndTips 
+                  isLoadingRecipe={showLoadingTips}
+                  className="mb-8"
+                />
+              ) : (
+                <FormWrapper 
+                  recipeInput={recipeInput}
+                  setRecipeInput={setRecipeInput}
+                  dietaryPreferences={dietaryPreferences}
+                  allergens={allergens}
+                  handleGenerateRecipe={handleGenerateRecipe}
+                  isGenerating={isGenerating}
+                />
+              )}
+            </>
           )}
 
           {/* Generated Recipe Display */}
@@ -315,6 +319,23 @@ export default function GenerateRecipePage() {
                   Generate Another
                 </Button>
               </div>
+              
+              {/* Recipe Image */}
+              {generatedImageUrl && (
+                <div className="mb-6 relative h-64 w-full">
+                  <Image
+                    src={generatedImageUrl}
+                    alt="Generated recipe"
+                    fill
+                    className="object-cover rounded-xl shadow-lg"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+                    onError={(e) => {
+                      // Fallback to default image if the generated image fails to load
+                      e.currentTarget.src = 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop&q=80'
+                    }}
+                  />
+                </div>
+              )}
               
               <div className="prose prose-emerald max-w-none">
                 <pre className="whitespace-pre-wrap font-sans text-gray-800 dark:text-gray-200 leading-relaxed">
@@ -336,27 +357,147 @@ export default function GenerateRecipePage() {
   )
 }
 
-// Submit button component that uses form status
-function SubmitButton({ disabled }: { disabled: boolean }) {
-  const { pending } = useFormStatus()
-  const isLoading = pending || disabled
-
+// Submit button component that uses isGenerating state
+function SubmitButton({ 
+  disabled, 
+  hasInput, 
+  isGenerating
+}: { 
+  disabled: boolean; 
+  hasInput: boolean;
+  isGenerating: boolean;
+}) {
   return (
     <Button
       type="submit"
       variant="primary"
       size="lg"
-      disabled={isLoading}
-      className="w-full font-semibold bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white shadow-lg shadow-emerald-200/50 hover:shadow-xl hover:shadow-emerald-300/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+      disabled={disabled}
+      className={`w-full font-semibold bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white shadow-lg shadow-emerald-200/50 hover:shadow-xl hover:shadow-emerald-300/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${hasInput ? '' : 'opacity-50 cursor-not-allowed'}`}
     >
-      {isLoading ? (
+      {isGenerating ? (
         <div className="flex items-center justify-center gap-2">
           <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
           Generating Recipe...
         </div>
-      ) : (
+      ) : hasInput ? (
         'Generate Recipe ✨'
+      ) : (
+        'Enter a recipe idea to get started'
       )}
     </Button>
   )
-} 
+}
+
+// Simplified Form wrapper component 
+function FormWrapper({ 
+  recipeInput, 
+  setRecipeInput, 
+  dietaryPreferences, 
+  allergens, 
+  handleGenerateRecipe,
+  isGenerating
+}: {
+  recipeInput: string
+  setRecipeInput: (value: string) => void
+  dietaryPreferences: string[]
+  allergens: string[]
+  handleGenerateRecipe: () => Promise<void>
+  isGenerating: boolean
+}) {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    handleGenerateRecipe()
+  }
+
+  return (
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl shadow-emerald-100/20 dark:shadow-gray-900/20 p-8 border border-emerald-100 dark:border-gray-700 mb-8">
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <FormContent 
+          recipeInput={recipeInput}
+          setRecipeInput={setRecipeInput}
+          dietaryPreferences={dietaryPreferences}
+          allergens={allergens}
+          isGenerating={isGenerating}
+        />
+      </form>
+    </div>
+  )
+}
+
+// Simplified form content
+function FormContent({ 
+  recipeInput, 
+  setRecipeInput, 
+  dietaryPreferences, 
+  allergens, 
+  isGenerating
+}: {
+  recipeInput: string
+  setRecipeInput: (value: string) => void
+  dietaryPreferences: string[]
+  allergens: string[]
+  isGenerating: boolean
+}) {
+  console.log('📊 [FORM-CONTENT] Simple state check:', { isGenerating })
+
+  return (
+    <>
+      <div>
+        <label htmlFor="recipe-input" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+          What would you like to cook?
+        </label>
+        <input
+          id="recipe-input"
+          name="prompt"
+          type="text"
+          value={recipeInput}
+          onChange={(e) => setRecipeInput(e.target.value)}
+          placeholder="e.g., chicken burrito, chocolate chip cookies, vegetarian pasta..."
+          className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors duration-200 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+          disabled={isGenerating}
+          required
+        />
+      </div>
+      
+      {/* Show detected dietary preferences & allergens */}
+      {(dietaryPreferences.length > 0 || allergens.length > 0) && (
+        <div className="grid sm:grid-cols-2 gap-4">
+          {dietaryPreferences.length > 0 && (
+            <div>
+              <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Your Dietary Preferences</h3>
+              <ul className="flex flex-wrap gap-2">
+                {dietaryPreferences.map((pref) => (
+                  <li key={pref} className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-medium dark:bg-emerald-700/20 dark:text-emerald-300">
+                    {pref}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {allergens.length > 0 && (
+            <div>
+              <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Allergens to Avoid</h3>
+              <ul className="flex flex-wrap gap-2">
+                {allergens.map((allergy) => (
+                  <li key={allergy} className="px-3 py-1 rounded-full bg-rose-100 text-rose-800 text-xs font-medium dark:bg-rose-700/20 dark:text-rose-300">
+                    {allergy}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
+      
+      <SubmitButton 
+        disabled={!recipeInput.trim() || isGenerating} 
+        hasInput={!!recipeInput.trim()}
+        isGenerating={isGenerating}
+      />
+    </>
+  )
+}
+
+ 
