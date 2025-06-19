@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useRef, useCallback } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { 
   allFactTidbits, 
   featuredRecipeTidbits,
@@ -27,40 +27,6 @@ export function GenerateRecipeLoadingScreenTidbitsAndTips({
   // Combine all tidbits into one array for random selection
   const allTidbits = [...allFactTidbits, ...featuredRecipeTidbits]
 
-  // Get random index that's different from previous - wrapped in useCallback to prevent infinite loops
-  const getRandomTidbitIndex = useCallback((): number => {
-    if (allTidbits.length <= 1) {
-      return 0
-    }
-    
-    let randomIndex: number
-    let attempts = 0
-    do {
-      randomIndex = Math.floor(Math.random() * allTidbits.length)
-      attempts++
-    } while (randomIndex === previousIndexRef.current && attempts < 10)
-    
-    return randomIndex
-  }, [allTidbits.length])
-
-  // Handle tidbit transitions with fade effect - wrapped in useCallback to prevent infinite loops
-  const transitionToNextTidbit = useCallback(() => {
-    // Start fade out
-    setFadeClass('opacity-0')
-    
-    setTimeout(() => {
-      // Get new random index
-      const newIndex = getRandomTidbitIndex()
-      
-      // Update references
-      previousIndexRef.current = currentTidbitIndex
-      setCurrentTidbitIndex(newIndex)
-      
-      // Fade back in
-      setFadeClass('opacity-100')
-    }, 300) // 300ms fade out duration
-  }, [getRandomTidbitIndex, currentTidbitIndex])
-
   // Effect to manage the loading state and tidbit rotation
   useEffect(() => {
     if (!isLoadingRecipe) {
@@ -81,6 +47,40 @@ export function GenerateRecipeLoadingScreenTidbitsAndTips({
     // Loading recipe - show component and start tidbits
     setIsVisible(true)
     
+    // Get random index that's different from previous - defined inside useEffect
+    const getRandomTidbitIndex = (): number => {
+      if (allTidbits.length <= 1) {
+        return 0
+      }
+      
+      let randomIndex: number
+      let attempts = 0
+      do {
+        randomIndex = Math.floor(Math.random() * allTidbits.length)
+        attempts++
+      } while (randomIndex === previousIndexRef.current && attempts < 10)
+      
+      return randomIndex
+    }
+
+    // Handle tidbit transitions with fade effect - defined inside useEffect
+    const transitionToNextTidbit = () => {
+      // Start fade out
+      setFadeClass('opacity-0')
+      
+      setTimeout(() => {
+        // Get new random index
+        const newIndex = getRandomTidbitIndex()
+        
+        // Update references
+        previousIndexRef.current = newIndex
+        setCurrentTidbitIndex(newIndex)
+        
+        // Fade back in
+        setFadeClass('opacity-100')
+      }, 300) // 300ms fade out duration
+    }
+    
     // Set initial random tidbit
     const initialIndex = getRandomTidbitIndex()
     setCurrentTidbitIndex(initialIndex)
@@ -89,9 +89,7 @@ export function GenerateRecipeLoadingScreenTidbitsAndTips({
 
     // Start interval for 9-second transitions
     intervalRef.current = setInterval(() => {
-      if (isLoadingRecipe) {
-        transitionToNextTidbit()
-      }
+      transitionToNextTidbit()
     }, 9000) // 9 seconds
 
     // Cleanup function
@@ -105,7 +103,7 @@ export function GenerateRecipeLoadingScreenTidbitsAndTips({
         minDisplayTimeRef.current = null
       }
     }
-  }, [isLoadingRecipe, getRandomTidbitIndex, transitionToNextTidbit]) // Include all dependencies
+  }, [isLoadingRecipe]) // Only depend on isLoadingRecipe - no function dependencies!
 
   // Don't render if not visible
   if (!isVisible) {
