@@ -6,9 +6,8 @@ import { Button } from '@/components/ui/Button'
 import Link from 'next/link'
 import { User, canGenerateRecipes, getUserRoleDisplay } from '@/lib/auth-utils'
 import { generateRecipeAction } from './actions'
-import { useFormStatus } from 'react-dom'
-import { LoadingTidbit } from '@/components/recipe/LoadingTidbit'
 import Image from 'next/image'
+import { GenerateRecipeLoadingScreenTidbitsAndTips } from '@/components/recipe/GenerateRecipeLoadingScreenTidbitsAndTips'
 
 export default function GenerateRecipePage() {
   const [user, setUser] = useState<User | null>(null)
@@ -20,10 +19,20 @@ export default function GenerateRecipePage() {
   const [dietaryPreferences, setDietaryPreferences] = useState<string[]>([])
   const [allergens, setAllergens] = useState<string[]>([])
 
-  // Track isGenerating state changes
+  // 🎯 SIMPLE JAVASCRIPT APPROACH - just use isGenerating boolean!
+  const showLoadingTips = isGenerating
+
+  // Track state changes with simple logging
   useEffect(() => {
-    console.log('🎚️ isGenerating state changed to:', isGenerating)
-  }, [isGenerating])
+    console.log('🎚️ [MAIN-PAGE] isGenerating state changed to:', isGenerating)
+    console.log('🔧 [MAIN-PAGE] Simple showLoadingTips is now:', showLoadingTips)
+    console.log('📊 [MAIN-PAGE] Full state snapshot:', {
+      isGenerating,
+      showLoadingTips,
+      hasGeneratedRecipe: !!generatedRecipe,
+      recipeInputLength: recipeInput.length
+    })
+  }, [isGenerating, generatedRecipe])
 
   const supabase = createClientComponentClient()
 
@@ -95,50 +104,62 @@ export default function GenerateRecipePage() {
     return () => subscription.unsubscribe()
   }, [supabase])
 
-  const handleGenerateRecipe = async (formData: FormData) => {
-    console.log('🎯 Starting recipe generation with server action')
-    console.log('👤 User dietary context:', { dietaryPreferences, allergens })
+  const handleGenerateRecipe = async () => {
+    console.log('🎯 [MAIN-PAGE] ===== STARTING RECIPE GENERATION =====')
+    console.log('🎯 [MAIN-PAGE] Starting recipe generation with button click')
+    console.log('👤 [MAIN-PAGE] User dietary context:', { dietaryPreferences, allergens })
+    console.log('📝 [MAIN-PAGE] Recipe input:', recipeInput)
+    console.log('🚦 [MAIN-PAGE] Current state before generation:', {
+      isGenerating,
+      showLoadingTips: isGenerating,
+      hasExistingRecipe: !!generatedRecipe
+    })
+    
+    // 🎯 Set state immediately (not in server action context)
+    console.log('🔄 [MAIN-PAGE] Setting isGenerating to TRUE (this will show loading tips)')
+    console.log('🎬 [MAIN-PAGE] Simple approach: isGenerating=true → showLoadingTips=true')
+    setIsGenerating(true) // This will show loading tips
     
     try {
-      // Add dietary context to form data
+      // Create form data
+      const formData = new FormData()
+      formData.set('prompt', recipeInput)
       formData.set('dietaryPreferences', JSON.stringify(dietaryPreferences))
       formData.set('allergens', JSON.stringify(allergens))
       
-      console.log('🚀 Calling server action...')
+      console.log('🚀 [MAIN-PAGE] Calling server action...')
       const result = await generateRecipeAction(formData)
       
       if (!result.success) {
-        console.error('❌ Server action failed:', result.error)
-        console.log('🔄 Setting isGenerating to FALSE (error case)')
-        setIsGenerating(false)
+        console.error('❌ [MAIN-PAGE] Server action failed:', result.error)
+        console.log('🔄 [MAIN-PAGE] Setting isGenerating to FALSE (error case)')
+        setIsGenerating(false) // This will hide loading tips
         // TODO: Show user-friendly error message in UI
         return
       }
 
-      console.log('✅ Recipe generation successful!')
-      console.log('📄 Received markdown length:', result.recipeMarkdown?.length || 0)
-      console.log('🖼️ Image URL:', result.imageUrl)
-      console.log('🍳 Recipe preview:', result.recipeMarkdown?.substring(0, 100) + '...')
+      console.log('✅ [MAIN-PAGE] Recipe generation successful!')
+      console.log('📄 [MAIN-PAGE] Received markdown length:', result.recipeMarkdown?.length || 0)
+      console.log('🖼️ [MAIN-PAGE] Image URL:', result.imageUrl)
+      console.log('🍳 [MAIN-PAGE] Recipe preview:', result.recipeMarkdown?.substring(0, 100) + '...')
       
       setGeneratedRecipe(result.recipeMarkdown || '')
       setGeneratedImageUrl(result.imageUrl || null)
       
     } catch (error) {
-      console.error('❌ Frontend error with server action:', error)
-      console.log('🔄 Setting isGenerating to FALSE (catch case)')
-      setIsGenerating(false)
+      console.error('❌ [MAIN-PAGE] Frontend error with server action:', error)
+      console.log('🔄 [MAIN-PAGE] Setting isGenerating to FALSE (catch case)')
+      setIsGenerating(false) // This will hide loading tips
       // TODO: Show user-friendly error message in UI
     } finally {
-      console.log('🏁 Recipe generation process completed')
-      console.log('🔄 Setting isGenerating to FALSE (finally case)')
-      setIsGenerating(false)
+      console.log('🏁 [MAIN-PAGE] Recipe generation process completed')
+      console.log('🔄 [MAIN-PAGE] Setting isGenerating to FALSE (finally case)')
+      setIsGenerating(false) // This will hide loading tips
+      console.log('🎯 [MAIN-PAGE] ===== RECIPE GENERATION ENDED =====')
     }
   }
 
-  const handleStartGeneration = () => {
-    console.log('🔄 Setting isGenerating to TRUE (before form submission)')
-    setIsGenerating(true)
-  }
+
 
   const handleReset = () => {
     setRecipeInput('')
@@ -263,17 +284,25 @@ export default function GenerateRecipePage() {
             </p>
           </div>
 
-          {/* Input Form */}
+          {/* 🎯 SIMPLE CONDITIONAL RENDERING */}
           {!generatedRecipe && (
-            <FormWrapper 
-              recipeInput={recipeInput}
-              setRecipeInput={setRecipeInput}
-              dietaryPreferences={dietaryPreferences}
-              allergens={allergens}
-              handleGenerateRecipe={handleGenerateRecipe}
-              handleStartGeneration={handleStartGeneration}
-              isGenerating={isGenerating}
-            />
+            <>
+              {showLoadingTips ? (
+                <GenerateRecipeLoadingScreenTidbitsAndTips 
+                  isLoadingRecipe={showLoadingTips}
+                  className="mb-8"
+                />
+              ) : (
+                <FormWrapper 
+                  recipeInput={recipeInput}
+                  setRecipeInput={setRecipeInput}
+                  dietaryPreferences={dietaryPreferences}
+                  allergens={allergens}
+                  handleGenerateRecipe={handleGenerateRecipe}
+                  isGenerating={isGenerating}
+                />
+              )}
+            </>
           )}
 
           {/* Generated Recipe Display */}
@@ -328,17 +357,16 @@ export default function GenerateRecipePage() {
   )
 }
 
-// Submit button component that uses form status
+// Submit button component that uses isGenerating state
 function SubmitButton({ 
   disabled, 
   hasInput, 
+  isGenerating
 }: { 
   disabled: boolean; 
   hasInput: boolean;
+  isGenerating: boolean;
 }) {
-  const { pending } = useFormStatus()
-  const isActuallyLoading = pending
-
   return (
     <Button
       type="submit"
@@ -347,7 +375,7 @@ function SubmitButton({
       disabled={disabled}
       className={`w-full font-semibold bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white shadow-lg shadow-emerald-200/50 hover:shadow-xl hover:shadow-emerald-300/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${hasInput ? '' : 'opacity-50 cursor-not-allowed'}`}
     >
-      {isActuallyLoading ? (
+      {isGenerating ? (
         <div className="flex items-center justify-center gap-2">
           <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
           Generating Recipe...
@@ -361,42 +389,35 @@ function SubmitButton({
   )
 }
 
-// Form wrapper component that tracks pending state
+// Simplified Form wrapper component 
 function FormWrapper({ 
   recipeInput, 
   setRecipeInput, 
   dietaryPreferences, 
   allergens, 
   handleGenerateRecipe,
-  handleStartGeneration,
   isGenerating
 }: {
   recipeInput: string
   setRecipeInput: (value: string) => void
   dietaryPreferences: string[]
   allergens: string[]
-  handleGenerateRecipe: (formData: FormData) => Promise<void>
-  handleStartGeneration: () => void
+  handleGenerateRecipe: () => Promise<void>
   isGenerating: boolean
 }) {
-  const { pending } = useFormStatus()
-  
-  // Trigger isGenerating flag in parent when submission starts
-  useEffect(() => {
-    if (pending) {
-      handleStartGeneration()
-    }
-  }, [pending])
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    handleGenerateRecipe()
+  }
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl shadow-emerald-100/20 dark:shadow-gray-900/20 p-8 border border-emerald-100 dark:border-gray-700 mb-8">
-      <form action={handleGenerateRecipe} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-6">
         <FormContent 
           recipeInput={recipeInput}
           setRecipeInput={setRecipeInput}
           dietaryPreferences={dietaryPreferences}
           allergens={allergens}
-          handleStartGeneration={handleStartGeneration}
           isGenerating={isGenerating}
         />
       </form>
@@ -404,46 +425,21 @@ function FormWrapper({
   )
 }
 
-// Form content that can access form status
+// Simplified form content
 function FormContent({ 
   recipeInput, 
   setRecipeInput, 
   dietaryPreferences, 
   allergens, 
-  handleStartGeneration,
   isGenerating
 }: {
   recipeInput: string
   setRecipeInput: (value: string) => void
   dietaryPreferences: string[]
   allergens: string[]
-  handleStartGeneration: () => void
   isGenerating: boolean
 }) {
-  const { pending } = useFormStatus()
-  
-  // Show both submission status and rich LoadingTidbit when form is pending OR generating
-  console.log('📊 FormContent state check:', { pending, isGenerating, shouldShowLoading: pending || isGenerating })
-  
-  if (pending || isGenerating) {
-    console.log('🎬 Showing LoadingTidbit because:', pending ? 'pending=true' : 'isGenerating=true')
-    return (
-      <div className="space-y-6">
-        {/* Submission status */}
-        <div className="text-center py-4">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600 mx-auto mb-3"></div>
-          <p className="text-gray-600 dark:text-gray-300 font-medium">
-            {pending ? "Submitting your request..." : "Generating your recipe..."}
-          </p>
-        </div>
-        
-        {/* Rich educational content */}
-        <LoadingTidbit />
-      </div>
-    )
-  }
-
-  console.log('📝 Showing form because pending=false and isGenerating=false')
+  console.log('📊 [FORM-CONTENT] Simple state check:', { isGenerating })
 
   return (
     <>
@@ -498,6 +494,7 @@ function FormContent({
       <SubmitButton 
         disabled={!recipeInput.trim() || isGenerating} 
         hasInput={!!recipeInput.trim()}
+        isGenerating={isGenerating}
       />
     </>
   )
