@@ -22,17 +22,12 @@ export default function GenerateRecipePage() {
   // 🎯 SIMPLE JAVASCRIPT APPROACH - just use isGenerating boolean!
   const showLoadingTips = isGenerating
 
-  // Track state changes with simple logging
+  // Only log significant state changes (not every keystroke)
   useEffect(() => {
-    console.log('🎚️ [MAIN-PAGE] isGenerating state changed to:', isGenerating)
-    console.log('🔧 [MAIN-PAGE] Simple showLoadingTips is now:', showLoadingTips)
-    console.log('📊 [MAIN-PAGE] Full state snapshot:', {
-      isGenerating,
-      showLoadingTips,
-      hasGeneratedRecipe: !!generatedRecipe,
-      recipeInputLength: recipeInput.length
-    })
-  }, [isGenerating, generatedRecipe, showLoadingTips, recipeInput.length])
+    if (isGenerating) {
+      console.log('🎯 [MAIN-PAGE] Recipe generation started')
+    }
+  }, [isGenerating])
 
   const supabase = createClientComponentClient()
 
@@ -105,19 +100,7 @@ export default function GenerateRecipePage() {
   }, [supabase])
 
   const handleGenerateRecipe = async () => {
-    console.log('🎯 [MAIN-PAGE] ===== STARTING RECIPE GENERATION =====')
-    console.log('🎯 [MAIN-PAGE] Starting recipe generation with button click')
-    console.log('👤 [MAIN-PAGE] User dietary context:', { dietaryPreferences, allergens })
-    console.log('📝 [MAIN-PAGE] Recipe input:', recipeInput)
-    console.log('🚦 [MAIN-PAGE] Current state before generation:', {
-      isGenerating,
-      showLoadingTips: isGenerating,
-      hasExistingRecipe: !!generatedRecipe
-    })
-    
-    // 🎯 Set state immediately (not in server action context)
-    console.log('🔄 [MAIN-PAGE] Setting isGenerating to TRUE (this will show loading tips)')
-    console.log('🎬 [MAIN-PAGE] Simple approach: isGenerating=true → showLoadingTips=true')
+    console.log('🎯 [MAIN-PAGE] Starting recipe generation')
     setIsGenerating(true) // This will show loading tips
     
     try {
@@ -127,17 +110,13 @@ export default function GenerateRecipePage() {
       formData.set('dietaryPreferences', JSON.stringify(dietaryPreferences))
       formData.set('allergens', JSON.stringify(allergens))
       
-      console.log('🚀 [MAIN-PAGE] Calling server action...')
       await generateRecipeAction(formData)
-      
-      // Server action redirects to recipe page, so if we reach here something went wrong
-      console.log('⚠️ [MAIN-PAGE] Server action returned without redirect - unexpected')
+      // Server action redirects to recipe page on success
       setIsGenerating(false)
       
     } catch (error) {
-      console.error('❌ [MAIN-PAGE] Error with server action:', error)
-      console.log('🔄 [MAIN-PAGE] Setting isGenerating to FALSE (catch case)')
-      setIsGenerating(false) // This will hide loading tips
+      console.error('❌ [MAIN-PAGE] Recipe generation failed:', error)
+      setIsGenerating(false)
       // TODO: Show user-friendly error message in UI
     }
   }
@@ -422,7 +401,6 @@ function FormContent({
   allergens: string[]
   isGenerating: boolean
 }) {
-  console.log('📊 [FORM-CONTENT] Simple state check:', { isGenerating })
 
   return (
     <>
