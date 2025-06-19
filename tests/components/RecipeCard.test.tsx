@@ -90,18 +90,18 @@ describe('RecipeCard Component', () => {
   test('applies correct difficulty styling', () => {
     const { rerender } = render(<RecipeCard recipe={mockRecipe} />)
     
-    // Easy difficulty should have green styling
-    expect(screen.getByText('easy')).toHaveClass('bg-green-100', 'text-green-700')
+    // Easy difficulty should have success styling
+    expect(screen.getByText('easy')).toHaveClass('bg-success/20', 'text-success')
     
     // Test medium difficulty
     const mediumRecipe = { ...mockRecipe, difficulty: 'medium' as const }
     rerender(<RecipeCard recipe={mediumRecipe} />)
-    expect(screen.getByText('medium')).toHaveClass('bg-yellow-100', 'text-yellow-700')
+    expect(screen.getByText('medium')).toHaveClass('bg-warning/20', 'text-warning')
     
     // Test hard difficulty
     const hardRecipe = { ...mockRecipe, difficulty: 'hard' as const }
     rerender(<RecipeCard recipe={hardRecipe} />)
-    expect(screen.getByText('hard')).toHaveClass('bg-red-100', 'text-red-700')
+    expect(screen.getByText('hard')).toHaveClass('bg-error/20', 'text-error')
   })
 
   test('limits dietary compliance tags display', () => {
