@@ -39,6 +39,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-"\n# Test reports\nplaywright-report/\ntest-results/\n\n# Windows junk\nnul" 
-\n# Test reports\nplaywright-report/\ntest-results/\n\n# Windows junk\nnul
--e "\n# Test reports\nplaywright-report/\ntest-results/\n\n# Windows junk\nnul" 
+
+# Test reports
+playwright-report/
+test-results/
+
+# Windows junk
+nul
+
+# Private strategy documents
+docs/GO_TO_MARKET_STRATEGY.md

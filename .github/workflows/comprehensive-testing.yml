@@ -1,0 +1,228 @@
+name: 🧪 Comprehensive Test Suite
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Run comprehensive tests daily at 2 AM UTC
+    - cron: '0 2 * * *'
+
+jobs:
+  # Quick feedback for development
+  unit-tests:
+    name: 🔧 Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 📥 Install dependencies
+        run: npm ci
+
+      - name: 🧪 Run unit tests
+        run: node scripts/test-maintenance.js unit
+
+  # Critical tests for main pipeline
+  critical-tests:
+    name: 🎯 Critical Tests
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 📥 Install dependencies
+        run: npm ci
+
+      - name: 🎯 Run critical tests
+        run: node scripts/test-maintenance.js critical
+
+      - name: 📊 Upload critical test results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: critical-test-results
+          path: test-results/
+
+  # Security validation
+  security-tests:
+    name: 🔒 Security Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 📥 Install dependencies
+        run: npm ci
+
+      - name: 🔒 Run security tests
+        run: node scripts/test-maintenance.js security
+
+  # Performance monitoring
+  performance-tests:
+    name: ⚡ Performance Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 📥 Install dependencies
+        run: npm ci
+
+      - name: ⚡ Run performance tests
+        run: node scripts/test-maintenance.js performance
+
+      - name: 📈 Upload performance results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: performance-results
+          path: performance-results/
+
+  # Integration tests for pre-deployment
+  integration-tests:
+    name: 🔗 Integration Tests
+    runs-on: ubuntu-latest
+    needs: [critical-tests, security-tests]
+    if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 📥 Install dependencies
+        run: npm ci
+
+      - name: 🔗 Run integration tests
+        run: node scripts/test-maintenance.js integration
+
+  # Infrastructure tests
+  infrastructure-tests:
+    name: 🏗️ Infrastructure Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 📥 Install dependencies
+        run: npm ci
+
+      - name: 🏗️ Run infrastructure tests
+        run: node scripts/test-maintenance.js infrastructure
+
+  # Comprehensive test suite (scheduled runs)
+  comprehensive-suite:
+    name: 🎯 Full Test Suite
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 📥 Install dependencies
+        run: npm ci
+
+      - name: 🏥 Check test suite health
+        run: node scripts/test-maintenance.js health
+
+      - name: 🧪 Run full test suite
+        run: node scripts/test-maintenance.js all
+
+      - name: 📊 Generate coverage report
+        run: node scripts/test-maintenance.js coverage
+
+      - name: 📝 Generate comprehensive report
+        run: node scripts/test-maintenance.js report
+
+      - name: 📤 Upload comprehensive results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: comprehensive-test-results
+          path: |
+            test-results/
+            coverage/
+            test-report.json
+
+  # Test health monitoring
+  test-health:
+    name: 🏥 Test Health Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 📥 Install dependencies
+        run: npm ci
+
+      - name: 🏥 Check test suite health
+        run: node scripts/test-maintenance.js health
+
+  # Deployment gate (all critical tests must pass)
+  deployment-gate:
+    name: 🚀 Deployment Gate
+    runs-on: ubuntu-latest
+    needs: [critical-tests, security-tests, integration-tests]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: ✅ All critical tests passed
+        run: echo "🎉 All critical tests passed! Ready for deployment."
+
+      - name: 📝 Deployment summary
+        run: |
+          echo "## 🚀 Deployment Ready" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Unit tests passed" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Critical tests passed" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Security tests passed" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Integration tests passed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "🎯 ChompChew is ready for production deployment!" >> $GITHUB_STEP_SUMMARY 

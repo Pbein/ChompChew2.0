@@ -1,0 +1,253 @@
+{
+  "timestamp": "2025-06-23T23:29:36.921Z",
+  "summary": {
+    "totalTestFiles": 42,
+    "validTests": 20,
+    "suspiciousTests": 22,
+    "qualityScore": 48
+  },
+  "issues": [
+    {
+      "file": "tests\\api\\endpoints.test.ts",
+      "issues": [
+        {
+          "type": "HIGH_MOCK_RATIO",
+          "severity": "MEDIUM",
+          "message": "High ratio of mocks to real imports",
+          "details": "19 mocks vs 4 real imports"
+        }
+      ]
+    },
+    {
+      "file": "tests\\components\\CookbookPage.test.tsx",
+      "issues": [
+        {
+          "type": "HIGH_MOCK_RATIO",
+          "severity": "MEDIUM",
+          "message": "High ratio of mocks to real imports",
+          "details": "52 mocks vs 2 real imports"
+        }
+      ]
+    },
+    {
+      "file": "tests\\components\\layout\\Header.test.tsx",
+      "issues": [
+        {
+          "type": "HIGH_MOCK_RATIO",
+          "severity": "MEDIUM",
+          "message": "High ratio of mocks to real imports",
+          "details": "14 mocks vs 2 real imports"
+        }
+      ]
+    },
+    {
+      "file": "tests\\components\\nutrition.test.tsx",
+      "issues": [
+        {
+          "type": "HIGH_MOCK_RATIO",
+          "severity": "MEDIUM",
+          "message": "High ratio of mocks to real imports",
+          "details": "3 mocks vs 2 real imports"
+        }
+      ]
+    },
+    {
+      "file": "tests\\components\\RecipeCard.test.tsx",
+      "issues": [
+        {
+          "type": "HIGH_MOCK_RATIO",
+          "severity": "MEDIUM",
+          "message": "High ratio of mocks to real imports",
+          "details": "4 mocks vs 1 real imports"
+        }
+      ]
+    },
+    {
+      "file": "tests\\components\\ui\\ThemeToggle.test.tsx",
+      "issues": [
+        {
+          "type": "HIGH_MOCK_RATIO",
+          "severity": "MEDIUM",
+          "message": "High ratio of mocks to real imports",
+          "details": "15 mocks vs 1 real imports"
+        }
+      ]
+    },
+    {
+      "file": "tests\\error-scenarios\\networkFailure.test.ts",
+      "issues": [
+        {
+          "type": "HIGH_MOCK_RATIO",
+          "severity": "MEDIUM",
+          "message": "High ratio of mocks to real imports",
+          "details": "8 mocks vs 2 real imports"
+        }
+      ]
+    },
+    {
+      "file": "tests\\infrastructure\\rateLimiter.test.ts",
+      "issues": [
+        {
+          "type": "HIGH_MOCK_RATIO",
+          "severity": "MEDIUM",
+          "message": "High ratio of mocks to real imports",
+          "details": "4 mocks vs 1 real imports"
+        }
+      ]
+    },
+    {
+      "file": "tests\\integration\\database.test.ts",
+      "issues": [
+        {
+          "type": "HIGH_MOCK_RATIO",
+          "severity": "MEDIUM",
+          "message": "High ratio of mocks to real imports",
+          "details": "54 mocks vs 1 real imports"
+        }
+      ]
+    },
+    {
+      "file": "tests\\integration\\fullStack.test.ts",
+      "issues": [
+        {
+          "type": "HIGH_MOCK_RATIO",
+          "severity": "MEDIUM",
+          "message": "High ratio of mocks to real imports",
+          "details": "15 mocks vs 4 real imports"
+        }
+      ]
+    },
+    {
+      "file": "tests\\integration\\profileManagement.test.tsx",
+      "issues": [
+        {
+          "type": "HIGH_MOCK_RATIO",
+          "severity": "MEDIUM",
+          "message": "High ratio of mocks to real imports",
+          "details": "11 mocks vs 2 real imports"
+        }
+      ]
+    },
+    {
+      "file": "tests\\integration\\recipeGenerationWithAI.test.ts",
+      "issues": [
+        {
+          "type": "HIGH_MOCK_RATIO",
+          "severity": "MEDIUM",
+          "message": "High ratio of mocks to real imports",
+          "details": "9 mocks vs 2 real imports"
+        }
+      ]
+    },
+    {
+      "file": "tests\\integration\\searchWithProfile.test.ts",
+      "issues": [
+        {
+          "type": "HIGH_MOCK_RATIO",
+          "severity": "MEDIUM",
+          "message": "High ratio of mocks to real imports",
+          "details": "14 mocks vs 2 real imports"
+        }
+      ]
+    },
+    {
+      "file": "tests\\lib\\aiImageService.test.ts",
+      "issues": [
+        {
+          "type": "HIGH_MOCK_RATIO",
+          "severity": "MEDIUM",
+          "message": "High ratio of mocks to real imports",
+          "details": "14 mocks vs 3 real imports"
+        }
+      ]
+    },
+    {
+      "file": "tests\\lib\\recipes.test.ts",
+      "issues": [
+        {
+          "type": "HIGH_MOCK_RATIO",
+          "severity": "MEDIUM",
+          "message": "High ratio of mocks to real imports",
+          "details": "23 mocks vs 2 real imports"
+        }
+      ]
+    },
+    {
+      "file": "tests\\performance\\coreWebVitals.test.ts",
+      "issues": [
+        {
+          "type": "HIGH_MOCK_RATIO",
+          "severity": "MEDIUM",
+          "message": "High ratio of mocks to real imports",
+          "details": "2 mocks vs 1 real imports"
+        }
+      ]
+    },
+    {
+      "file": "tests\\savedRecipesStore.test.ts",
+      "issues": [
+        {
+          "type": "HIGH_MOCK_RATIO",
+          "severity": "MEDIUM",
+          "message": "High ratio of mocks to real imports",
+          "details": "3 mocks vs 2 real imports"
+        }
+      ]
+    },
+    {
+      "file": "tests\\services\\cacheService.test.ts",
+      "issues": [
+        {
+          "type": "HIGH_MOCK_RATIO",
+          "severity": "MEDIUM",
+          "message": "High ratio of mocks to real imports",
+          "details": "6 mocks vs 3 real imports"
+        }
+      ]
+    },
+    {
+      "file": "tests\\services\\userService.test.ts",
+      "issues": [
+        {
+          "type": "HIGH_MOCK_RATIO",
+          "severity": "MEDIUM",
+          "message": "High ratio of mocks to real imports",
+          "details": "13 mocks vs 3 real imports"
+        }
+      ]
+    },
+    {
+      "file": "tests\\stores\\profileStore.test.ts",
+      "issues": [
+        {
+          "type": "HIGH_MOCK_RATIO",
+          "severity": "MEDIUM",
+          "message": "High ratio of mocks to real imports",
+          "details": "18 mocks vs 2 real imports"
+        }
+      ]
+    },
+    {
+      "file": "tests\\validation\\recipeDetailInformationDisplay.test.tsx",
+      "issues": [
+        {
+          "type": "HIGH_MOCK_RATIO",
+          "severity": "MEDIUM",
+          "message": "High ratio of mocks to real imports",
+          "details": "5 mocks vs 2 real imports"
+        }
+      ]
+    },
+    {
+      "file": "tests\\validation\\uuidValidation.test.tsx",
+      "issues": [
+        {
+          "type": "HIGH_MOCK_RATIO",
+          "severity": "MEDIUM",
+          "message": "High ratio of mocks to real imports",
+          "details": "6 mocks vs 3 real imports"
+        }
+      ]
+    }
+  ]
+}

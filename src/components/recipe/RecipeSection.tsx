@@ -48,7 +48,8 @@ export function RecipeSection({ className }: RecipeSectionProps) {
     
     const getUser = async () => {
       try {
-        const { data: { user } } = await supabase.auth.getUser()
+        const response = await supabase.auth.getUser()
+        const user = response?.data?.user || null
         if (mounted) {
           setUser(user)
           setUserLoaded(true)

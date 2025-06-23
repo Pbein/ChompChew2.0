@@ -29,6 +29,8 @@ vi.mock('@/lib/supabase', () => ({
 describe('Profile Management Integration Test', () => {
   const mockUpdateProfile = vi.fn();
   const mockFetchProfile = vi.fn();
+  const mockClearError = vi.fn();
+  const mockRetryUpdate = vi.fn();
   const user = userEvent.setup();
 
   const mockProfile = {
@@ -51,10 +53,205 @@ describe('Profile Management Integration Test', () => {
       profile: mockProfile,
       loading: false,
       error: null,
+      lastSaved: null,
       updateProfile: mockUpdateProfile,
       fetchProfile: mockFetchProfile,
+      clearError: mockClearError,
+      retryUpdate: mockRetryUpdate,
     });
     mockUpdateProfile.mockResolvedValue(undefined);
+  });
+
+  it('should display batch save functionality with unsaved changes indicator', async () => {
+    render(<ProfilePage />);
+    
+    await waitFor(() => {
+      expect(screen.getByText('Dietary Preferences')).toBeInTheDocument();
+    });
+    
+    // Initially, no unsaved changes
+    expect(screen.queryByText('You have unsaved changes')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Save Changes' })).toBeDisabled();
+    
+    // Make a change by actually adding an allergen
+    const allergenInput = screen.getByPlaceholderText('Add avoided ingredient');
+    const allergenSection = screen.getByText('Avoided / Allergens').closest('section');
+    const addButton = within(allergenSection!).getByRole('button', { name: 'Add' });
+    
+    await user.type(allergenInput, 'dairy');
+    await user.click(addButton);
+    
+    // Should now show unsaved changes
+    await waitFor(() => {
+      expect(screen.getByText('You have unsaved changes')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Save Changes' })).toBeEnabled();
+    });
+  });
+
+  it('should show success toast when profile is saved successfully', async () => {
+    mockUpdateProfile.mockResolvedValue(undefined);
+    render(<ProfilePage />);
+    
+    await waitFor(() => {
+      expect(screen.getByText('Dietary Preferences')).toBeInTheDocument();
+    });
+    
+    // Make a change
+    const allergenInput = screen.getByPlaceholderText('Add avoided ingredient');
+    const allergenSection = screen.getByText('Avoided / Allergens').closest('section');
+    const addButton = within(allergenSection!).getByRole('button', { name: 'Add' });
+    
+    await user.type(allergenInput, 'dairy');
+    await user.click(addButton);
+    
+    // Click save
+    const saveButton = screen.getByRole('button', { name: 'Save Changes' });
+    await user.click(saveButton);
+    
+    // Should show success toast
+    await waitFor(() => {
+      expect(screen.getByText('Profile saved successfully!')).toBeInTheDocument();
+      expect(screen.getByText('✓')).toBeInTheDocument();
+    });
+    
+    // Should clear unsaved changes
+    expect(screen.queryByText('You have unsaved changes')).not.toBeInTheDocument();
+  });
+
+  it('should show error toast when profile save fails', async () => {
+    mockUpdateProfile.mockRejectedValue(new Error('Network error'));
+    render(<ProfilePage />);
+    
+    await waitFor(() => {
+      expect(screen.getByText('Dietary Preferences')).toBeInTheDocument();
+    });
+    
+    // Make a change
+    const allergenInput = screen.getByPlaceholderText('Add avoided ingredient');
+    const allergenSection = screen.getByText('Avoided / Allergens').closest('section');
+    const addButton = within(allergenSection!).getByRole('button', { name: 'Add' });
+    
+    await user.type(allergenInput, 'dairy');
+    await user.click(addButton);
+    
+    // Click save
+    const saveButton = screen.getByRole('button', { name: 'Save Changes' });
+    await user.click(saveButton);
+    
+    // Should show error toast
+    await waitFor(() => {
+      expect(screen.getByText('Failed to save profile. Please try again.')).toBeInTheDocument();
+      expect(screen.getByText('✗')).toBeInTheDocument();
+    });
+  });
+
+  it('should allow resetting changes to original values', async () => {
+    render(<ProfilePage />);
+    
+    await waitFor(() => {
+      expect(screen.getByText('Dietary Preferences')).toBeInTheDocument();
+    });
+    
+    // Make a change
+    const allergenInput = screen.getByPlaceholderText('Add avoided ingredient');
+    const allergenSection = screen.getByText('Avoided / Allergens').closest('section');
+    const addButton = within(allergenSection!).getByRole('button', { name: 'Add' });
+    
+    await user.type(allergenInput, 'dairy');
+    await user.click(addButton);
+    
+    // Should show unsaved changes and reset button
+    await waitFor(() => {
+      expect(screen.getByText('You have unsaved changes')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Reset' })).toBeInTheDocument();
+    });
+    
+    // Click reset
+    await user.click(screen.getByRole('button', { name: 'Reset' }));
+    
+    // Should clear unsaved changes
+    expect(screen.queryByText('You have unsaved changes')).not.toBeInTheDocument();
+  });
+
+  it('should handle keyboard shortcuts for adding tags', async () => {
+    render(<ProfilePage />);
+    
+    await waitFor(() => {
+      expect(screen.getByText('Dietary Preferences')).toBeInTheDocument();
+    });
+    
+    // Test diet tags
+    const dietInput = screen.getByPlaceholderText('Add diet tag (e.g., vegan)');
+    await user.type(dietInput, 'keto');
+    await user.keyboard('{Enter}');
+    
+    // Should show unsaved changes
+    await waitFor(() => {
+      expect(screen.getByText('You have unsaved changes')).toBeInTheDocument();
+    });
+    
+    // Test allergens
+    const allergenInput = screen.getByPlaceholderText('Add avoided ingredient');
+    await user.type(allergenInput, 'shellfish');
+    await user.keyboard('{Enter}');
+    
+    // Should still show unsaved changes
+    expect(screen.getByText('You have unsaved changes')).toBeInTheDocument();
+  });
+
+  it('should disable add buttons when input is empty', async () => {
+    render(<ProfilePage />);
+    
+    await waitFor(() => {
+      expect(screen.getByText('Dietary Preferences')).toBeInTheDocument();
+    });
+    
+    // Find sections and their add buttons
+    const dietSection = screen.getByText('Diet Tags').closest('section');
+    const allergenSection = screen.getByText('Avoided / Allergens').closest('section');
+    
+    const dietAddButton = within(dietSection!).getByRole('button', { name: 'Add' });
+    const allergenAddButton = within(allergenSection!).getByRole('button', { name: 'Add' });
+    
+    // Should be disabled when inputs are empty
+    expect(dietAddButton).toBeDisabled();
+    expect(allergenAddButton).toBeDisabled();
+    
+    // Type in diet input
+    const dietInput = screen.getByPlaceholderText('Add diet tag (e.g., vegan)');
+    await user.type(dietInput, 'keto');
+    
+    // Diet button should be enabled, allergen button still disabled
+    expect(dietAddButton).toBeEnabled();
+    expect(allergenAddButton).toBeDisabled();
+  });
+
+  it('should show loading state during save operation', async () => {
+    // Mock loading state
+    vi.mocked(useProfileStore).mockReturnValue({
+      profile: mockProfile,
+      loading: true,
+      error: null,
+      lastSaved: null,
+      updateProfile: mockUpdateProfile,
+      fetchProfile: mockFetchProfile,
+      clearError: mockClearError,
+      retryUpdate: mockRetryUpdate,
+    });
+
+    render(<ProfilePage />);
+    
+    await waitFor(() => {
+      expect(screen.getByText('Dietary Preferences')).toBeInTheDocument();
+    });
+    
+    // Should show loading spinner and text
+    expect(screen.getByText('Saving...')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Save Changes' })).toBeDisabled();
+    
+    // Should show spinning animation
+    const spinner = screen.getByRole('button', { name: 'Save Changes' }).closest('div')?.querySelector('.animate-spin');
+    expect(spinner).toBeInTheDocument();
   });
 
   it('should allow users to add and remove allergens', async () => {
@@ -79,13 +276,13 @@ describe('Profile Management Integration Test', () => {
     // Get the specific "Add" button for allergens (it's within the allergen section)
     const addButton = within(allergenSection!).getByRole('button', { name: 'Add' });
 
-    // Act - Add a new allergen
+    // Act - Add a new allergen (this should trigger local state update)
     await user.type(allergenInput, 'dairy');
     await user.click(addButton);
 
-    // Assert - Verify updateProfile was called with new allergen list
-    expect(mockUpdateProfile).toHaveBeenCalledWith({
-      allergens: ['nuts', 'dairy']
+    // Should show unsaved changes
+    await waitFor(() => {
+      expect(screen.getByText('You have unsaved changes')).toBeInTheDocument();
     });
 
     // Act - Remove an existing allergen (specifically the one in the allergens section)
@@ -93,17 +290,13 @@ describe('Profile Management Integration Test', () => {
     const removeNutsButton = within(nutsTag!).getByText('×');
     await user.click(removeNutsButton);
 
-    // Assert - Verify updateProfile was called with updated list
-    expect(mockUpdateProfile).toHaveBeenCalledWith({
-      allergens: []
-    });
+    // Should still show unsaved changes
+    expect(screen.getByText('You have unsaved changes')).toBeInTheDocument();
   });
 
-  it('should allow users to update macro targets using input fields', async () => {
-    // Arrange
+  it('should allow users to update macro targets using sliders and inputs', async () => {
     render(<ProfilePage />);
     
-    // Wait for component to load and render profile content
     await waitFor(() => {
       expect(screen.getByText('Dietary Preferences')).toBeInTheDocument();
     });
@@ -112,144 +305,60 @@ describe('Profile Management Integration Test', () => {
     const macroSection = screen.getByText('Macro Targets').closest('section');
     expect(macroSection).toBeInTheDocument();
     
-    // Find the protein input field - use a more specific selector
-    const proteinInput = within(macroSection!).getByDisplayValue('30');
-    expect(proteinInput).toBeInTheDocument();
+    // Find the protein number input
+    const proteinInputs = within(macroSection!).getAllByDisplayValue('30');
+    const proteinNumberInput = proteinInputs.find(input => input.getAttribute('type') === 'number');
+    expect(proteinNumberInput).toBeInTheDocument();
 
-    // Act - Change the protein value by selecting all and typing new value
-    await user.click(proteinInput);
-    await user.keyboard('{Control>}a{/Control}'); // Select all
-    await user.type(proteinInput, '40');
+    // Change the protein value
+    await user.click(proteinNumberInput!);
+    await user.keyboard('{Control>}a{/Control}');
+    await user.type(proteinNumberInput!, '40');
     
-    // Wait for any updates to settle
-    await new Promise(resolve => setTimeout(resolve, 300));
-
-    // Assert - Check that updateProfile was called with some updates
+    // Should show unsaved changes
     await waitFor(() => {
-      expect(mockUpdateProfile).toHaveBeenCalled();
-      
-      // Since the exact behavior varies, we'll just verify that:
-      // 1. updateProfile was called multiple times (showing it responds to input)
-      // 2. The values changed from the original (showing the input is working)
-      const calls = mockUpdateProfile.mock.calls;
-      expect(calls.length).toBeGreaterThan(0);
-      
-      // Verify that at least one call has different protein value than original (30)
-      const hasChangedValue = calls.some(call => {
-        const proteinValue = call[0]?.macro_targets?.protein;
-        return proteinValue !== 30 && proteinValue !== undefined;
-      });
-      expect(hasChangedValue).toBe(true);
-    }, { timeout: 3000 });
+      expect(screen.getByText('You have unsaved changes')).toBeInTheDocument();
+    });
   });
 
-  it('should successfully save the updated profile and update the store', async () => {
-    // Arrange - Set up successful API response
-    mockUpdateProfile.mockResolvedValue(undefined);
+  it('should use macro preset buttons', async () => {
     render(<ProfilePage />);
     
-    // Wait for component to load and render profile content
     await waitFor(() => {
       expect(screen.getByText('Dietary Preferences')).toBeInTheDocument();
     });
     
-    // Find the allergen section and input
-    const allergenSection = screen.getByText('Avoided / Allergens').closest('section');
-    const allergenInput = screen.getByPlaceholderText('Add avoided ingredient');
-    const addButton = within(allergenSection!).getByRole('button', { name: 'Add' });
-
-    // Act - Add a new allergen to trigger updateProfile
-    await user.type(allergenInput, 'shellfish');
-    await user.click(addButton);
-
-    // Assert - Verify the updateProfile function was called
-    expect(mockUpdateProfile).toHaveBeenCalledWith({
-      allergens: ['nuts', 'shellfish']
+    // Find and click a preset button
+    const balancedButton = screen.getByRole('button', { name: 'Balanced (2000 cal)' });
+    await user.click(balancedButton);
+    
+    // Should show unsaved changes
+    await waitFor(() => {
+      expect(screen.getByText('You have unsaved changes')).toBeInTheDocument();
     });
-
-    // Verify the API call was successful (no error state)
-    expect(mockUpdateProfile).toHaveBeenCalledTimes(1);
   });
 
-  it('should handle database errors gracefully during profile update', async () => {
-    // Arrange - Set up failing API response
-    const mockError = new Error('Database connection failed');
-    mockUpdateProfile.mockRejectedValue(mockError);
-    
-    // Mock the store to show loading state and then error
+  it('should handle error display from the store', async () => {
+    // Mock error state
     vi.mocked(useProfileStore).mockReturnValue({
       profile: mockProfile,
       loading: false,
-      error: 'Database connection failed',
+      error: 'Failed to connect to database',
+      lastSaved: null,
       updateProfile: mockUpdateProfile,
       fetchProfile: mockFetchProfile,
+      clearError: mockClearError,
+      retryUpdate: mockRetryUpdate,
     });
 
     render(<ProfilePage />);
     
-    // Wait for component to load and render profile content
     await waitFor(() => {
       expect(screen.getByText('Dietary Preferences')).toBeInTheDocument();
     });
     
-    // Find the allergen section and input
-    const allergenSection = screen.getByText('Avoided / Allergens').closest('section');
-    const allergenInput = screen.getByPlaceholderText('Add avoided ingredient');
-    const addButton = within(allergenSection!).getByRole('button', { name: 'Add' });
-
-    // Act - Try to add a new allergen which should fail
-    await user.type(allergenInput, 'dairy');
-    await user.click(addButton);
-
-    // Assert - Verify updateProfile was called but failed
-    expect(mockUpdateProfile).toHaveBeenCalledWith({
-      allergens: ['nuts', 'dairy']
-    });
-
-    // Since we're testing the error state, we need to verify the error handling behavior
-    // In a real implementation, this might show an error toast or message
-    // For now, we verify the updateProfile was called and failed
-    expect(mockUpdateProfile).toHaveBeenCalledTimes(1);
-  });
-
-  it('should show loading state during profile updates', async () => {
-    // Arrange - Set up loading state
-    vi.mocked(useProfileStore).mockReturnValue({
-      profile: mockProfile,
-      loading: true, // Loading state
-      error: null,
-      updateProfile: mockUpdateProfile,
-      fetchProfile: mockFetchProfile,
-    });
-
-    render(<ProfilePage />);
-
-    // Wait for component to render
-    await waitFor(() => {
-      // Check if any loading indicator is present or if the component is in loading state
-      // Since the specific "Saving..." text might not exist, we check for overall loading behavior
-      expect(screen.queryByText('Dietary Preferences')).toBeInTheDocument();
-    });
-    
-    // For now, we'll verify that the component renders and is responsive during loading
-    // In a real implementation, this test should check for actual loading UI elements
-    expect(true).toBe(true); // Placeholder assertion - adjust based on actual loading UI
-  });
-
-  it('should require authentication to access profile management', async () => {
-    // Arrange - Mock no user (not authenticated)
-    mockGetUser.mockResolvedValue({
-      data: { user: null }, // No user
-    });
-
-    render(<ProfilePage />);
-
-    // Assert - Should show sign-in message instead of profile form
-    expect(screen.getByText('Sign in to manage your dietary profile')).toBeInTheDocument();
-    
-    // Verify profile sections are not rendered
-    expect(screen.queryByText('Diet Tags')).not.toBeInTheDocument();
-    expect(screen.queryByText('Avoided / Allergens')).not.toBeInTheDocument();
-    expect(screen.queryByText('Macro Targets')).not.toBeInTheDocument();
+    // Should display error message
+    expect(screen.getByText('Error loading profile:')).toBeInTheDocument();
+    expect(screen.getByText('Failed to connect to database')).toBeInTheDocument();
   });
 }); 

@@ -121,7 +121,8 @@ describe('ProfileStore', () => {
       }
 
       const mockSingle = vi.fn().mockResolvedValue({ data: updatedProfile, error: null })
-      const mockEq = vi.fn(() => ({ single: mockSingle }))
+      const mockSelect = vi.fn(() => ({ single: mockSingle }))
+      const mockEq = vi.fn(() => ({ select: mockSelect }))
       const mockUpdate = vi.fn(() => ({ eq: mockEq }))
       const mockFrom = vi.fn(() => ({ update: mockUpdate }))
 
@@ -156,7 +157,8 @@ describe('ProfileStore', () => {
       }
 
       const mockSingle = vi.fn().mockResolvedValue({ data: updatedProfile, error: null })
-      const mockEq = vi.fn(() => ({ single: mockSingle }))
+      const mockSelect = vi.fn(() => ({ single: mockSingle }))
+      const mockEq = vi.fn(() => ({ select: mockSelect }))
       const mockUpdate = vi.fn(() => ({ eq: mockEq }))
       const mockFrom = vi.fn(() => ({ update: mockUpdate }))
 
@@ -197,7 +199,8 @@ describe('ProfileStore', () => {
       }
 
       const mockSingle = vi.fn().mockResolvedValue({ data: updatedProfile, error: null })
-      const mockEq = vi.fn(() => ({ single: mockSingle }))
+      const mockSelect = vi.fn(() => ({ single: mockSingle }))
+      const mockEq = vi.fn(() => ({ select: mockSelect }))
       const mockUpdate = vi.fn(() => ({ eq: mockEq }))
       const mockFrom = vi.fn(() => ({ update: mockUpdate }))
 
@@ -224,7 +227,8 @@ describe('ProfileStore', () => {
     it('should handle update errors gracefully', async () => {
       const mockError = { message: 'Update failed' }
       const mockSingle = vi.fn().mockResolvedValue({ data: null, error: mockError })
-      const mockEq = vi.fn(() => ({ single: mockSingle }))
+      const mockSelect = vi.fn(() => ({ single: mockSingle }))
+      const mockEq = vi.fn(() => ({ select: mockSelect }))
       const mockUpdate = vi.fn(() => ({ eq: mockEq }))
       const mockFrom = vi.fn(() => ({ update: mockUpdate }))
 
@@ -242,7 +246,9 @@ describe('ProfileStore', () => {
       })
 
       const { updateProfile } = useProfileStore.getState()
-      await updateProfile({ dietary_preferences: ['vegan'] })
+      
+      // The updateProfile function should throw an error
+      await expect(updateProfile({ dietary_preferences: ['vegan'] })).rejects.toThrow('Update failed')
 
       // Profile should remain unchanged on error
       const { profile, error } = useProfileStore.getState()
@@ -262,7 +268,8 @@ describe('ProfileStore', () => {
       }
 
       const mockSingle = vi.fn().mockResolvedValue({ data: updatedProfile, error: null })
-      const mockEq = vi.fn(() => ({ single: mockSingle }))
+      const mockSelect = vi.fn(() => ({ single: mockSingle }))
+      const mockEq = vi.fn(() => ({ select: mockSelect }))
       const mockUpdate = vi.fn(() => ({ eq: mockEq }))
       const mockFrom = vi.fn(() => ({ update: mockUpdate }))
 

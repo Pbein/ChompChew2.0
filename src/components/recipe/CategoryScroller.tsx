@@ -90,8 +90,11 @@ export function CategoryScroller({
       {/* Scrollable Categories */}
       <div
         ref={scrollRef}
-        className="flex gap-4 overflow-x-auto scrollbar-hide pb-2 px-12"
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        className="flex gap-4 overflow-x-auto pb-2 px-12 [&::-webkit-scrollbar]:hidden"
+        style={{ 
+          scrollbarWidth: 'none', 
+          msOverflowStyle: 'none'
+        }}
       >
         {categories.map((category) => (
           <button
@@ -127,13 +130,6 @@ export function CategoryScroller({
           </button>
         ))}
       </div>
-
-      {/* Hide scrollbar styles */}
-      <style jsx>{`
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
     </div>
   )
 } 
