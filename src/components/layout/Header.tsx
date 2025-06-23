@@ -180,7 +180,7 @@ export function Header({ className }: HeaderProps) {
                     </Link>
                     <Link href="/auth/signup">
                       <Button
-                        variant="primary"
+                        variant="cta"
                         size="sm"
                         className="font-semibold bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-lg shadow-secondary/20 hover:shadow-xl hover:shadow-secondary/30 transition-all duration-200 hover:scale-105 border-0 px-3 whitespace-nowrap"
                       >
@@ -333,7 +333,7 @@ export function Header({ className }: HeaderProps) {
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         <Button
-                          variant="primary"
+                          variant="cta"
                           size="lg"
                           className="w-full justify-start font-semibold bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-lg shadow-secondary/20 hover:shadow-xl hover:shadow-secondary/30 transition-all duration-200 border-0 py-3 px-4 rounded-lg"
                         >

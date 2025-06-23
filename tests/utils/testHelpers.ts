@@ -1,6 +1,6 @@
 import { vi } from 'vitest'
 import { render, RenderOptions } from '@testing-library/react'
-import { ReactElement, ReactNode } from 'react'
+import React, { ReactElement, ReactNode } from 'react'
 
 // Common test data
 export const mockUser = {
@@ -117,7 +117,7 @@ export const createTestWrapper = (options: {
 } = {}) => {
   return ({ children }: { children: ReactNode }) => {
     // Mock providers would go here
-    return <div data-testid="test-wrapper">{children}</div>
+    return React.createElement('div', { 'data-testid': 'test-wrapper' }, children)
   }
 }
 

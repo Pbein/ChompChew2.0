@@ -138,7 +138,7 @@ export default function SignUpPage() {
 
             <Button
               type="submit"
-              variant="primary"
+              variant="cta"
               size="lg"
               disabled={loading || !email || !password}
               className="w-full font-semibold bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white shadow-lg shadow-emerald-200/50 hover:shadow-xl hover:shadow-emerald-300/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"

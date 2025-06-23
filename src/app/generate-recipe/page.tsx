@@ -186,7 +186,7 @@ export default function GenerateRecipePage() {
                   <>
                     <Link href="/pricing">
                       <Button
-                        variant="primary"
+                        variant="cta"
                         size="lg"
                         className="w-full sm:w-auto font-semibold bg-gradient-to-r from-accent to-accent/80 hover:from-accent/90 hover:to-accent/70 text-accent-foreground shadow-lg transition-all duration-200 hover:scale-105"
                       >
@@ -207,7 +207,7 @@ export default function GenerateRecipePage() {
                   <>
                     <Link href="/auth/signin">
                       <Button
-                        variant="primary"
+                        variant="cta"
                         size="lg"
                         className="w-full sm:w-auto font-semibold bg-gradient-to-r from-accent to-accent/80 hover:from-accent/90 hover:to-accent/70 text-accent-foreground shadow-lg transition-all duration-200 hover:scale-105"
                       >
@@ -334,7 +334,7 @@ function SubmitButton({
   return (
     <Button
       type="submit"
-      variant="primary"
+      variant="cta"
       size="lg"
       disabled={disabled}
       className={`w-full font-semibold bg-gradient-to-r from-accent to-accent/80 hover:from-accent/90 hover:to-accent/70 text-accent-foreground shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${hasInput ? '' : 'opacity-50 cursor-not-allowed'}`}

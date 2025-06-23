@@ -1,10 +1,10 @@
 {
-  "timestamp": "2025-06-23T23:29:36.921Z",
+  "timestamp": "2025-06-23T23:47:44.453Z",
   "summary": {
-    "totalTestFiles": 42,
-    "validTests": 20,
-    "suspiciousTests": 22,
-    "qualityScore": 48
+    "totalTestFiles": 47,
+    "validTests": 23,
+    "suspiciousTests": 24,
+    "qualityScore": 49
   },
   "issues": [
     {
@@ -15,6 +15,17 @@
           "severity": "MEDIUM",
           "message": "High ratio of mocks to real imports",
           "details": "19 mocks vs 4 real imports"
+        }
+      ]
+    },
+    {
+      "file": "tests\\chaos\\resilience.chaos.test.ts",
+      "issues": [
+        {
+          "type": "HIGH_MOCK_RATIO",
+          "severity": "MEDIUM",
+          "message": "High ratio of mocks to real imports",
+          "details": "8 mocks vs 2 real imports"
         }
       ]
     },
@@ -147,6 +158,17 @@
           "severity": "MEDIUM",
           "message": "High ratio of mocks to real imports",
           "details": "14 mocks vs 2 real imports"
+        }
+      ]
+    },
+    {
+      "file": "tests\\integration-real\\realDatabase.integration.test.ts",
+      "issues": [
+        {
+          "type": "NO_SRC_IMPORTS",
+          "severity": "HIGH",
+          "message": "Test defines functions but imports no real application code",
+          "details": "Found 3 function definitions but no imports from src/"
         }
       ]
     },
