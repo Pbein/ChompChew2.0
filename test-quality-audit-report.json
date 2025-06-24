@@ -1,10 +1,10 @@
 {
-  "timestamp": "2025-06-23T23:47:44.453Z",
+  "timestamp": "2025-06-24T00:06:37.214Z",
   "summary": {
     "totalTestFiles": 47,
-    "validTests": 23,
-    "suspiciousTests": 24,
-    "qualityScore": 49
+    "validTests": 24,
+    "suspiciousTests": 23,
+    "qualityScore": 51
   },
   "issues": [
     {
@@ -158,17 +158,6 @@
           "severity": "MEDIUM",
           "message": "High ratio of mocks to real imports",
           "details": "14 mocks vs 2 real imports"
-        }
-      ]
-    },
-    {
-      "file": "tests\\integration-real\\realDatabase.integration.test.ts",
-      "issues": [
-        {
-          "type": "NO_SRC_IMPORTS",
-          "severity": "HIGH",
-          "message": "Test defines functions but imports no real application code",
-          "details": "Found 3 function definitions but no imports from src/"
         }
       ]
     },
