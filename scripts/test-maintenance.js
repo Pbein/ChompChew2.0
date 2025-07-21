@@ -15,28 +15,39 @@ const __filename = fileURLToPath(import.meta.url);
 // Test categories for organized execution
 const TEST_CATEGORIES = {
   unit: [
-    'tests/lib/**/*.test.{ts,tsx}',
-    'tests/components/**/*.test.{ts,tsx}',
-    'tests/services/**/*.test.{ts,tsx}',
-    'tests/validation/**/*.test.{ts,tsx}'
+    'tests/lib/**/*.test.ts',
+    'tests/lib/**/*.test.tsx',
+    'tests/components/**/*.test.ts',
+    'tests/components/**/*.test.tsx',
+    'tests/services/**/*.test.ts',
+    'tests/services/**/*.test.tsx',
+    'tests/validation/**/*.test.ts',
+    'tests/validation/**/*.test.tsx'
   ],
   integration: [
-    'tests/integration/**/*.test.{ts,tsx}',
-    'tests/api/**/*.test.{ts,tsx}'
+    'tests/integration/**/*.test.ts',
+    'tests/integration/**/*.test.tsx',
+    'tests/api/**/*.test.ts',
+    'tests/api/**/*.test.tsx'
   ],
   infrastructure: [
-    'tests/infrastructure/**/*.test.{ts,tsx}',
-    'tests/middleware/**/*.test.{ts,tsx}'
+    'tests/infrastructure/**/*.test.ts',
+    'tests/infrastructure/**/*.test.tsx',
+    'tests/middleware/**/*.test.ts',
+    'tests/middleware/**/*.test.tsx'
   ],
   security: [
-    'tests/security/**/*.test.{ts,tsx}',
+    'tests/security/**/*.test.ts',
+    'tests/security/**/*.test.tsx',
     'tests/validation/inputValidation.test.ts'
   ],
   performance: [
-    'tests/performance/**/*.test.{ts,tsx}'
+    'tests/performance/**/*.test.ts',
+    'tests/performance/**/*.test.tsx'
   ],
   e2e: [
-    'tests/e2e/**/*.spec.{ts,tsx}'
+    'tests/e2e/**/*.spec.ts',
+    'tests/e2e/**/*.spec.tsx'
   ]
 };
 

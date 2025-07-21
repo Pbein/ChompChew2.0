@@ -52,7 +52,7 @@ jobs:
         run: node scripts/test-maintenance.js critical
 
       - name: 📊 Upload critical test results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: critical-test-results
@@ -99,7 +99,7 @@ jobs:
         run: node scripts/test-maintenance.js performance
 
       - name: 📈 Upload performance results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: performance-results
@@ -178,7 +178,7 @@ jobs:
         run: node scripts/test-maintenance.js report
 
       - name: 📤 Upload comprehensive results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: comprehensive-test-results
