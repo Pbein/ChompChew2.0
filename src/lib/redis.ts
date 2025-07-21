@@ -1,15 +1,49 @@
 import { Redis } from '@upstash/redis'
 
-// Validate required environment variables
-const redisUrl = process.env.UPSTASH_REDIS_REST_URL
-const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN
+// Lazy Redis client initialization
+let redisClient: Redis | null = null
 
-if (!redisUrl || !redisToken) {
-  throw new Error('Missing required Redis environment variables: UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN')
+/**
+ * Get Redis client instance (lazy initialization)
+ * Only creates the client when first accessed and if environment variables are available
+ */
+export const getRedisClient = (): Redis => {
+  if (!redisClient) {
+    const redisUrl = process.env.UPSTASH_REDIS_REST_URL
+    const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN
+    
+    if (!redisUrl || !redisToken) {
+      throw new Error('Redis environment variables not configured: UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN are required')
+    }
+    
+    redisClient = Redis.fromEnv()
+  }
+  
+  return redisClient
 }
 
-// Create Redis client instance
-export const redis = Redis.fromEnv()
+/**
+ * Check if Redis is available (without throwing)
+ */
+export const isRedisAvailable = (): boolean => {
+  try {
+    getRedisClient()
+    return true
+  } catch {
+    return false
+  }
+}
+
+/**
+ * Safely get Redis client or return null
+ */
+export const getRedisClientSafe = (): Redis | null => {
+  try {
+    return getRedisClient()
+  } catch {
+    return null
+  }
+}
 
 // Redis key prefixes for organization
 export const REDIS_KEYS = {
@@ -60,6 +94,7 @@ export class RedisCache {
    */
   static async get<T>(key: string): Promise<T | null> {
     try {
+      const redis = getRedisClient()
       const data = await redis.get(key)
       return data as T | null
     } catch (error) {
@@ -73,6 +108,7 @@ export class RedisCache {
    */
   static async set(key: string, value: unknown, ttl: number = CACHE_TTL.MEDIUM): Promise<boolean> {
     try {
+      const redis = getRedisClient()
       await redis.setex(key, ttl, JSON.stringify(value))
       return true
     } catch (error) {
@@ -86,6 +122,7 @@ export class RedisCache {
    */
   static async del(key: string): Promise<boolean> {
     try {
+      const redis = getRedisClient()
       await redis.del(key)
       return true
     } catch (error) {
@@ -99,6 +136,7 @@ export class RedisCache {
    */
   static async delPattern(pattern: string): Promise<boolean> {
     try {
+      const redis = getRedisClient()
       const keys = await redis.keys(pattern)
       if (keys.length > 0) {
         await redis.del(...keys)
@@ -115,6 +153,7 @@ export class RedisCache {
    */
   static async incr(key: string, ttl: number = CACHE_TTL.MEDIUM): Promise<number> {
     try {
+      const redis = getRedisClient()
       const count = await redis.incr(key)
       if (count === 1) {
         // Set expiration only on first increment
@@ -132,6 +171,7 @@ export class RedisCache {
    */
   static async exists(key: string): Promise<boolean> {
     try {
+      const redis = getRedisClient()
       const exists = await redis.exists(key)
       return exists === 1
     } catch (error) {
@@ -146,8 +186,9 @@ export class RedisCache {
   static async mget<T>(keys: string[]): Promise<(T | null)[]> {
     try {
       if (keys.length === 0) return []
+      const redis = getRedisClient()
       const values = await redis.mget(...keys)
-      return values.map(value => value as T | null)
+      return values.map((value: unknown) => value as T | null)
     } catch (error) {
       console.error('Redis MGET error:', error)
       return new Array(keys.length).fill(null)
@@ -159,6 +200,7 @@ export class RedisCache {
    */
   static async sadd(key: string, member: string): Promise<boolean> {
     try {
+      const redis = getRedisClient()
       await redis.sadd(key, member)
       return true
     } catch (error) {
@@ -172,6 +214,7 @@ export class RedisCache {
    */
   static async sismember(key: string, member: string): Promise<boolean> {
     try {
+      const redis = getRedisClient()
       const isMember = await redis.sismember(key, member)
       return isMember === 1
     } catch (error) {
@@ -185,6 +228,7 @@ export class RedisCache {
    */
   static async srem(key: string, member: string): Promise<boolean> {
     try {
+      const redis = getRedisClient()
       await redis.srem(key, member)
       return true
     } catch (error) {
@@ -206,6 +250,7 @@ export class RateLimiter {
     windowSeconds: number
   ): Promise<{ allowed: boolean; remaining: number; resetTime: number }> {
     try {
+      const redis = getRedisClient()
       const key = REDIS_KEYS.RATE_LIMIT(identifier, windowSeconds.toString())
       const now = Date.now()
       const windowStart = now - windowSeconds * 1000
