@@ -1,4 +1,5 @@
-import { openai, OPENAI_CONFIG } from '@/lib/openai'
+import { OPENAI_CONFIG } from '@/lib/openai'
+import OpenAI from 'openai'
 import { generateRecipeImage } from '@/lib/aiImageService'
 import { z } from 'zod'
 
@@ -189,13 +190,21 @@ Respond ONLY with the JSON object, no additional text.`
 
 // Main recipe generation service
 export class RecipeGenerationService {
+  private static getOpenAIClient(): OpenAI | null {
+    if (!process.env.OPENAI_SECRET_KEY) {
+      return null
+    }
+    return new OpenAI({ apiKey: process.env.OPENAI_SECRET_KEY })
+  }
+
   private static async callOpenAI(prompt: string): Promise<string> {
-    if (!openai) {
+    const client = this.getOpenAIClient()
+    if (!client) {
       throw new Error('OpenAI client is not initialized. Please check OPENAI_SECRET_KEY environment variable.')
     }
 
     try {
-      const response = await openai.chat.completions.create({
+      const response = await client.chat.completions.create({
         model: OPENAI_CONFIG.model,
         messages: [
           {

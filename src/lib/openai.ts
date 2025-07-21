@@ -4,15 +4,25 @@ import { buildRecipePrompt } from './promptBuilder'
 import { aiRecipeSchema, AIRecipe } from './validators'
 import type { ChatCompletionMessageParam } from 'openai/resources/chat/completions'
 
-// Initialize OpenAI client only if key provided
-export const openai = process.env.OPENAI_SECRET_KEY
-  ? new OpenAI({ apiKey: process.env.OPENAI_SECRET_KEY })
-  : null
+// Lazy initialization for OpenAI client to avoid build-time errors
+let openaiClient: OpenAI | null = null
 
-// Allow running in development without key; real calls will fail gracefully.
-if (!process.env.OPENAI_SECRET_KEY && process.env.NODE_ENV === 'production') {
-  throw new Error('OPENAI_SECRET_KEY environment variable is required in production')
+const getOpenAIClient = (): OpenAI | null => {
+  if (openaiClient) return openaiClient
+  
+  if (!process.env.OPENAI_SECRET_KEY) {
+    if (process.env.NODE_ENV === 'production') {
+      console.warn('OPENAI_SECRET_KEY environment variable is required in production')
+    }
+    return null
+  }
+  
+  openaiClient = new OpenAI({ apiKey: process.env.OPENAI_SECRET_KEY })
+  return openaiClient
 }
+
+// Export for backward compatibility
+export const openai = getOpenAIClient()
 
 // OpenAI configuration constants
 export const OPENAI_CONFIG = {
@@ -50,14 +60,16 @@ const getStubRecipe = (prompt: string): AIRecipe => ({
 })
 
 export const generateRecipe = async (params: GenerateRecipeParams): Promise<AIRecipe> => {
+  const client = getOpenAIClient()
+  
   console.log('🍳 generateRecipe called with params:', {
     prompt: params.prompt,
     dietaryPreferences: params.dietaryPreferences,
     allergens: params.allergens,
-    hasOpenAIKey: !!openai
+    hasOpenAIKey: !!client
   })
 
-  if (!openai) {
+  if (!client) {
     console.log('⚠️ No OpenAI key found, returning stub recipe')
     return getStubRecipe(params.prompt)
   }
@@ -67,7 +79,7 @@ export const generateRecipe = async (params: GenerateRecipeParams): Promise<AIRe
 
   try {
     console.log('🤖 Calling OpenAI API...')
-    const completion = await openai.chat.completions.create({
+    const completion = await client.chat.completions.create({
       model: OPENAI_CONFIG.model,
       messages: [...messages] as unknown as ChatCompletionMessageParam[],
       max_tokens: OPENAI_CONFIG.maxTokens,

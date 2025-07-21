@@ -4,10 +4,18 @@
  * Based on research-backed food photography principles for maximum appeal
  */
 
-import { openai } from './openai'
+import OpenAI from 'openai'
 import { getRecipeImageUrl } from './imageService'
 import { supabaseServiceRole } from './supabase-server'
 import { v4 as uuidv4 } from 'uuid'
+
+// Lazy initialization for OpenAI client to avoid build-time errors
+const getOpenAIClient = (): OpenAI | null => {
+  if (!process.env.OPENAI_SECRET_KEY) {
+    return null
+  }
+  return new OpenAI({ apiKey: process.env.OPENAI_SECRET_KEY })
+}
 
 export interface RecipeImageParams {
   title: string
@@ -124,7 +132,8 @@ export async function generateRecipeImage(params: RecipeImageParams): Promise<st
   })
 
   // Fallback to Unsplash if no OpenAI key
-  if (!openai) {
+  const client = getOpenAIClient()
+  if (!client) {
     console.log('⚠️ [AI-IMAGE] No OpenAI key found, falling back to Unsplash image')
     console.log('🔄 [AI-IMAGE] Using fallback image service...')
     const fallbackUrl = getRecipeImageUrl(params.title, params.cuisineType)
@@ -158,7 +167,7 @@ export async function generateRecipeImage(params: RecipeImageParams): Promise<st
     const startTime = Date.now()
     
     // Use the new Responses API with gpt-image-1 model
-    const response = await openai.responses.create(apiConfig)
+    const response = await client.responses.create(apiConfig)
     
     const duration = Date.now() - startTime
     console.log('⏱️ [AI-IMAGE] API call completed in:', duration + 'ms')
